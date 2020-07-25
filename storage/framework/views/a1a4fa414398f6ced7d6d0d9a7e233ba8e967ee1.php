@@ -1,112 +1,116 @@
-@extends('layout.main') @section('content')
-@if($errors->has('name'))
+ <?php $__env->startSection('content'); ?>
+<?php if($errors->has('name')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>{{ $errors->first('name') }}</div>
-@endif
-@if($errors->has('image'))
+            aria-hidden="true">&times;</span></button><?php echo e($errors->first('name')); ?></div>
+<?php endif; ?>
+<?php if($errors->has('image')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>{{ $errors->first('image') }}</div>
-@endif
-@if($errors->has('email'))
+            aria-hidden="true">&times;</span></button><?php echo e($errors->first('image')); ?></div>
+<?php endif; ?>
+<?php if($errors->has('email')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>{{ $errors->first('email') }}</div>
-@endif
-@if(session()->has('message'))
+            aria-hidden="true">&times;</span></button><?php echo e($errors->first('email')); ?></div>
+<?php endif; ?>
+<?php if(session()->has('message')): ?>
 <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert"
-        aria-label="Close"><span aria-hidden="true">&times;</span></button>{!! session()->get('message') !!}</div>
-@endif
-@if(session()->has('not_permitted'))
+        aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo session()->get('message'); ?></div>
+<?php endif; ?>
+<?php if(session()->has('not_permitted')): ?>
 <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert"
-        aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
-@endif
+        aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div>
+<?php endif; ?>
 <section>
-    @if(in_array("employees-add", $all_permission))
+    <?php if(in_array("employees-add", $all_permission)): ?>
     <div class="container-fluid">
-        <a href="{{route('employees.create')}}" class="btn btn-info"><i class="dripicons-plus"></i>
-            {{trans('file.Add Employee')}}</a>
+        <a href="<?php echo e(route('employees.create')); ?>" class="btn btn-info"><i class="dripicons-plus"></i>
+            <?php echo e(trans('file.Add Employee')); ?></a>
     </div>
-    @endif
+    <?php endif; ?>
     <div class="table-responsive">
         <table id="employee-table" class="table">
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th>{{trans('file.Image')}}</th>
-                    <th>{{trans('file.name')}}</th>
-                    <th>{{trans('file.salesman')}}</th>
-                    <th>{{trans('file.Email')}}</th>
-                    <th>{{trans('file.Phone Number')}}</th>
-                    <th>{{trans('file.Department')}}</th>
-                    <th>{{trans('file.Address')}}</th>
-                    <th class="not-exported">{{trans('file.action')}}</th>
+                    <th><?php echo e(trans('file.Image')); ?></th>
+                    <th><?php echo e(trans('file.name')); ?></th>
+                    <th><?php echo e(trans('file.salesman')); ?></th>
+                    <th><?php echo e(trans('file.Email')); ?></th>
+                    <th><?php echo e(trans('file.Phone Number')); ?></th>
+                    <th><?php echo e(trans('file.Department')); ?></th>
+                    <th><?php echo e(trans('file.Address')); ?></th>
+                    <th class="not-exported"><?php echo e(trans('file.action')); ?></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($lims_employee_all as $key=>$employee)
-                @php $department = \App\Department::find($employee->department_id); @endphp
-                <tr data-id="{{$employee->id}}">
-                    <td>{{$key}}</td>
-                    @if($employee->image)
-                    <td> <img src="{{url('public/images/employee',$employee->image)}}" height="80" width="80">
+                <?php $__currentLoopData = $lims_employee_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=>$employee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $department = \App\Department::find($employee->department_id); ?>
+                <tr data-id="<?php echo e($employee->id); ?>">
+                    <td><?php echo e($key); ?></td>
+                    <?php if($employee->image): ?>
+                    <td> <img src="<?php echo e(url('public/images/employee',$employee->image)); ?>" height="80" width="80">
                     </td>
-                    @else
+                    <?php else: ?>
                     <td>No Image</td>
-                    @endif
-                    <td>{{ $employee->name }}</td>
+                    <?php endif; ?>
+                    <td><?php echo e($employee->name); ?></td>
                     <td>
-                        @if ($employee->is_salesman)
+                        <?php if($employee->is_salesman): ?>
                         yes
-                        @else
+                        <?php else: ?>
                         no
-                        @endif
+                        <?php endif; ?>
                     </td>
 
-                    <td>{{ $employee->email}}</td>
-                    <td>{{ $employee->phone_number}}</td>
-                    <td>{{ $department->name }}</td>
-                    <td>{{ $employee->address}}
-                        @if($employee->city){{ ', '.$employee->city}}@endif
-                        @if($employee->state){{ ', '.$employee->state}}@endif
-                        @if($employee->postal_code){{ ', '.$employee->postal_code}}@endif
-                        @if($employee->country){{ ', '.$employee->country}}@endif</td>
+                    <td><?php echo e($employee->email); ?></td>
+                    <td><?php echo e($employee->phone_number); ?></td>
+                    <td><?php echo e($department->name); ?></td>
+                    <td><?php echo e($employee->address); ?>
+
+                        <?php if($employee->city): ?><?php echo e(', '.$employee->city); ?><?php endif; ?>
+                        <?php if($employee->state): ?><?php echo e(', '.$employee->state); ?><?php endif; ?>
+                        <?php if($employee->postal_code): ?><?php echo e(', '.$employee->postal_code); ?><?php endif; ?>
+                        <?php if($employee->country): ?><?php echo e(', '.$employee->country); ?><?php endif; ?></td>
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
+                                aria-haspopup="true" aria-expanded="false"><?php echo e(trans('file.action')); ?>
+
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                @if(in_array("employees-edit", $all_permission))
+                                <?php if(in_array("employees-edit", $all_permission)): ?>
                                 <li>
-                                    <button type="button" data-id="{{$employee->id}}" data-name="{{$employee->name}}"
-                                        data-email="{{$employee->email}}"
-                                        data-is_salesman="{{$employee->is_salesman}}"
-                                        data-phone_number="{{$employee->phone_number}}"
-                                        data-department_id="{{$employee->department_id}}"
-                                        data-address="{{$employee->address}}" data-city="{{$employee->city}}"
-                                        data-country="{{$employee->country}}" class="edit-btn btn btn-link"
+                                    <button type="button" data-id="<?php echo e($employee->id); ?>" data-name="<?php echo e($employee->name); ?>"
+                                        data-email="<?php echo e($employee->email); ?>"
+                                        data-is_salesman="<?php echo e($employee->is_salesman); ?>"
+                                        data-phone_number="<?php echo e($employee->phone_number); ?>"
+                                        data-department_id="<?php echo e($employee->department_id); ?>"
+                                        data-address="<?php echo e($employee->address); ?>" data-city="<?php echo e($employee->city); ?>"
+                                        data-country="<?php echo e($employee->country); ?>" class="edit-btn btn btn-link"
                                         data-toggle="modal" data-target="#editModal"><i
-                                            class="dripicons-document-edit"></i> {{trans('file.edit')}}</button>
+                                            class="dripicons-document-edit"></i> <?php echo e(trans('file.edit')); ?></button>
                                 </li>
-                                @endif
+                                <?php endif; ?>
                                 <li class="divider"></li>
-                                @if(in_array("employees-delete", $all_permission))
-                                {{ Form::open(['route' => ['employees.destroy', $employee->id], 'method' => 'DELETE'] ) }}
+                                <?php if(in_array("employees-delete", $all_permission)): ?>
+                                <?php echo e(Form::open(['route' => ['employees.destroy', $employee->id], 'method' => 'DELETE'] )); ?>
+
                                 <li>
                                     <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i
-                                            class="dripicons-trash"></i> {{trans('file.delete')}}</button>
+                                            class="dripicons-trash"></i> <?php echo e(trans('file.delete')); ?></button>
                                 </li>
-                                {{ Form::close() }}
-                                @endif
+                                <?php echo e(Form::close()); ?>
+
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
     </div>
@@ -117,52 +121,53 @@
     <div role="document" class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Update Employee')}}</h5>
+                <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Update Employee')); ?></h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i
                             class="dripicons-cross"></i></span></button>
             </div>
             <div class="modal-body">
                 <p class="italic">
-                    <small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                {!! Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true]) !!}
+                    <small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                <?php echo Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true]); ?>
+
                 <div class="row">
                     
                     <div class="col-md-6 form-group">
                         <input type="hidden" name="employee_id" />
-                        <label>{{trans('file.name')}} *</label>
+                        <label><?php echo e(trans('file.name')); ?> *</label>
                         <input type="text" name="name" required class="form-control">
                     </div>
 
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Image')}}</label>
+                        <label><?php echo e(trans('file.Image')); ?></label>
                         <input type="file" name="image" class="form-control">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Department')}} *</label>
+                        <label><?php echo e(trans('file.Department')); ?> *</label>
                         <select class="form-control selectpicker" name="department_id" required>
-                            @foreach($lims_department_list as $department)
-                            <option value="{{$department->id}}">{{$department->name}}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $lims_department_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $department): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($department->id); ?>"><?php echo e($department->name); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Email')}} *</label>
+                        <label><?php echo e(trans('file.Email')); ?> *</label>
                         <input type="email" name="email" required class="form-control">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Phone Number')}} *</label>
+                        <label><?php echo e(trans('file.Phone Number')); ?> *</label>
                         <input type="text" name="phone_number" required class="form-control">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Address')}}</label>
+                        <label><?php echo e(trans('file.Address')); ?></label>
                         <input type="text" name="address" class="form-control">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.City')}}</label>
+                        <label><?php echo e(trans('file.City')); ?></label>
                         <input type="text" name="city" class="form-control">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>{{trans('file.Country')}}</label>
+                        <label><?php echo e(trans('file.Country')); ?></label>
                         <input type="text" name="country" class="form-control">
                     </div>
                     <div class="form-group ml-3 mt-6">
@@ -171,9 +176,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                    <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                 </div>
-                {{ Form::close() }}
+                <?php echo e(Form::close()); ?>
+
             </div>
         </div>
     </div>
@@ -237,9 +243,9 @@
     $('#employee-table').DataTable( {
         "order": [],
         'language': {
-            'lengthMenu': '_MENU_ {{trans("file.records per page")}}',
-             "info":      '<small>{{trans("file.Showing")}} _START_ - _END_ (_TOTAL_)</small>',
-            "search":  '{{trans("file.Search")}}',
+            'lengthMenu': '_MENU_ <?php echo e(trans("file.records per page")); ?>',
+             "info":      '<small><?php echo e(trans("file.Showing")); ?> _START_ - _END_ (_TOTAL_)</small>',
+            "search":  '<?php echo e(trans("file.Search")); ?>',
             'paginate': {
                     'previous': '<i class="dripicons-chevron-left"></i>',
                     'next': '<i class="dripicons-chevron-right"></i>'
@@ -271,7 +277,7 @@
         buttons: [
             {
                 extend: 'pdf',
-                text: '{{trans("file.PDF")}}',
+                text: '<?php echo e(trans("file.PDF")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible',
@@ -302,7 +308,7 @@
             },
             {
                 extend: 'csv',
-                text: '{{trans("file.CSV")}}',
+                text: '<?php echo e(trans("file.CSV")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible',
@@ -319,7 +325,7 @@
             },
             {
                 extend: 'print',
-                text: '{{trans("file.Print")}}',
+                text: '<?php echo e(trans("file.Print")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible',
@@ -327,7 +333,7 @@
                 },
             },
             {
-                text: '{{trans("file.delete")}}',
+                text: '<?php echo e(trans("file.delete")); ?>',
                 className: 'buttons-delete',
                 action: function ( e, dt, node, config ) {
                     if(user_verified == '1') {
@@ -359,10 +365,11 @@
             },
             {
                 extend: 'colvis',
-                text: '{{trans("file.Column visibility")}}',
+                text: '<?php echo e(trans("file.Column visibility")); ?>',
                 columns: ':gt(0)'
             },
         ],
     } );
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

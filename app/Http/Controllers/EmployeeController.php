@@ -9,85 +9,71 @@ use App\Biller;
 use App\Employee;
 use App\User;
 use App\Department;
+use App\EmployeeFile;
 use Auth;
+use DB;
 use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
-    
     public function index()
     {
         $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('employees-index')){
+        if ($role->hasPermissionTo('employees-index')) {
             $permissions = Role::findByName($role->name)->permissions;
-            foreach ($permissions as $permission)
+            foreach ($permissions as $permission) {
                 $all_permission[] = $permission->name;
-            if(empty($all_permission))
+            }
+            if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
+            }
             $lims_employee_all = Employee::where('is_active', true)->get();
             $lims_department_list = Department::where('is_active', true)->get();
             return view('employee.index', compact('lims_employee_all', 'lims_department_list', 'all_permission'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function create()
     {
         $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('employees-add')){
+        if ($role->hasPermissionTo('employees-add')) {
             $lims_role_list = Role::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_biller_list = Biller::where('is_active', true)->get();
             $lims_department_list = Department::where('is_active', true)->get();
 
             return view('employee.create', compact('lims_role_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_department_list'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function store(Request $request)
     {
+        $files  = $request->files;
+
         $data = $request->except('image');
         $message = 'Employee created successfully';
-        if(isset($data['user'])){
-            $this->validate($request, [
-                'name' => [
-                    'max:255',
-                        Rule::unique('users')->where(function ($query) {
-                        return $query->where('is_deleted', false);
-                    }),
-                ],
-                'email' => [
-                    'email',
-                    'max:255',
-                        Rule::unique('users')->where(function ($query) {
-                        return $query->where('is_deleted', false);
-                    }),
-                ],
-            ]);
-
-            $data['is_active'] = true;
-            $data['is_deleted'] = false;
-            $data['password'] = bcrypt($data['password']);
-            $data['phone'] = $data['phone_number']; 
-            User::create($data);
-            $user = User::latest()->first();
-            $data['user_id'] = $user->id;
-            $message = 'Employee created successfully and added to user list';
-        }
+        
         //validation in employee table
         $this->validate($request, [
             'email' => [
                 'max:255',
                     Rule::unique('employees')->where(function ($query) {
-                    return $query->where('is_active', true);
-                }),
+                        return $query->where('is_active', true);
+                    }),
             ],
             'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
         ]);
         
+        
+        if ($data['is_salesman'] == "on") {
+            $data['is_salesman'] = 1;
+        }
+
+
         $image = $request->image;
         if ($image) {
             $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
@@ -97,17 +83,39 @@ class EmployeeController extends Controller
             $data['image'] = $imageName;
         }
 
+
+
+
         $data['name'] = $data['employee_name'];
         $data['is_active'] = true;
-        Employee::create($data);
+
+        DB::transaction(function () use ($data,$files) {
+            try {
+                $employee = Employee::create($data);
+                $employee_id = $employee->id;
+    
+                if (isset($files)) {
+                    foreach ($files as $file) {
+                        $fileName = $file->getClientOriginalName();
+                        $file->move('public/files/employee', $fileName);
+                        EmployeeFile::create(['employee_id'=>$employee_id,'file_link'=>$fileName]);
+                    }
+                }
+            } catch (\Throwable $th) {
+                $message = "employee was not created , please try again";
+                return redirect('employees')->with('message', $message);
+            }
+        });
+
 
         return redirect('employees')->with('message', $message);
     }
     
     public function update(Request $request, $id)
     {
+        dd($request);
         $lims_employee_data = Employee::find($request['employee_id']);
-        if($lims_employee_data->user_id){
+        if ($lims_employee_data->user_id) {
             $this->validate($request, [
                 'name' => [
                     'max:255',
@@ -119,8 +127,8 @@ class EmployeeController extends Controller
                     'email',
                     'max:255',
                         Rule::unique('users')->ignore($lims_employee_data->user_id)->where(function ($query) {
-                        return $query->where('is_deleted', false);
-                    }),
+                            return $query->where('is_deleted', false);
+                        }),
                 ],
             ]);
         }
@@ -130,8 +138,8 @@ class EmployeeController extends Controller
                 'email',
                 'max:255',
                     Rule::unique('employees')->ignore($lims_employee_data->id)->where(function ($query) {
-                    return $query->where('is_active', true);
-                }),
+                        return $query->where('is_active', true);
+                    }),
             ],
             'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
         ]);
@@ -155,7 +163,7 @@ class EmployeeController extends Controller
         $employee_id = $request['employeeIdArray'];
         foreach ($employee_id as $id) {
             $lims_employee_data = Employee::find($id);
-            if($lims_employee_data->user_id){
+            if ($lims_employee_data->user_id) {
                 $lims_user_data = User::find($lims_employee_data->user_id);
                 $lims_user_data->is_deleted = true;
                 $lims_user_data->save();
@@ -168,7 +176,7 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         $lims_employee_data = Employee::find($id);
-        if($lims_employee_data->user_id){
+        if ($lims_employee_data->user_id) {
             $lims_user_data = User::find($lims_employee_data->user_id);
             $lims_user_data->is_deleted = true;
             $lims_user_data->save();

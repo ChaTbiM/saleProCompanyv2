@@ -1,64 +1,65 @@
-@extends('layout.main') @section('content')
+ <?php $__env->startSection('content'); ?>
 <section class="forms">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{ trans('file.Add Employee') }}</h4>
+                        <h4><?php echo e(trans('file.Add Employee')); ?></h4>
                     </div>
                     <div class="card-body">
                         <p class="italic">
-                            <small>{{ trans('file.The field labels marked with * are required input fields') }}.</small>
+                            <small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small>
                         </p>
-                        {!! Form::open(['route' => 'employees.store', 'method' => 'post', 'files' => true]) !!}
+                        <?php echo Form::open(['route' => 'employees.store', 'method' => 'post', 'files' => true]); ?>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{ trans('file.name') }} *</strong> </label>
+                                    <label><?php echo e(trans('file.name')); ?> *</strong> </label>
                                     <input type="text" name="employee_name" required class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Image') }}</label>
+                                    <label><?php echo e(trans('file.Image')); ?></label>
                                     <input type="file" name="image" class="form-control">
-                                    @if($errors->has('image'))
+                                    <?php if($errors->has('image')): ?>
                                         <span>
-                                            <strong>{{ $errors->first('image') }}</strong>
+                                            <strong><?php echo e($errors->first('image')); ?></strong>
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Department') }} *</label>
+                                    <label><?php echo e(trans('file.Department')); ?> *</label>
                                     <select class="form-control selectpicker" name="department_id" required>
-                                        @foreach($lims_department_list as $department)
-                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $lims_department_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $department): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($department->id); ?>"><?php echo e($department->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Email') }} *</label>
+                                    <label><?php echo e(trans('file.Email')); ?> *</label>
                                     <input type="email" name="email" placeholder="example@example.com" required
                                         class="form-control">
-                                    @if($errors->has('email'))
+                                    <?php if($errors->has('email')): ?>
                                         <span>
-                                            <strong>{{ $errors->first('email') }}</strong>
+                                            <strong><?php echo e($errors->first('email')); ?></strong>
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Phone Number') }} *</label>
+                                    <label><?php echo e(trans('file.Phone Number')); ?> *</label>
                                     <input type="text" name="phone_number" required class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Address') }}</label>
+                                    <label><?php echo e(trans('file.Address')); ?></label>
                                     <input type="text" name="address" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.City') }}</label>
+                                    <label><?php echo e(trans('file.City')); ?></label>
                                     <input type="text" name="city" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ trans('file.Country') }}</label>
+                                    <label><?php echo e(trans('file.Country')); ?></label>
                                     <input type="text" name="country" class="form-control">
                                 </div>
                                 <div class="form-group mt-4">
@@ -75,20 +76,12 @@
 
 
                                 <div class="form-group">
-                                    <label>{{ trans('file.File') }}</label>
+                                    <label><?php echo e(trans('file.File')); ?></label>
                                     <input type="file" name="file-0" class="form-control files">
                                 </div>
 
 
-                                {{-- <div class="form-group">
-                                    <label>{{ trans('file.Image') }}</label>
-                                <input type="file" name="file-1" class="form-control">
-                                @if($errors->has('image'))
-                                    <span>
-                                        <strong>{{ $errors->first('image') }}</strong>
-                                    </span>
-                                @endif
-                            </div> --}}
+                                
 
                             <div class="row justify-content-end mt-2">
                                 <div class="col-md-4">
@@ -107,12 +100,13 @@
 
                         <div class="col-md-12">
                             <div class="form-group mt-4">
-                                <input type="submit" value="{{ trans('file.submit') }}"
+                                <input type="submit" value="<?php echo e(trans('file.submit')); ?>"
                                     class="btn btn-primary">
                             </div>
                         </div>
                     </div>
-                    {!! Form::close() !!}
+                    <?php echo Form::close(); ?>
+
                 </div>
             </div>
         </div>
@@ -171,7 +165,7 @@
 
         let newFileInput = `
             <div class="form-group">
-                <label>{{ trans('file.File') }}</label>
+                <label><?php echo e(trans('file.File')); ?></label>
                 <input type="file" name="${newFileName}" class="form-control files">
             </div>
         `
@@ -193,4 +187,5 @@
 
     })
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
