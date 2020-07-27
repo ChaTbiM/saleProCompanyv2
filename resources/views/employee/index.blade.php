@@ -82,9 +82,11 @@
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                                 @if(in_array("employees-edit", $all_permission))
                                 <li>
-                                    <button type="button" data-id="{{$employee->id}}" data-name="{{$employee->name}}"
-                                        data-email="{{$employee->email}}"
-                                        data-is_salesman="{{$employee->is_salesman}}"
+                                    <button type="button" 
+                                        data-id="{{$employee->id}}"
+                                        data-comment="{{ $employee->comment }}"
+                                         data-name="{{$employee->name}}"
+                                        data-email="{{$employee->email}}" data-is_salesman="{{$employee->is_salesman}}"
                                         data-phone_number="{{$employee->phone_number}}"
                                         data-department_id="{{$employee->department_id}}"
                                         data-address="{{$employee->address}}" data-city="{{$employee->city}}"
@@ -126,7 +128,7 @@
                     <small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
                 {!! Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true]) !!}
                 <div class="row">
-                    
+
                     <div class="col-md-6 form-group">
                         <input type="hidden" name="employee_id" />
                         <label>{{trans('file.name')}} *</label>
@@ -165,10 +167,35 @@
                         <label>{{trans('file.Country')}}</label>
                         <input type="text" name="country" class="form-control">
                     </div>
-                    <div class="form-group ml-3 mt-6">
+                    <div class="form-group col-md-12 ml-3 mt-6">
                         <input type="checkbox" class=" mr-2" name="is_salesman" />
                         <label>is salesman ?</label>
                     </div>
+                    <div class="col-md-12 form-group">
+                        <label for="comment">Comments</label>
+                        <textarea name="comment" class="form-control" id="comment" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="file-0">{{ trans('file.File') }}</label>
+                        <input type="file" id="file-0" name="file-0" class="form-control files">
+                    </div>
+
+                    <div class="col-md-12 my-2 text-center">
+                        <div class="col-md-6 justify-content-start">
+                            <a href="# " class="btn btn-info" id="addFileInputField">
+                                <span aria-hidden="true">&#43;</span>
+                                <span class="sr-only">Add</span>
+                            </a>
+                            <a href="# " class="btn btn-danger" id="removeFileInputField">
+                                <span aria-hidden="true">&#45;</span>
+                                <span class="sr-only">remove </span>
+                            </a>
+                        </div>
+
+                    </div>
+
+
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
@@ -231,6 +258,9 @@
         if(isSalesman){
             $("#editModal input[name='is_salesman']").prop('checked',true);
         }
+
+        $("#editModal input[name='comment']").val( $(this).data('comment') );
+
         $('.selectpicker').selectpicker('refresh');
     });
 
@@ -364,5 +394,41 @@
             },
         ],
     } );
+
+
+     // add new choose file input field
+     $('#addFileInputField').on('click', function (event) {
+        event.preventDefault();
+        // insert last 
+        // select last custom file
+        let lastFile = $('.files').last();
+        lastFileID = lastFile.prop('name').split('-')[1];
+        lastFileID++;
+
+        let newFileName = "file-" + lastFileID;
+
+        let newFileInput = `
+            <div class="form-group">
+                <label>{{ trans('file.File') }}</label>
+                <input type="file" name="${newFileName}" class="form-control files">
+            </div>
+        `
+        $(newFileInput).insertAfter(lastFile);
+    })
+
+
+    // remove last choose file input field
+    $('#removeFileInputField').on('click', function (event) {
+        event.preventDefault();
+        // remove last
+        let lastFileInput = $('.files').last();
+        lastFileID = lastFileInput.prop('name').split('-')[1];
+        if (lastFileID != 0) {
+            let parentFileInputContainer = lastFileInput.parent();
+            parentFileInputContainer.remove();
+
+        }
+
+    })
 </script>
 @endsection

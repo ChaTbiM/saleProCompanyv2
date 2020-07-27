@@ -37,6 +37,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
+        // dd(Employee::find(7)->files);
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('employees-add')) {
             $lims_role_list = Role::where('is_active', true)->get();
@@ -95,11 +96,7 @@ class EmployeeController extends Controller
                 $employee_id = $employee->id;
     
                 if (isset($files)) {
-                    foreach ($files as $file) {
-                        $fileName = $file->getClientOriginalName();
-                        $file->move('public/files/employee', $fileName);
-                        EmployeeFile::create(['employee_id'=>$employee_id,'file_link'=>$fileName]);
-                    }
+                    $this->storeFiles($files);
                 }
             } catch (\Throwable $th) {
                 $message = "employee was not created , please try again";
@@ -113,7 +110,7 @@ class EmployeeController extends Controller
     
     public function update(Request $request, $id)
     {
-        dd($request);
+        $files = $request->files;
         $lims_employee_data = Employee::find($request['employee_id']);
         if ($lims_employee_data->user_id) {
             $this->validate($request, [
@@ -153,8 +150,14 @@ class EmployeeController extends Controller
             $image->move('public/images/employee', $imageName);
             $data['image'] = $imageName;
         }
-
-        $lims_employee_data->update($data);
+        
+        DB::transaction(function () use ($data,$lims_employee_data, $files) {
+            $lims_employee_data->update($data);
+            
+            if (isset($files)) {
+                $this->storeFiles($files);
+            }
+        });
         return redirect('employees')->with('message', 'Employee updated successfully');
     }
 
@@ -184,5 +187,14 @@ class EmployeeController extends Controller
         $lims_employee_data->is_active = false;
         $lims_employee_data->save();
         return redirect('employees')->with('not_permitted', 'Employee deleted successfully');
+    }
+
+    public function storeFiles($files)
+    {
+        foreach ($files as $file) {
+            $fileName = $file->getClientOriginalName();
+            $file->move('public/files/employee', $fileName);
+            EmployeeFile::create(['employee_id'=>$employee_id,'file_link'=>$fileName]);
+        }
     }
 }

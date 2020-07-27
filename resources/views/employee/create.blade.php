@@ -68,8 +68,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row form-group">
-                                    <label for="exampleFormControlTextarea1">Comments</label>
-                                    <textarea name="comment" class="form-control" id="exampleFormControlTextarea1"
+                                    <label for="comment">Comments</label>
+                                    <textarea name="comment" class="form-control" id="comment"
                                         rows="3"></textarea>
                                 </div>
 
