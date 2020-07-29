@@ -72,6 +72,8 @@ class EmployeeController extends Controller
         
         if ($data['is_salesman'] == "on") {
             $data['is_salesman'] = 1;
+        } else {
+            $data['is_salesman'] = 0;
         }
 
 
@@ -110,6 +112,7 @@ class EmployeeController extends Controller
     
     public function update(Request $request, $id)
     {
+        // dd($request);
         $files = $request->files;
         $lims_employee_data = Employee::find($request['employee_id']);
         if ($lims_employee_data->user_id) {
@@ -142,6 +145,13 @@ class EmployeeController extends Controller
         ]);
         
         $data = $request->except('image');
+
+        if ($data['is_salesman'] == "on") {
+            $data['is_salesman'] = 1;
+        } else {
+            $data['is_salesman'] = 0;
+        }
+
         $image = $request->image;
         if ($image) {
             $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
@@ -155,7 +165,7 @@ class EmployeeController extends Controller
             $lims_employee_data->update($data);
             
             if (isset($files)) {
-                $this->storeFiles($files);
+                $this->storeFiles($files, $data['employee_id']);
             }
         });
         return redirect('employees')->with('message', 'Employee updated successfully');
@@ -189,12 +199,46 @@ class EmployeeController extends Controller
         return redirect('employees')->with('not_permitted', 'Employee deleted successfully');
     }
 
-    public function storeFiles($files)
+    public function storeFiles($files, $employee_id)
     {
         foreach ($files as $file) {
             $fileName = $file->getClientOriginalName();
             $file->move('public/files/employee', $fileName);
             EmployeeFile::create(['employee_id'=>$employee_id,'file_link'=>$fileName]);
         }
+    }
+
+    public function files($id)
+    {
+        $employee = Employee::find($id);
+        $files = $employee->files;
+        $employee_id = $employee->id;
+        return view('employee.files', compact('files', 'employee_id'));
+    }
+
+    public function deleteFile($file_id)
+    {
+        $message = "files was deleted successfully";
+        try {
+            EmployeeFile::find($file_id)->delete();
+        } catch (\Throwable $th) {
+            $message= "files was not deleted";
+            return redirect('employees')->with('not_permitted', $message);
+        }
+        return redirect('employees')->with('message', $message);
+    }
+
+    public function addFiles($id, Request $request)
+    {
+        $files = $request->files;
+        $message = "files was uploaded successfully";
+        try {
+            $this->storeFiles($files, $id);
+        } catch (\Throwable $th) {
+            $message = 'files was not uploaded';
+            return redirect('employees')->with('not_permitted', $message);
+        }
+
+        return redirect('employees')->with('message', $message);
     }
 }

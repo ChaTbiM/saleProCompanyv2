@@ -17,6 +17,8 @@ return [
     "import" => "استيراد",
     "edit" => "تصحيح",
     "delete" => "حذف",
+    'download' => 'تحميل',
+
     "name" => "اسم",
     "submit" => "خضع",
     "update" => "تحديث",

@@ -17,6 +17,7 @@ return [
     'import' => 'Import',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'download' => 'Download',
     'name' => 'Name',
     'salesman'=>'salesman',
     'submit' => 'Submit',

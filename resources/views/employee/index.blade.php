@@ -82,6 +82,12 @@
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                                 @if(in_array("employees-edit", $all_permission))
                                 <li>
+                                    <button type="button"  class="edit-btn btn btn-link">
+                                    <i class="dripicons-document"></i> <a href=<?="employees/$employee->id/files"?> id="files">{{trans('file.files')}}</a> </button>
+                                </li>
+                                @endif
+                                @if(in_array("employees-edit", $all_permission))
+                                <li>
                                     <button type="button" 
                                         data-id="{{$employee->id}}"
                                         data-comment="{{ $employee->comment }}"
@@ -104,6 +110,7 @@
                                 </li>
                                 {{ Form::close() }}
                                 @endif
+                                
                             </ul>
                         </div>
                     </td>

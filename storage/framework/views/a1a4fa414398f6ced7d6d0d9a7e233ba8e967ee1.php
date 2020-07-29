@@ -84,6 +84,12 @@
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                                 <?php if(in_array("employees-edit", $all_permission)): ?>
                                 <li>
+                                    <button type="button"  class="edit-btn btn btn-link">
+                                    <i class="dripicons-document"></i> <a href=<?="employees/$employee->id/files"?> id="files"><?php echo e(trans('file.files')); ?></a> </button>
+                                </li>
+                                <?php endif; ?>
+                                <?php if(in_array("employees-edit", $all_permission)): ?>
+                                <li>
                                     <button type="button" 
                                         data-id="<?php echo e($employee->id); ?>"
                                         data-comment="<?php echo e($employee->comment); ?>"
@@ -108,6 +114,7 @@
                                 <?php echo e(Form::close()); ?>
 
                                 <?php endif; ?>
+                                
                             </ul>
                         </div>
                     </td>
