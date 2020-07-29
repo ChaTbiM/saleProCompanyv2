@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+// use Spatie\Permission\Models\Role;
+use App\Role;
 use App\Warehouse;
 use App\Biller;
 use App\Employee;
@@ -18,11 +19,11 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('employees-index')) {
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findByName();
             foreach ($permissions as $permission) {
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             }
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';

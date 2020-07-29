@@ -8,6 +8,12 @@ class Company extends Model
 {
     //
     protected $connection = "mysql_base";
+    protected $table = "companies";
+
+    
+    protected $fillable = [
+        'name',
+    ];
 
     public function users()
     {
