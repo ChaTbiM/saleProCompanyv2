@@ -39,7 +39,7 @@ class QuotationController extends Controller
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
             
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $lims_quotation_all = Quotation::with('biller', 'customer', 'supplier', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_quotation_all = Quotation::with('biller', 'customer', 'supplier', 'user')->orderBy('id', 'desc')->get();

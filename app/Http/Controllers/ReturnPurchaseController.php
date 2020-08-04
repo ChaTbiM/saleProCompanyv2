@@ -33,7 +33,7 @@ class ReturnPurchaseController extends Controller
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $lims_return_all = ReturnPurchase::with('supplier', 'warehouse', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_return_all = ReturnPurchase::with('supplier', 'warehouse', 'user')->orderBy('id', 'desc')->get();

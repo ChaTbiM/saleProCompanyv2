@@ -36,7 +36,7 @@ class HomeController extends Controller
         $yearly_sale_amount = [];
 
         $general_setting = DB::table('general_settings')->latest()->first();
-        if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own') {
+        if(Auth::user()->role_id()> 2 && $general_setting->staff_access == 'own') {
             $revenue = Sale::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
             $return = Returns::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
             $purchase_return = ReturnPurchase::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
@@ -78,7 +78,7 @@ class HomeController extends Controller
             $start_date = date("Y-m", $start).'-'.'01';
             $end_date = date("Y-m", $start).'-'.'31';
 
-            if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own') {
+            if(Auth::user()->role_id()> 2 && $general_setting->staff_access == 'own') {
                 $recieved_amount = DB::table('payments')->whereNotNull('sale_id')->whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('amount');
                 $sent_amount = DB::table('payments')->whereNotNull('purchase_id')->whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('amount');
                 $return_amount = Returns::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');
@@ -108,7 +108,7 @@ class HomeController extends Controller
         {
             $start_date = date("Y").'-'.date('m', $start).'-'.'01';
             $end_date = date("Y").'-'.date('m', $start).'-'.'31';
-            if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own') {
+            if(Auth::user()->role_id()> 2 && $general_setting->staff_access == 'own') {
                 $sale_amount = Sale::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');
                 $purchase_amount = Purchase::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');
             }
@@ -127,7 +127,7 @@ class HomeController extends Controller
     public function dashboardFilter($start_date, $end_date)
     {
         $general_setting = DB::table('general_settings')->latest()->first();
-        if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own') {
+        if(Auth::user()->role_id()> 2 && $general_setting->staff_access == 'own') {
             $revenue = Sale::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');
             $return = Returns::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');
             $purchase_return = ReturnPurchase::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->where('user_id', Auth::id())->sum('grand_total');

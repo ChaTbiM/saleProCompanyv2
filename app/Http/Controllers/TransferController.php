@@ -29,7 +29,7 @@ class TransferController extends Controller
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
             
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $lims_transfer_all = Transfer::with('fromWarehouse', 'toWarehouse', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_transfer_all = Transfer::with('fromWarehouse', 'toWarehouse', 'user')->orderBy('id', 'desc')->get();

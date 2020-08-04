@@ -32,7 +32,7 @@ class PurchaseController extends Controller
     {
         $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-index')){            
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $lims_purchase_list = Purchase::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_purchase_list = Purchase::orderBy('id', 'desc')->get();
@@ -58,7 +58,7 @@ class PurchaseController extends Controller
             6 => 'paid_amount',
         );
         
-        if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+        if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
             $totalData = Purchase::where('user_id', Auth::id())->count();
         else
             $totalData = Purchase::count();
@@ -73,7 +73,7 @@ class PurchaseController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         if(empty($request->input('search.value'))){
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $purchases = Purchase::with('supplier', 'warehouse')->offset($start)
                             ->where('user_id', Auth::id())
                             ->limit($limit)
@@ -89,7 +89,7 @@ class PurchaseController extends Controller
         else
         {
             $search = $request->input('search.value');
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own') {
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
                 $purchases =  Purchase::select('purchases.*')
                             ->with('supplier', 'warehouse')
                             ->leftJoin('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')

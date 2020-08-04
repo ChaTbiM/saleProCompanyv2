@@ -23,7 +23,7 @@ class ExpenseController extends Controller
                 $all_permission[] = 'dummy text';
             $lims_account_list = Account::where('is_active', true)->get();
             
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
                 $lims_expense_all = Expense::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_expense_all = Expense::orderBy('id', 'desc')->get();

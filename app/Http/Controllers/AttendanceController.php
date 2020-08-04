@@ -20,7 +20,7 @@ class AttendanceController extends Controller
             $lims_employee_list = Employee::where('is_active', true)->get();
             $lims_hrm_setting_data = HrmSetting::latest()->first();
             $general_setting = DB::table('general_settings')->latest()->first();
-            if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own')
+            if(Auth::user()->role_id()> 2 && $general_setting->staff_access == 'own')
                 $lims_attendance_all = Attendance::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_attendance_all = Attendance::orderBy('id', 'desc')->get();
