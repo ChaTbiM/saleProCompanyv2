@@ -14,7 +14,7 @@ class Role extends Model
 
     protected $connection = "mysql_base";
 
-    public static function findByName()
+    public static function findUserPermissions()
     {
         $user_id =  Auth::user()->id;
         $company_name = Auth::user()->company_name();

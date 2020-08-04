@@ -21,7 +21,7 @@ class EmployeeController extends Controller
     {
         $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('employees-index')) {
-            $permissions = Role::findByName();
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission) {
                 $all_permission[] = $permission->permission_name;
             }

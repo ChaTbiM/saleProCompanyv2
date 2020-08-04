@@ -18,7 +18,7 @@ class BillerController extends Controller
     {
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('billers-index')) {
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::($role->name)->permissions;
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
