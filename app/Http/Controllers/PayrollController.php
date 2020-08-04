@@ -8,7 +8,7 @@ use App\Employee;
 use App\Payroll;
 use Auth;
 use DB;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +19,7 @@ class PayrollController extends Controller
     
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('payroll')){
             $lims_account_list = Account::where('is_active', true)->get();
             $lims_employee_list = Employee::where('is_active', true)->get();

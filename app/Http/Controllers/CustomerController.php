@@ -9,7 +9,7 @@ use App\Deposit;
 use App\User;
 use Illuminate\Validation\Rule;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -18,9 +18,9 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('customers-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -34,7 +34,7 @@ class CustomerController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('customers-add')){
             $lims_customer_group_all = CustomerGroup::where('is_active',true)->get();
             return view('customer.create', compact('lims_customer_group_all'));
@@ -76,7 +76,7 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('customers-edit')){
             $lims_customer_data = Customer::find($id);
             $lims_customer_group_all = CustomerGroup::where('is_active',true)->get();
@@ -105,7 +105,7 @@ class CustomerController extends Controller
 
     public function importCustomer(Request $request)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('customers-add')){
             $upload=$request->file('file');
             $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);

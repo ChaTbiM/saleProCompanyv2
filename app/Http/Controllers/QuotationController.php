@@ -21,7 +21,7 @@ use App\Variant;
 use DB;
 use NumberToWords\NumberToWords;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -31,9 +31,9 @@ class QuotationController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('quotes-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -51,7 +51,7 @@ class QuotationController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('quotes-add')){
             $lims_biller_list = Biller::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -369,7 +369,7 @@ class QuotationController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('quotes-edit')){
             $lims_customer_list = Customer::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();

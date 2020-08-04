@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use App\Coupon;
 use Auth;
 use Keygen;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class CouponController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('unit')) {
             $lims_coupon_all = Coupon::where('is_active', true)->orderBy('id', 'desc')->get();
             return view('coupon.index', compact('lims_coupon_all'));

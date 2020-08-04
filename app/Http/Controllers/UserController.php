@@ -13,7 +13,7 @@ use Auth;
 use Hash;
 use Keygen;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -23,9 +23,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('users-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
 
@@ -43,7 +43,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('users-add')){
             $lims_role_list = Roles::where('is_active', true)->get();
             $lims_biller_list = Biller::where('is_active', true)->get();
@@ -99,7 +99,7 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('users-edit')){
             $lims_user_data = User::find($id);
             $lims_role_list = Roles::where('is_active', true)->get();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Expense;
 use App\Account;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
 use DB;
@@ -14,9 +14,9 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('expenses-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))

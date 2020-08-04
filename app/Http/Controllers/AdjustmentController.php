@@ -11,14 +11,14 @@ use App\ProductAdjustment;
 use DB;
 use App\StockCount;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class AdjustmentController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if( $role->hasPermissionTo('adjustment') ) {
             if(Auth::user()->role_id > 2 && $general_setting->staff_access == 'own')
                 $lims_adjustment_all = Adjustment::orderBy('id', 'desc')->where('user_id', Auth::id())->get();

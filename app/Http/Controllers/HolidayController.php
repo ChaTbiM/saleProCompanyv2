@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Holiday;
 use Auth;
 use User;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Mail;
 
@@ -14,7 +14,7 @@ class HolidayController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('holiday')) {
             $approve_permission = true;
             $lims_holiday_list = Holiday::orderBy('id', 'desc')->get();
@@ -41,7 +41,7 @@ class HolidayController extends Controller
             'note'        => $request->input('note')
         ];
         
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('holiday')) {
             $data['is_approved'] = true;
         }

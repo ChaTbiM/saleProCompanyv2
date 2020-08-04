@@ -35,7 +35,7 @@ use App\GeneralSetting;
 use Stripe\Stripe;
 use NumberToWords\NumberToWords;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -48,9 +48,9 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-index')) {
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission) {
                 $all_permission[] = $permission->name;
             }
@@ -278,7 +278,7 @@ class SaleController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-add')) {
             $lims_customer_list = Customer::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -812,9 +812,9 @@ class SaleController extends Controller
     public function posSale()
     {
         // dd('here');
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-add')) {
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             $salesmans = Employee::where('is_salesman', '=', 1)->get();
             foreach ($permissions as $permission) {
                 $all_permission[] = $permission->name;
@@ -1074,7 +1074,7 @@ class SaleController extends Controller
 
     public function saleByCsv()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-add')) {
             $lims_customer_list = Customer::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -1249,7 +1249,7 @@ class SaleController extends Controller
 
     public function createSale($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-edit')) {
             $lims_biller_list = Biller::where('is_active', true)->get();
             $lims_customer_list = Customer::where('is_active', true)->get();
@@ -1280,7 +1280,7 @@ class SaleController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('sales-edit')) {
             $lims_customer_list = Customer::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();

@@ -8,14 +8,14 @@ use App\HrmSetting;
 use App\Attendance;
 use Auth;
 use DB;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class AttendanceController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('attendance')) {
             $lims_employee_list = Employee::where('is_active', true)->get();
             $lims_hrm_setting_data = HrmSetting::latest()->first();

@@ -22,7 +22,7 @@ use Stripe\Stripe;
 use Auth;
 use App\User;
 use App\ProductVariant;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,13 +30,13 @@ class PurchaseController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-index')){            
             if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
                 $lims_purchase_list = Purchase::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
                 $lims_purchase_list = Purchase::orderBy('id', 'desc')->get();
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -231,7 +231,7 @@ class PurchaseController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-add')){
             $lims_supplier_list = Supplier::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -436,7 +436,7 @@ class PurchaseController extends Controller
 
     public function purchaseByCsv()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-add')){
             $lims_supplier_list = Supplier::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -575,7 +575,7 @@ class PurchaseController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-edit')){
             $lims_supplier_list = Supplier::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -1004,7 +1004,7 @@ class PurchaseController extends Controller
 
     public function destroy($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('purchases-delete')){
             $lims_purchase_data = Purchase::find($id);
             $lims_product_purchase_data = ProductPurchase::where('purchase_id', $id)->get();

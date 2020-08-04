@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\CustomerGroup;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
 
@@ -13,7 +13,7 @@ class CustomerGroupController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('customer_group')) {
             $lims_customer_group_all = CustomerGroup::where('is_active', true)->get();
             return view('customer_group.create',compact('lims_customer_group_all'));

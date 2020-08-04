@@ -13,7 +13,7 @@ use App\ProductTransfer;
 use App\ProductVariant;
 use Auth;
 use DB;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,9 +21,9 @@ class TransferController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('transfers-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -41,7 +41,7 @@ class TransferController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('transfers-add')){
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             return view('transfer.create', compact('lims_warehouse_list'));
@@ -263,7 +263,7 @@ class TransferController extends Controller
 
     public function transferByCsv()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('transfers-add')){
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             return view('transfer.import', compact('lims_warehouse_list'));
@@ -407,7 +407,7 @@ class TransferController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('transfers-edit')){
             $lims_warehouse_list = Warehouse::where('is_active',true)->get();
             $lims_transfer_data = Transfer::find($id);

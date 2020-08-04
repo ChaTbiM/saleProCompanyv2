@@ -18,7 +18,7 @@ use App\ProductReturn;
 use App\ProductVariant;
 use App\Variant;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -28,9 +28,9 @@ class ReturnController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('returns-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -48,7 +48,7 @@ class ReturnController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('returns-add')){
             $lims_customer_list = Customer::where('is_active',true)->get();
             $lims_warehouse_list = Warehouse::where('is_active',true)->get();
@@ -387,7 +387,7 @@ class ReturnController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('returns-edit')){
             $lims_customer_list = Customer::where('is_active',true)->get();
             $lims_warehouse_list = Warehouse::where('is_active',true)->get();

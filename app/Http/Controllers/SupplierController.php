@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Supplier;
 use Illuminate\Validation\Rule;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
@@ -15,9 +15,9 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('suppliers-index')){
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
@@ -31,7 +31,7 @@ class SupplierController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('suppliers-add')){
             return view('supplier.create');
         }
@@ -83,7 +83,7 @@ class SupplierController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('suppliers-edit')){
             $lims_supplier_data = Supplier::where('id',$id)->first();
             return view('supplier.edit',compact('lims_supplier_data'));

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Tax;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
 
@@ -13,7 +13,7 @@ class TaxController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('tax')) {
             $lims_tax_all = Tax::where('is_active', true)->get();
             return view('tax.create', compact('lims_tax_all'));

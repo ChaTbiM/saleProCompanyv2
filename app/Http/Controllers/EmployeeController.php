@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use Spatie\Permission\Models\Role;
+// use App\Role;
 use App\Role;
 use App\Warehouse;
 use App\Biller;
@@ -39,7 +39,7 @@ class EmployeeController extends Controller
     public function create()
     {
         // dd(Employee::find(7)->files);
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('employees-add')) {
             $lims_role_list = Role::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();

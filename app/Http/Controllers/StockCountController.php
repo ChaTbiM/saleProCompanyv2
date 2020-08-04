@@ -10,14 +10,14 @@ use App\Product;
 use DB;
 use App\StockCount;
 use Auth;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class StockCountController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if( $role->hasPermissionTo('stock_count') ) {
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_brand_list = Brand::where('is_active', true)->get();

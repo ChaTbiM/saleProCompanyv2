@@ -15,7 +15,7 @@ use App\Product_Warehouse;
 use App\Product_Supplier;
 use Auth;
 use DNS1D;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\Rule;
 use DB;
@@ -26,9 +26,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('products-index')){            
-            $permissions = Role::findByName($role->name)->permissions;
+            $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
             if(empty($all_permission))

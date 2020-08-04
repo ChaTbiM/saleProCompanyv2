@@ -12,7 +12,7 @@ use App\Payroll;
 use App\MoneyTransfer;
 use DB;
 use Illuminate\Validation\Rule;
-// use Spatie\Permission\Models\Role;
+// use App\Role;
 use App\Role;
 
 use Spatie\Permission\Models\Permission;
@@ -22,7 +22,7 @@ class AccountsController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('account-index')) {
             $lims_account_all = Account::where('is_active', true)->get();
             return view('account.index', compact('lims_account_all'));
@@ -104,7 +104,7 @@ class AccountsController extends Controller
 
     public function balanceSheet()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('balance-sheet')) {
             $lims_account_list = Account::where('is_active', true)->get();
             $debit = [];

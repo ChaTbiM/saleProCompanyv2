@@ -7,7 +7,7 @@ use App\Roles;
 use App\User;
 use Auth;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller

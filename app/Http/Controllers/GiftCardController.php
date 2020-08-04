@@ -12,14 +12,14 @@ use Auth;
 use Illuminate\Validation\Rule;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 
 class GiftCardController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('unit')) {
             $lims_customer_list = Customer::where('is_active', true)->get();
             $lims_user_list = User::where('is_active', true)->get();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\MoneyTransfer;
 use App\Account;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
 
@@ -13,7 +13,7 @@ class MoneyTransferController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('money-transfer')){
             $lims_money_transfer_all = MoneyTransfer::get();
             $lims_account_list = Account::where('is_active', true)->get();

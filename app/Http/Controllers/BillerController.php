@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Role;
+use App\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
 
@@ -16,7 +16,7 @@ class BillerController extends Controller
 {
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('billers-index')) {
             $permissions = Role::($role->name)->permissions;
             foreach ($permissions as $permission)
@@ -32,7 +32,7 @@ class BillerController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('billers-add'))
             return view('biller.create');
         else
@@ -89,7 +89,7 @@ class BillerController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
+        $role = Role::find(Auth::user()->role_id());
         if($role->hasPermissionTo('billers-edit')) {
             $lims_biller_data = Biller::where('id',$id)->first();
             return view('biller.edit',compact('lims_biller_data'));
