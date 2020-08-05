@@ -29,7 +29,7 @@ class CreateServicesTable extends Migration
             $table->integer('tax_method')->nullable();
             $table->longText('image')->nullable();
             $table->tinyInteger('featured')->nullable();
-            $table->text('product_details')->nullable();
+            $table->text('service_details')->nullable();
             $table->boolean('is_active')->nullable();
             $table->timestamps();
         });

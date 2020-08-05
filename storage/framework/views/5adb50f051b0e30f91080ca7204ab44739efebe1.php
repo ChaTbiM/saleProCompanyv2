@@ -47,10 +47,10 @@
                                 <div id="unit" class="col-md-12">
                                     <div class="row ">
                                         <div class="col-md-4 form-group">
-                                                <label><?php echo e(trans('file.Product Unit')); ?> *</strong> </label>
+                                                <label><?php echo e(trans('file.Service Unit')); ?> *</strong> </label>
                                                 <div class="input-group">
                                                   <select required class="form-control selectpicker" name="unit_id">
-                                                    <option value="" disabled selected>Select Product Unit...</option>
+                                                    <option value="" disabled selected>Select Service Unit...</option>
                                                     <?php $__currentLoopData = $lims_unit_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <?php if($unit->base_unit==null): ?>
                                                             <option value="<?php echo e($unit->id); ?>"><?php echo e($unit->unit_name); ?></option>
@@ -67,27 +67,12 @@
                                                   </select>
                                               </div>
                                         </div>
-                                        <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label><?php echo e(trans('file.Purchase Unit')); ?></strong> </label>
-                                                    <div class="input-group">
-                                                      <select class="form-control selectpicker" name="purchase_unit_id"> 
-                                                      </select>
-                                                  </div>
-                                                </div>
-                                        </div>                                
+                                                                     
                                     </div>                                
-                                </div>
-                                <div id="cost" class="col-md-4">
-                                     <div class="form-group">
-                                        <label><?php echo e(trans('file.Product Cost')); ?> *</strong> </label>
-                                        <input type="number" name="cost" required class="form-control" step="any">
-                                        <span class="validation-msg"></span>
-                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label><?php echo e(trans('file.Product Price')); ?> *</strong> </label>
+                                        <label><?php echo e(trans('file.Service Price')); ?> *</strong> </label>
                                         <input type="number" name="price" required class="form-control" step="any">
                                         <span class="validation-msg"></span>
                                     </div>
@@ -95,15 +80,9 @@
                                         <input type="hidden" name="qty" value="0.00">
                                     </div>
                                 </div>
-                                <div id="alert-qty" class="col-md-4">
-                                    <div class="form-group">
-                                        <label><?php echo e(trans('file.Alert Quantity')); ?></strong> </label>
-                                        <input type="number" name="alert_quantity" class="form-control" step="any">
-                                    </div>
-                                </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label><?php echo e(trans('file.Product Tax')); ?></strong> </label>
+                                        <label><?php echo e(trans('file.Service Tax')); ?></strong> </label>
                                         <select name="tax_id" class="form-control selectpicker">
                                             <option value="">No Tax</option>
                                             <?php $__currentLoopData = $lims_tax_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -125,43 +104,20 @@
                                     <div class="form-group mt-3">
                                         <input type="checkbox" name="featured" value="1">&nbsp;
                                         <label><?php echo e(trans('file.Featured')); ?></label>
-                                        <p class="italic"><?php echo e(trans('file.Featured product will be displayed in POS')); ?></p>
+                                        <p class="italic"><?php echo e(trans('file.Featured service will be displayed in POS')); ?></p>
                                     </div> 
                                 </div>                             
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label><?php echo e(trans('file.Product Image')); ?></strong> </label> <i class="dripicons-question" data-toggle="tooltip" title="<?php echo e(trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')); ?>"></i>
+                                        <label><?php echo e(trans('file.Service Image')); ?></strong> </label> <i class="dripicons-question" data-toggle="tooltip" title="<?php echo e(trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')); ?>"></i>
                                         <div id="imageUpload" class="dropzone"></div>
                                         <span class="validation-msg" id="image-error"></span>
                                     </div>
                                 </div>                            
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label><?php echo e(trans('file.Product Details')); ?></label>
+                                        <label><?php echo e(trans('file.Service Details')); ?></label>
                                         <textarea name="product_details" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-12" id="variant-option">
-                                    <h5><input name="is_variant" type="checkbox" id="is-variant" value="1">&nbsp; <?php echo e(trans('file.This product has variant')); ?></h5>
-                                </div>
-                                <div class="col-md-12" id="variant-section">
-                                    <div class="col-md-6 form-group mt-2">
-                                        <input type="text" name="variant" class="form-control" placeholder="<?php echo e(trans('file.Enter variant seperated by comma')); ?>">
-                                    </div>
-                                    <div class="table-responsive ml-2">
-                                        <table id="variant-table" class="table table-hover variant-list">
-                                            <thead>
-                                                <tr>
-                                                    <th><i class="dripicons-view-apps"></i></th>
-                                                    <th><?php echo e(trans('file.name')); ?></th>
-                                                    <th><?php echo e(trans('file.Item Code')); ?></th>
-                                                    <th><?php echo e(trans('file.Additional Price')); ?></th>
-                                                    <th><i class="dripicons-trash"></i></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-3">
@@ -293,7 +249,6 @@
             populate_category(unitID);
         }else{    
             $('select[name="sale_unit_id"]').empty();
-            $('select[name="purchase_unit_id"]').empty();
         }                        
     });
     <?php $productArray = []; ?>
@@ -385,10 +340,8 @@
             dataType: "json",
             success:function(data) {
                   $('select[name="sale_unit_id"]').empty();
-                  $('select[name="purchase_unit_id"]').empty();
                   $.each(data, function(key, value) {
                       $('select[name="sale_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
-                      $('select[name="purchase_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
                   });
                   $('.selectpicker').selectpicker('refresh');
             },

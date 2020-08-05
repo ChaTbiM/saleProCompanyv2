@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Service;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Service;
 use App\Role;
-use Auth;
 use App\Category;
 use App\Unit;
 use App\Tax;
 use App\Brand;
+use Auth;
 use Keygen;
 
 class ServiceController extends Controller
@@ -221,8 +222,56 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'code' => [
+                'max:255',
+                    Rule::unique('products')->where(function ($query) {
+                        return $query->where('is_active', 1);
+                    }),
+            ],
+            'name' => [
+                'max:255',
+                    Rule::unique('products')->where(function ($query) {
+                        return $query->where('is_active', 1);
+                    }),
+            ]
+        ]);
+        $data = $request->except('image', 'file');
+
+        $data['service_details'] = str_replace('"', '@', $data['service_details']);
+
+        if ($data['starting_date']) {
+            $data['starting_date'] = date('Y-m-d', strtotime($data['starting_date']));
+        }
+        if ($data['last_date']) {
+            $data['last_date'] = date('Y-m-d', strtotime($data['last_date']));
+        }
+        $data['is_active'] = true;
+        $images = $request->image;
+        $image_names = [];
+        if ($images) {
+            foreach ($images as $key => $image) {
+                $imageName = $image->getClientOriginalName();
+                $image->move('public/images/service', $imageName);
+                $image_names[] = $imageName;
+            }
+            $data['image'] = implode(",", $image_names);
+        } else {
+            $data['image'] = 'zummXD2dvAtI.png';
+        }
+        $file = $request->file;
+        if ($file) {
+            $ext = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $fileName = strtotime(date('Y-m-d H:i:s'));
+            $fileName = $fileName . '.' . $ext;
+            $file->move('public/service/files', $fileName);
+            $data['file'] = $fileName;
+        }
+        $lims_product_data = Service::create($data);
+        
+        \Session::flash('create_message', 'Product created successfully');
     }
+
 
     /**
      * Display the specified resource.
