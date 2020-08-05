@@ -161,8 +161,11 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::post('service/service-data', 'ServiceController@serviceData')->name("service.data");
     Route::resource('services', 'ServiceController');
 
-
-//
+    //Service Categories
+    Route::post('service_category/import', 'ServiceCategoryController@import')->name('service_category.import');
+    Route::post('service_category/deletebyselection', 'ServiceCategoryController@deleteBySelection');
+    Route::post('service_category/category-data', 'ServiceCategoryController@categoryData')->name("service_category.data");
+    Route::resource('service_category', 'ServiceCategoryController');
 
 
     Route::get('transfers/product_transfer/{id}', 'TransferController@productTransferData');

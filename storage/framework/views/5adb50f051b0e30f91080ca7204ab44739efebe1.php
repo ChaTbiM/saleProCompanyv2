@@ -117,7 +117,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label><?php echo e(trans('file.Service Details')); ?></label>
-                                        <textarea name="product_details" class="form-control" rows="3"></textarea>
+                                        <textarea name="service_details" class="form-control" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mt-3">

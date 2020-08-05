@@ -162,7 +162,7 @@
               @if(!empty($index_permission_active) && !empty(checkModule(12)))
               <li><a href="#service" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-list"></i><span>{{__('file.service')}}</span><span></a>
                 <ul id="service" class="collapse list-unstyled ">
-                  <li id="service-category-menu"><a href="{{route('category.index')}}">{{__('file.services_category')}}</a></li>
+                  <li id="service-category-menu"><a href="{{route('service_category.index')}}">{{__('file.services_category')}}</a></li>
                   @if(!empty($index_permission_active))
                   <li id="service-list-menu"><a href="{{route('services.index')}}">{{__('file.service_list')}}</a></li>
                   @endif

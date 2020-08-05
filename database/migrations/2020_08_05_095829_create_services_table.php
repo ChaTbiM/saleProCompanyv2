@@ -19,7 +19,13 @@ class CreateServicesTable extends Migration
             $table->string('name');
             $table->string('code');
             
-            $table->integer('service_category_id');
+            $table->integer("service_category_id")->unsigned()->nullable();
+            
+            $table->foreign('service_category_id')
+            ->references('id')
+            ->on('services')
+            ->onDelete('cascade');
+            
             $table->string('price');
             $table->tinyInteger('promotion')->nullable();
             $table->string('promotion_price')->nullable();

@@ -10,4 +10,9 @@ class ServiceCategory extends Model
     protected $fillable =[
         "name","parent_id","is_active"
     ];
+
+    public function service()
+    {
+        return $this->hasMany('App\Service', 'service_category_id', 'id');
+    }
 }
