@@ -153,6 +153,25 @@
                 </ul>
               </li>
               @endif
+              <?php  
+              // Services
+                  $index_permission_active = getPermissionActive("services-index");
+                  $add_permission_active = getPermissionActive("services-add");
+                  
+              ?>
+              @if(!empty($index_permission_active) && !empty(checkModule(12)))
+              <li><a href="#service" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-list"></i><span>{{__('file.service')}}</span><span></a>
+                <ul id="service" class="collapse list-unstyled ">
+                  <li id="service-category-menu"><a href="{{route('category.index')}}">{{__('file.services_category')}}</a></li>
+                  @if(!empty($index_permission_active))
+                  <li id="service-list-menu"><a href="{{route('services.index')}}">{{__('file.service_list')}}</a></li>
+                  @endif
+                  @if(!empty($add_permission_active))
+                  <li id="product-create-menu"><a href="{{route('services.create')}}">{{__('file.add_service')}}</a></li>
+                  @endif
+                </ul>
+              </li>
+              @endif
               <?php 
                   $index_permission_active = getPermissionActive("purchases-index");
                   // $module_active =
@@ -172,25 +191,7 @@
               </li>
               
               @endif
-              <?php 
-              // Services
-                  $index_permission_active = getPermissionActive("services-index");
-                  // $module_active =
-              ?>
-              @if(!empty($index_permission_active) && !empty(checkModule(2)) )
-              <li><a href="#purchase" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-card"></i><span>{{trans('file.Purchase')}}</span></a>
-                <ul id="purchase" class="collapse list-unstyled ">
-                  <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
-                  <?php 
-                    $add_permission_active = getPermissionActive("services-add");
-                  ?>
-                  @if(!empty($add_permission_active))
-                  <li id="purchase-create-menu"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
-                  <li id="purchase-import-menu"><a href="{{url('purchases/purchase_by_csv')}}">{{trans('file.Import Purchase By CSV')}}</a></li>
-                  @endif
-                </ul>
-              </li>
-              @endif
+              
               <?php 
                 // $index_permission = DB::table('permissions')->where('name', 'sales-index')->first();
                 $index_permission_active = getPermissionActive("sales-index");

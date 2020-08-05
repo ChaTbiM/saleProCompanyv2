@@ -27,50 +27,51 @@ class ProductController extends Controller
     public function index()
     {
         $role = Role::find(Auth::user()->role_id());
-        if($role->hasPermissionTo('products-index')){            
+        if ($role->hasPermissionTo('products-index')) {
             $permissions = Role::findUserPermissions(); // findByName
-            foreach ($permissions as $permission)
+            foreach ($permissions as $permission) {
                 $all_permission[] = $permission->name;
-            if(empty($all_permission))
+            }
+            if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
+            }
             return view('product.index', compact('all_permission'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function productData(Request $request)
     {
-        $columns = array( 
-            2 => 'name', 
+        $columns = array(
+            2 => 'name',
             3 => 'code',
             4 => 'brand_id',
             5 => 'category_id',
             6 => 'qty',
             7 => 'unit_id',
-            8 => 'price' 
+            8 => 'price'
         );
         
         $totalData = Product::where('is_active', true)->count();
-        $totalFiltered = $totalData; 
+        $totalFiltered = $totalData;
 
-        if($request->input('length') != -1)
+        if ($request->input('length') != -1) {
             $limit = $request->input('length');
-        else
+        } else {
             $limit = $totalData;
+        }
         $start = $request->input('start');
         $order = 'products.'.$columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
-        if(empty($request->input('search.value'))){
+        if (empty($request->input('search.value'))) {
             $products = Product::with('category', 'brand', 'unit')->offset($start)
                         ->where('is_active', true)
                         ->limit($limit)
-                        ->orderBy($order,$dir)
+                        ->orderBy($order, $dir)
                         ->get();
-        }
-        else
-        {
-            $search = $request->input('search.value'); 
+        } else {
+            $search = $request->input('search.value');
             $products =  Product::select('products.*')
                         ->with('category', 'brand', 'unit')
                         ->join('categories', 'products.category_id', '=', 'categories.id')
@@ -95,7 +96,7 @@ class ProductController extends Controller
                         ])
                         ->offset($start)
                         ->limit($limit)
-                        ->orderBy($order,$dir)->get();
+                        ->orderBy($order, $dir)->get();
 
             $totalFiltered = Product::
                             join('categories', 'products.category_id', '=', 'categories.id')
@@ -121,10 +122,8 @@ class ProductController extends Controller
                             ->count();
         }
         $data = array();
-        if(!empty($products))
-        {
-            foreach ($products as $key=>$product)
-            {
+        if (!empty($products)) {
+            foreach ($products as $key=>$product) {
                 $nestedData['id'] = $product->id;
                 $nestedData['key'] = $key;
                 $product_image = explode(",", $product->image);
@@ -132,16 +131,18 @@ class ProductController extends Controller
                 $nestedData['image'] = '<img src="'.url('public/images/product', $product_image).'" height="80" width="80">';
                 $nestedData['name'] = $product->name;
                 $nestedData['code'] = $product->code;
-                if($product->brand_id)
+                if ($product->brand_id) {
                     $nestedData['brand'] = $product->brand->title;
-                else
+                } else {
                     $nestedData['brand'] = "N/A";
+                }
                 $nestedData['category'] = $product->category->name;
                 $nestedData['qty'] = $product->qty;
-                if($product->unit_id)
+                if ($product->unit_id) {
                     $nestedData['unit'] = $product->unit->unit_name;
-                else
+                } else {
                     $nestedData['unit'] = 'N/A';
+                }
                 
                 $nestedData['price'] = $product->price;
                 $nestedData['options'] = '<div class="btn-group">
@@ -153,27 +154,31 @@ class ProductController extends Controller
                             <li>
                                 <button="type" class="btn btn-link view"><i class="fa fa-eye"></i> '.trans('file.View').'</button>
                             </li>';
-                if(in_array("products-edit", $request['all_permission']))
+                if (in_array("products-edit", $request['all_permission'])) {
                     $nestedData['options'] .= '<li>
                             <a href="'.route('products.edit', ['id' => $product->id]).'" class="btn btn-link"><i class="fa fa-edit"></i> '.trans('file.edit').'</a>
                         </li>';
-                if(in_array("products-delete", $request['all_permission']))
-                    $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"] ).'
+                }
+                if (in_array("products-delete", $request['all_permission'])) {
+                    $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"]).'
                             <li>
                               <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="fa fa-trash"></i> '.trans("file.delete").'</button> 
                             </li>'.\Form::close().'
                         </ul>
                     </div>';
+                }
                 // data for product details by one click
-                if($product->tax_id)
+                if ($product->tax_id) {
                     $tax = Tax::find($product->tax_id)->name;
-                else
+                } else {
                     $tax = "N/A";
+                }
 
-                if($product->tax_method == 1)
+                if ($product->tax_method == 1) {
                     $tax_method = trans('file.Exclusive');
-                else
+                } else {
                     $tax_method = trans('file.Inclusive');
+                }
 
                 $nestedData['product'] = array( '[ "'.$product->type.'"', ' "'.$product->name.'"', ' "'.$product->code.'"', ' "'.$nestedData['brand'].'"', ' "'.$nestedData['category'].'"', ' "'.$nestedData['unit'].'"', ' "'.$product->cost.'"', ' "'.$product->price.'"', ' "'.$tax.'"', ' "'.$tax_method.'"', ' "'.$product->alert_quantity.'"', ' "'.preg_replace('/\s+/S', " ", $product->product_details).'"', ' "'.$product->id.'"', ' "'.$product->product_list.'"', ' "'.$product->qty_list.'"', ' "'.$product->price_list.'"', ' "'.$product->qty.'"', ' "'.$product->image.'"]'
                 );
@@ -182,10 +187,10 @@ class ProductController extends Controller
             }
         }
         $json_data = array(
-            "draw"            => intval($request->input('draw')),  
-            "recordsTotal"    => intval($totalData),  
-            "recordsFiltered" => intval($totalFiltered), 
-            "data"            => $data   
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
         );
             
         echo json_encode($json_data);
@@ -193,17 +198,18 @@ class ProductController extends Controller
     
     public function create()
     {
-        $role = Role::firstOrCreate(['id' => Auth::user()->role_id]);
-        if ($role->hasPermissionTo('products-add')){
+        // $role = Role::firstOrCreate(['id' => Auth::user()->role_id]);
+        $role = Role::find(Auth::user()->role_id());
+        if ($role->hasPermissionTo('products-add')) {
             $lims_product_list = Product::where([ ['is_active', true], ['type', 'standard'] ])->get();
             $lims_brand_list = Brand::where('is_active', true)->get();
             $lims_category_list = Category::where('is_active', true)->get();
             $lims_unit_list = Unit::where('is_active', true)->get();
             $lims_tax_list = Tax::where('is_active', true)->get();
-            return view('product.create',compact('lims_product_list', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list'));
-        }
-        else
+            return view('product.create', compact('lims_product_list', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list'));
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function store(Request $request)
@@ -212,44 +218,45 @@ class ProductController extends Controller
             'code' => [
                 'max:255',
                     Rule::unique('products')->where(function ($query) {
-                    return $query->where('is_active', 1);
-                }),
+                        return $query->where('is_active', 1);
+                    }),
             ],
             'name' => [
                 'max:255',
                     Rule::unique('products')->where(function ($query) {
-                    return $query->where('is_active', 1);
-                }),
+                        return $query->where('is_active', 1);
+                    }),
             ]
         ]);
         $data = $request->except('image', 'file');
-        if($data['type'] == 'combo'){
+        if ($data['type'] == 'combo') {
             $data['product_list'] = implode(",", $data['product_id']);
             $data['qty_list'] = implode(",", $data['product_qty']);
             $data['price_list'] = implode(",", $data['unit_price']);
             $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
-        }
-        elseif($data['type'] == 'digital')
+        } elseif ($data['type'] == 'digital') {
             $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
+        }
 
         $data['product_details'] = str_replace('"', '@', $data['product_details']);
 
-        if($data['starting_date'])
+        if ($data['starting_date']) {
             $data['starting_date'] = date('Y-m-d', strtotime($data['starting_date']));
-        if($data['last_date'])
+        }
+        if ($data['last_date']) {
             $data['last_date'] = date('Y-m-d', strtotime($data['last_date']));
+        }
         $data['is_active'] = true;
         $images = $request->image;
         $image_names = [];
-        if($images) {            
+        if ($images) {
             foreach ($images as $key => $image) {
                 $imageName = $image->getClientOriginalName();
                 $image->move('public/images/product', $imageName);
                 $image_names[] = $imageName;
             }
             $data['image'] = implode(",", $image_names);
-        }
-        else {
+        } else {
             $data['image'] = 'zummXD2dvAtI.png';
         }
         $file = $request->file;
@@ -262,12 +269,12 @@ class ProductController extends Controller
         }
         $lims_product_data = Product::create($data);
         //dealing with product variant
-        if(isset($data['is_variant'])) {
+        if (isset($data['is_variant'])) {
             foreach ($data['variant_name'] as $key => $variant_name) {
                 $lims_variant_data = Variant::firstOrCreate(['name' => $data['variant_name'][$key]]);
                 $lims_variant_data->name = $data['variant_name'][$key];
                 $lims_variant_data->save();
-                $lims_product_variant_data = new ProductVariant;             
+                $lims_product_variant_data = new ProductVariant;
                 $lims_product_variant_data->product_id = $lims_product_data->id;
                 $lims_product_variant_data->variant_id = $lims_variant_data->id;
                 $lims_product_variant_data->position = $key + 1;
@@ -293,18 +300,17 @@ class ProductController extends Controller
             $lims_product_variant_data = $lims_product_data->variant()->orderBy('position')->get();
             //return dd($lims_product_variant_data);
 
-            return view('product.edit',compact('lims_product_list', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list', 'lims_product_data', 'lims_product_variant_data'));
-        }
-        else
+            return view('product.edit', compact('lims_product_list', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list', 'lims_product_data', 'lims_product_variant_data'));
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function updateProduct(Request $request)
     {
-        if(!config("user.user_verified")) {
+        if (!config("user.user_verified")) {
             \Session::flash('not_permitted', 'This feature is disable for demo!');
-        }
-        else {
+        } else {
             $this->validate($request, [
                 'name' => [
                     'max:255',
@@ -324,39 +330,40 @@ class ProductController extends Controller
             $lims_product_data = Product::findOrFail($request->input('id'));
             $data = $request->except('image', 'file');
 
-            if($data['type'] == 'combo') {
+            if ($data['type'] == 'combo') {
                 $data['product_list'] = implode(",", $data['product_id']);
                 $data['qty_list'] = implode(",", $data['product_qty']);
                 $data['price_list'] = implode(",", $data['unit_price']);
                 $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
-            }
-            elseif($data['type'] == 'digital')
+            } elseif ($data['type'] == 'digital') {
                 $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
-            if(!isset($data['featured']))
+            }
+            if (!isset($data['featured'])) {
                 $data['featured'] = 0;
+            }
 
             $data['product_details'] = str_replace('"', '@', $data['product_details']);
             $data['product_details'] = $data['product_details'];
-            if($data['starting_date'])
+            if ($data['starting_date']) {
                 $data['starting_date'] = date('Y-m-d', strtotime($data['starting_date']));
-            if($data['last_date'])
+            }
+            if ($data['last_date']) {
                 $data['last_date'] = date('Y-m-d', strtotime($data['last_date']));
+            }
             $images = $request->image;
             $image_names = [];
-            if($images) {            
+            if ($images) {
                 foreach ($images as $key => $image) {
                     $imageName = $image->getClientOriginalName();
                     $image->move('public/images/product', $imageName);
                     $image_names[] = $imageName;
                 }
-                if($lims_product_data->image != 'zummXD2dvAtI.png') {
+                if ($lims_product_data->image != 'zummXD2dvAtI.png') {
                     $data['image'] = $lims_product_data->image.','.implode(",", $image_names);
-                }
-                else{
+                } else {
                     $data['image'] = implode(",", $image_names);
                 }
-            }
-            else {
+            } else {
                 $data['image'] = $lims_product_data->image;
             }
 
@@ -376,19 +383,18 @@ class ProductController extends Controller
                 }
             }
             //dealing with product variant
-            if(isset($data['is_variant'])) {
+            if (isset($data['is_variant'])) {
                 foreach ($data['variant_name'] as $key => $variant_name) {
-                    if($data['product_variant_id'][$key] == 0) {
+                    if ($data['product_variant_id'][$key] == 0) {
                         $lims_variant_data = Variant::firstOrCreate(['name' => $data['variant_name'][$key]]);
-                        $lims_product_variant_data = new ProductVariant;                
+                        $lims_product_variant_data = new ProductVariant;
                         $lims_product_variant_data->product_id = $lims_product_data->id;
                         $lims_product_variant_data->variant_id = $lims_variant_data->id;
                         $lims_product_variant_data->position = $key + 1;
                         $lims_product_variant_data->item_code = $data['item_code'][$key];
                         $lims_product_variant_data->additional_price = $data['additional_price'][$key];
                         $lims_product_variant_data->save();
-                    }
-                    else {
+                    } else {
                         Variant::find($data['variant_id'][$key])->update(['name' => $variant_name]);
                         ProductVariant::find($data['product_variant_id'][$key])->update([
                             'position' => $key+1,
@@ -423,7 +429,7 @@ class ProductController extends Controller
 
     public function saleUnit($id)
     {
-        $unit = Unit::where("base_unit", $id)->orWhere('id', $id)->pluck('unit_name','id');
+        $unit = Unit::where("base_unit", $id)->orWhere('id', $id)->pluck('unit_name', 'id');
         return json_encode($unit);
     }
 
@@ -443,7 +449,7 @@ class ProductController extends Controller
         $product_warehouse = [];
         $product_variant_warehouse = [];
         $lims_product_data = Product::select('id', 'is_variant')->find($id);
-        if($lims_product_data->is_variant) {
+        if ($lims_product_data->is_variant) {
             $lims_product_variant_warehouse_data = Product_Warehouse::where('product_id', $lims_product_data->id)->orderBy('warehouse_id')->get();
             $lims_product_warehouse_data = Product_Warehouse::select('warehouse_id', DB::raw('sum(qty) as qty'))->where('product_id', $id)->groupBy('warehouse_id')->get();
             foreach ($lims_product_variant_warehouse_data as $key => $product_variant_warehouse_data) {
@@ -452,10 +458,8 @@ class ProductController extends Controller
                 $warehouse_name[] = $lims_warehouse_data->name;
                 $variant_name[] = $lims_variant_data->name;
                 $variant_qty[] = $product_variant_warehouse_data->qty;
-                
             }
-        }
-        else{
+        } else {
             $lims_product_warehouse_data = Product_Warehouse::where('product_id', $id)->get();
         }
         foreach ($lims_product_warehouse_data as $key => $product_warehouse_data) {
@@ -496,12 +500,13 @@ class ProductController extends Controller
     }*/
 
     public function importProduct(Request $request)
-    {   
+    {
         //get file
         $upload=$request->file('file');
         $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
-        if($ext != 'csv')
+        if ($ext != 'csv') {
             return redirect()->back()->with('message', 'Please upload a CSV file');
+        }
 
         $filePath=$upload->getRealPath();
         //open and read
@@ -515,47 +520,47 @@ class ProductController extends Controller
             array_push($escapedHeader, $escapedItem);
         }
         //looping through other columns
-        while($columns=fgetcsv($file))
-        {
+        while ($columns=fgetcsv($file)) {
             foreach ($columns as $key => $value) {
-                $value=preg_replace('/\D/','',$value);
+                $value=preg_replace('/\D/', '', $value);
             }
-           $data= array_combine($escapedHeader, $columns);
+            $data= array_combine($escapedHeader, $columns);
            
-           if($data['brand'] != 'N/A' && $data['brand'] != ''){
+            if ($data['brand'] != 'N/A' && $data['brand'] != '') {
                 $lims_brand_data = Brand::firstOrCreate(['title' => $data['brand'], 'is_active' => true]);
                 $brand_id = $lims_brand_data->id;
-           }
-            else
+            } else {
                 $brand_id = null;
+            }
 
-           $lims_category_data = Category::firstOrCreate(['name' => $data['category'], 'is_active' => true]);
+            $lims_category_data = Category::firstOrCreate(['name' => $data['category'], 'is_active' => true]);
 
-           $lims_unit_data = Unit::where('unit_code', $data['unitcode'])->first();
+            $lims_unit_data = Unit::where('unit_code', $data['unitcode'])->first();
 
-           $product = Product::firstOrNew([ 'name'=>$data['name'], 'is_active'=>true ]);
-            if($data['image'])
+            $product = Product::firstOrNew([ 'name'=>$data['name'], 'is_active'=>true ]);
+            if ($data['image']) {
                 $product->image = $data['image'];
-            else
+            } else {
                 $product->image = 'zummXD2dvAtI.png';
-           $product->name = $data['name'];
-           $product->code = $data['code'];
-           $product->type = strtolower($data['type']);
-           $product->barcode_symbology = 'C128';
-           $product->brand_id = $brand_id;
-           $product->category_id = $lims_category_data->id;
-           $product->unit_id = $lims_unit_data->id;
-           $product->purchase_unit_id = $lims_unit_data->id;
-           $product->sale_unit_id = $lims_unit_data->id;
-           $product->cost = $data['cost'];
-           $product->price = $data['price'];
-           $product->tax_method = 1;
-           $product->qty = 0;
-           $product->product_details = $data['productdetails'];
-           $product->is_active = true;
-           $product->save();
-         }
-         return redirect('products')->with('import_message', 'Product imported successfully');
+            }
+            $product->name = $data['name'];
+            $product->code = $data['code'];
+            $product->type = strtolower($data['type']);
+            $product->barcode_symbology = 'C128';
+            $product->brand_id = $brand_id;
+            $product->category_id = $lims_category_data->id;
+            $product->unit_id = $lims_unit_data->id;
+            $product->purchase_unit_id = $lims_unit_data->id;
+            $product->sale_unit_id = $lims_unit_data->id;
+            $product->cost = $data['cost'];
+            $product->price = $data['price'];
+            $product->tax_method = 1;
+            $product->qty = 0;
+            $product->product_details = $data['productdetails'];
+            $product->is_active = true;
+            $product->save();
+        }
+        return redirect('products')->with('import_message', 'Product imported successfully');
     }
 
     public function deleteBySelection(Request $request)
@@ -573,7 +578,7 @@ class ProductController extends Controller
     {
         $lims_product_data = Product::findOrFail($id);
         $lims_product_data->is_active = false;
-        if($lims_product_data->image != 'zummXD2dvAtI.png') {
+        if ($lims_product_data->image != 'zummXD2dvAtI.png') {
             $images = explode(",", $lims_product_data->image);
             foreach ($images as $key => $image) {
                 unlink('public/images/product/'.$image);

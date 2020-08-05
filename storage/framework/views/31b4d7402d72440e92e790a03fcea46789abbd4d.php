@@ -153,6 +153,25 @@
                 </ul>
               </li>
               <?php endif; ?>
+              <?php  
+              // Services
+                  $index_permission_active = getPermissionActive("services-index");
+                  $add_permission_active = getPermissionActive("services-add");
+                  
+              ?>
+              <?php if(!empty($index_permission_active) && !empty(checkModule(12))): ?>
+              <li><a href="#service" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-list"></i><span><?php echo e(__('file.service')); ?></span><span></a>
+                <ul id="service" class="collapse list-unstyled ">
+                  <li id="service-category-menu"><a href="<?php echo e(route('category.index')); ?>"><?php echo e(__('file.services_category')); ?></a></li>
+                  <?php if(!empty($index_permission_active)): ?>
+                  <li id="service-list-menu"><a href="<?php echo e(route('services.index')); ?>"><?php echo e(__('file.service_list')); ?></a></li>
+                  <?php endif; ?>
+                  <?php if(!empty($add_permission_active)): ?>
+                  <li id="product-create-menu"><a href="<?php echo e(route('services.create')); ?>"><?php echo e(__('file.add_service')); ?></a></li>
+                  <?php endif; ?>
+                </ul>
+              </li>
+              <?php endif; ?>
               <?php 
                   $index_permission_active = getPermissionActive("purchases-index");
                   // $module_active =
@@ -172,25 +191,7 @@
               </li>
               
               <?php endif; ?>
-              <?php 
-              // Services
-                  $index_permission_active = getPermissionActive("services-index");
-                  // $module_active =
-              ?>
-              <?php if(!empty($index_permission_active) && !empty(checkModule(2)) ): ?>
-              <li><a href="#purchase" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-card"></i><span><?php echo e(trans('file.Purchase')); ?></span></a>
-                <ul id="purchase" class="collapse list-unstyled ">
-                  <li id="purchase-list-menu"><a href="<?php echo e(route('purchases.index')); ?>"><?php echo e(trans('file.Purchase List')); ?></a></li>
-                  <?php 
-                    $add_permission_active = getPermissionActive("services-add");
-                  ?>
-                  <?php if(!empty($add_permission_active)): ?>
-                  <li id="purchase-create-menu"><a href="<?php echo e(route('purchases.create')); ?>"><?php echo e(trans('file.Add Purchase')); ?></a></li>
-                  <li id="purchase-import-menu"><a href="<?php echo e(url('purchases/purchase_by_csv')); ?>"><?php echo e(trans('file.Import Purchase By CSV')); ?></a></li>
-                  <?php endif; ?>
-                </ul>
-              </li>
-              <?php endif; ?>
+              
               <?php 
                 // $index_permission = DB::table('permissions')->where('name', 'sales-index')->first();
                 $index_permission_active = getPermissionActive("sales-index");
