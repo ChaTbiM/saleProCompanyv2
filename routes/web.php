@@ -155,6 +155,11 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
     Route::resource('purchases', 'PurchaseController');
 
+    // services
+    Route::resource('services', 'ServiceController');
+//
+
+
     Route::get('transfers/product_transfer/{id}', 'TransferController@productTransferData');
     Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');
     Route::post('importtransfer', 'TransferController@importTransfer')->name('transfer.import');

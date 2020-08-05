@@ -102,8 +102,8 @@
               Global $user_id,$company_name,$company_id;
 
               $user_id = Auth::user()->id; // init one time
-              $company_name ="hygiene"; // init one time
-              $company_id = 1; // init one time
+              $company_name = DB::select("select * from general_settings")[0]->site_title;
+              $company_id = DB::connection("mysql_base")->select("select * from companies where name = ?", [$company_name])[0]->id;
                 
               function getPermissionActive($permission_name){
                   global $user_id,$company_name;
@@ -163,6 +163,26 @@
                   <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
                   <?php 
                     $add_permission_active = getPermissionActive("purchases-add");
+                  ?>
+                  @if(!empty($add_permission_active))
+                  <li id="purchase-create-menu"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
+                  <li id="purchase-import-menu"><a href="{{url('purchases/purchase_by_csv')}}">{{trans('file.Import Purchase By CSV')}}</a></li>
+                  @endif
+                </ul>
+              </li>
+              
+              @endif
+              <?php 
+              // Services
+                  $index_permission_active = getPermissionActive("services-index");
+                  // $module_active =
+              ?>
+              @if(!empty($index_permission_active) && !empty(checkModule(2)) )
+              <li><a href="#purchase" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-card"></i><span>{{trans('file.Purchase')}}</span></a>
+                <ul id="purchase" class="collapse list-unstyled ">
+                  <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
+                  <?php 
+                    $add_permission_active = getPermissionActive("services-add");
                   ?>
                   @if(!empty($add_permission_active))
                   <li id="purchase-create-menu"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
