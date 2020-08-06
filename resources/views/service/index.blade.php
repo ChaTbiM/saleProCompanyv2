@@ -121,9 +121,9 @@
 
 <script>
 
-    $("ul#product").siblings('a').attr('aria-expanded','true');
-    $("ul#product").addClass("show");
-    $("ul#product #product-list-menu").addClass("active");
+    $("ul#service").siblings('a').attr('aria-expanded','true');
+    $("ul#service").addClass("show");
+    $("ul#service #service-list-menu").addClass("active");
 
 	function confirmDelete() {
 	    if (confirm("Are you sure want to delete?")) {

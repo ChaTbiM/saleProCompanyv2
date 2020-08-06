@@ -37,7 +37,7 @@
 <div id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
       <div class="modal-content">
-        <?php echo Form::open(['route' => 'category.store', 'method' => 'post']); ?>
+        <?php echo Form::open(['route' => 'service_category.store', 'method' => 'post']); ?>
 
         <div class="modal-header">
           <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Category')); ?></h5>
@@ -70,7 +70,7 @@
 <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
   <div role="document" class="modal-dialog">
     <div class="modal-content">
-        <?php echo e(Form::open(['route' => ['category.update', 1], 'method' => 'PUT'] )); ?>
+        <?php echo e(Form::open(['route' => ['service_category.update', 1], 'method' => 'PUT'] )); ?>
 
       <div class="modal-header">
         <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Update Category')); ?></h5>
@@ -106,7 +106,7 @@
 <div id="importCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
       <div class="modal-content">
-        <?php echo Form::open(['route' => 'category.import', 'method' => 'post', 'files' => true]); ?>
+        <?php echo Form::open(['route' => 'service_category.import', 'method' => 'post', 'files' => true]); ?>
 
         <div class="modal-header">
           <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Import Category')); ?></h5>
@@ -158,12 +158,12 @@
 };
 
 // 
-    $("ul#product").siblings('a').attr('aria-expanded','true');
-    $("ul#product").addClass("show");
-    $("ul#product #category-menu").addClass("active");
+    $("ul#service").siblings('a').attr('aria-expanded','true');
+    $("ul#service").addClass("show");
+    $("ul#service #category-menu").addClass("active");
 
     function confirmDelete() {
-      if (confirm("If you delete category all products under this category will also be deleted. Are you sure want to delete?")) {
+      if (confirm("If you delete category all services under this category will also be deleted. Are you sure want to delete?")) {
           return true;
       }
       return false;
@@ -286,7 +286,7 @@
                                 category_id[i-1] = $(this).closest('tr').data('id');
                             }
                         });
-                        if(category_id.length && confirm("If you delete category all products under this category will also be deleted. Are you sure want to delete?")) {
+                        if(category_id.length && confirm("If you delete category all services under this category will also be deleted. Are you sure want to delete?")) {
                             $.ajax({
                                 type:'POST',
                                 url:'service_category/deletebyselection',

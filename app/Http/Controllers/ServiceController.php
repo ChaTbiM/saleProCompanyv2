@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Service;
 use App\Role;
-use App\Category;
+use App\ServiceCategory;
 use App\Unit;
 use App\Tax;
 use App\Brand;
@@ -204,7 +204,7 @@ class ServiceController extends Controller
         $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('products-add')) {
             $lims_product_list = Service::where('is_active', true)->get();
-            $lims_category_list = Category::where('is_active', true)->get();
+            $lims_category_list = ServiceCategory::where('is_active', true)->get();
             $lims_unit_list = Unit::where([['is_active',true],['unit_code','hr']])->get();
             $lims_brand_list = Brand::all(); // remove later
             $lims_tax_list = Tax::where('is_active', true)->get();

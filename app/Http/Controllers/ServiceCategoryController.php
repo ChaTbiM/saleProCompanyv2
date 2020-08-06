@@ -122,7 +122,7 @@ class ServiceCategoryController extends Controller
         $lims_category_data['parent_id'] = $request->parent_id;
         $lims_category_data['is_active'] = true;
         ServiceCategory::create($lims_category_data);
-        return redirect('category')->with('message', 'Data inserted successfully');
+        return redirect('service_category')->with('message', 'Data inserted successfully');
     }
 
     public function edit($id)

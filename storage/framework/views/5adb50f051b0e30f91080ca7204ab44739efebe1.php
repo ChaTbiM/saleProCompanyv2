@@ -35,7 +35,7 @@
                                     <div class="form-group">
                                         <label><?php echo e(trans('file.service category')); ?> *</strong> </label>
                                         <div class="input-group">
-                                          <select name="category_id" required class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Category...">
+                                          <select name="service_category_id" required class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Category...">
                                             <?php $__currentLoopData = $lims_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -168,13 +168,13 @@
 
 <script type="text/javascript">
 
-    $("ul#product").siblings('a').attr('aria-expanded','true');
-    $("ul#product").addClass("show");
-    $("ul#product #product-create-menu").addClass("active");
+    $("ul#service").siblings('a').attr('aria-expanded','true');
+    $("ul#service").addClass("show");
+    $("ul#service #service-create-menu").addClass("active");
 
-    $("#digital").hide();
-    $("#combo").hide();
-    $("#variant-section").hide();
+    // $("#digital").hide();
+    // $("#combo").hide();
+    // $("#variant-section").hide();
     $("#promotion_price").hide();
     $("#start_date").hide();
     $("#last_date").hide();
@@ -205,41 +205,6 @@
       ],
       toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
       branding:false
-    });
-
-    $('select[name="type"]').on('change', function() {
-        if($(this).val() == 'combo'){
-            $("input[name='cost']").prop('required',false);
-            $("select[name='unit_id']").prop('required',false);
-            hide();
-            $("#combo").show(300);
-            $("input[name='price']").prop('disabled',true);
-            $("#is-variant").prop("checked", false);
-            $("#variant-section, #variant-option").hide(300);
-        }
-        else if($(this).val() == 'digital'){
-            $("input[name='cost']").prop('required',false);
-            $("select[name='unit_id']").prop('required',false);
-            $("input[name='file']").prop('required',true);
-            hide();
-            $("#digital").show(300);
-            $("#combo").hide(300);
-            $("input[name='price']").prop('disabled',false);
-            $("#is-variant").prop("checked", false);
-            $("#variant-section, #variant-option").hide(300);
-        }
-        else if($(this).val() == 'standard'){
-            $("input[name='cost']").prop('required',true);
-            $("select[name='unit_id']").prop('required',true);
-            $("input[name='file']").prop('required',false);
-            $("#cost").show(300);
-            $("#unit").show(300);
-            $("#alert-qty").show(300);
-            $("#variant-option").show(300);
-            $("#digital").hide(300);
-            $("#combo").hide(300);
-            $("input[name='price']").prop('disabled',false);
-        }
     });
 
     $('select[name="unit_id"]').on('change', function() {
@@ -305,10 +270,10 @@
         }
     });
 
-    //Change quantity or unit price
-    $("#myTable").on('input', '.qty , .unit_price', function() {
-        calculate_price();
-    });
+    // //Change quantity or unit price
+    // $("#myTable").on('input', '.qty , .unit_price', function() {
+    //     calculate_price();
+    // });
 
     //Delete product
     $("table.order-list tbody").on("click", ".ibtnDel", function(event) {
@@ -316,22 +281,22 @@
         calculate_price();
     });
 
-    function hide() {
-        $("#cost").hide(300);
-        $("#unit").hide(300);
-        $("#alert-qty").hide(300);
-    }
+    // function hide() {
+    //     $("#cost").hide(300);
+    //     $("#unit").hide(300);
+    //     $("#alert-qty").hide(300);
+    // }
 
-    function calculate_price() {
-        var price = 0;
-        $(".qty").each(function() {
-            rowindex = $(this).closest('tr').index();
-            quantity =  $(this).val();
-            unit_price = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .unit_price').val();
-            price += quantity * unit_price;
-        });
-        $('input[name="price"]').val(price);
-    }
+    // function calculate_price() {
+    //     var price = 0;
+    //     $(".qty").each(function() {
+    //         rowindex = $(this).closest('tr').index();
+    //         quantity =  $(this).val();
+    //         unit_price = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .unit_price').val();
+    //         price += quantity * unit_price;
+    //     });
+    //     $('input[name="price"]').val(price);
+    // }
 
     function populate_category(unitID){
         $.ajax({
@@ -348,40 +313,11 @@
         });
     }
 
-    $("input[name='is_variant']").on("change", function () {
-        if ($(this).is(':checked')) {
-            $("#variant-section").show(300);
-        }
-        else
-            $("#variant-section").hide(300);
-    });
+    
 
-    $("input[name='variant']").on("input", function () {
-        if($("#code").val() == ''){
-            $("input[name='variant']").val('');
-            alert('Please fillup above information first.');
-        }
-        else if($(this).val().indexOf(',') > -1) {
-            var variant_name = $(this).val().slice(0, -1);
-            var item_code = variant_name+'-'+$("#code").val();
-            var newRow = $("<tr>");
-            var cols = '';
-            cols += '<td style="cursor:grab"><i class="dripicons-view-apps"></i></td>';
-            cols += '<td><input type="text" class="form-control" name="variant_name[]" value="' + variant_name + '" /></td>';
-            cols += '<td><input type="text" class="form-control" name="item_code[]" value="'+item_code+'" /></td>';
-            cols += '<td><input type="number" class="form-control" name="additional_price[]" value="" step="any" /></td>';
-            cols += '<td><button type="button" class="vbtnDel btn btn-sm btn-danger">X</button></td>';
+    
 
-            $("input[name='variant']").val('');
-            newRow.append(cols);
-            $("table.variant-list tbody").append(newRow);
-        }
-    });
-
-    //Delete variant
-    $("table#variant-table tbody").on("click", ".vbtnDel", function(event) {
-        $(this).closest("tr").remove();
-    });
+   
 
     $( "#promotion" ).on( "change", function() {
         if ($(this).is(':checked')) {
@@ -453,51 +389,46 @@
 
     function validate() {
         var product_code = $("input[name='code']").val();
-        var barcode_symbology = $('select[name="barcode_symbology"]').val();
+        // var barcode_symbology = $('select[name="barcode_symbology"]').val();
         var exp = /^\d+$/;
 
-        if(!(product_code.match(exp)) && (barcode_symbology == 'UPCA' || barcode_symbology == 'UPCE' || barcode_symbology == 'EAN8' || barcode_symbology == 'EAN13') ) {
-            alert('Product code must be numeric.');
-            return false;
-        }
-        else if(product_code.match(exp)) {
-            if(barcode_symbology == 'UPCA' && product_code.length > 11){
-                alert('Product code length must be less than 12');
-                return false;
-            }
-            else if(barcode_symbology == 'EAN8' && product_code.length > 7){
-                alert('Product code length must be less than 8');
-                return false;
-            }
-            else if(barcode_symbology == 'EAN13' && product_code.length > 12){
-                alert('Product code length must be less than 13');
-                return false;
-            }
-        }
+        // if(!(product_code.match(exp)) && (barcode_symbology == 'UPCA' || barcode_symbology == 'UPCE' || barcode_symbology == 'EAN8' || barcode_symbology == 'EAN13') ) {
+        //     alert('Product code must be numeric.');
+        //     return false;
+        // }
+        // else if(product_code.match(exp)) {
+        //     if(barcode_symbology == 'UPCA' && product_code.length > 11){
+        //         alert('Product code length must be less than 12');
+        //         return false;
+        //     }
+        //     else if(barcode_symbology == 'EAN8' && product_code.length > 7){
+        //         alert('Product code length must be less than 8');
+        //         return false;
+        //     }
+        //     else if(barcode_symbology == 'EAN13' && product_code.length > 12){
+        //         alert('Product code length must be less than 13');
+        //         return false;
+        //     }
+        // }
 
-        if( $("#type").val() == 'combo' ) {
-            var rownumber = $('table.order-list tbody tr:last').index();
-            if (rownumber < 0) {
-                alert("Please insert product to table!")
-                return false;
-            }
-        }
-        if($("#is-variant").is(":checked")) {
-            rowindex = $("table#variant-table tbody tr:last").index();
-            if (rowindex < 0) {
-                alert('This product has variant. Please insert variant to table');
-                return false;
-            }
-        }
+        // if( $("#type").val() == 'combo' ) {
+        //     var rownumber = $('table.order-list tbody tr:last').index();
+        //     if (rownumber < 0) {
+        //         alert("Please insert product to table!")
+        //         return false;
+        //     }
+        // }
+        // if($("#is-variant").is(":checked")) {
+        //     rowindex = $("table#variant-table tbody tr:last").index();
+        //     if (rowindex < 0) {
+        //         alert('This product has variant. Please insert variant to table');
+        //         return false;
+        //     }
+        // }
         $("input[name='price']").prop('disabled',false);
         return true;
     }
 
-    $("table#variant-table tbody").sortable({
-        items: 'tr',
-        cursor: 'grab',
-        opacity: 0.5,
-    });
 
     $(".dropzone").sortable({
         items:'.dz-preview',
@@ -530,7 +461,7 @@
         paramName: 'image',
         clickable: true,
         method: 'POST',
-        url: '<?php echo e(route('products.store')); ?>',
+        url: '<?php echo e(route('services.store')); ?>',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
@@ -552,19 +483,19 @@
                     else {
                         $.ajax({
                             type:'POST',
-                            url:'<?php echo e(route('products.store')); ?>',
+                            url:'<?php echo e(route('services.store')); ?>',
                             data: $("#product-form").serialize(),
                             success:function(response){
                                 //console.log(response);
-                                location.href = '../products';
+                                location.href = '../services';
                             },
                             error:function(response) {
-                              if(response.responseJSON.errors.name) {
+                              if(response.responseJSON.errors) {
                                   $("#name-error").text(response.responseJSON.errors.name);
                               }
-                              else if(response.responseJSON.errors.code) {
-                                  $("#code-error").text(response.responseJSON.errors.code);
-                              }
+                            //   else if(response.responseJSON.errors.code) {
+                                //   $("#code-error").text(response.responseJSON.errors.code);
+                            //   }
                             },
                         });
                     }
@@ -616,7 +547,7 @@
             }
         },
         successmultiple: function (file, response) {
-            location.href = '../products';
+            location.href = '../services';
             //console.log(file, response);
         },
         completemultiple: function (file, response) {
