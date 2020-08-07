@@ -53,72 +53,60 @@ class ServiceController extends Controller
         $totalData = Service::where('is_active', true)->count();
         $totalFiltered = $totalData;
 
-        // if ($request->input('length') != -1) {
-        //     $limit = $request->input('length');
-        // } else {
-        //     $limit = $totalData;
-        // }
-        // $start = $request->input('start');
-        // $order = 'products.'.$columns[$request->input('order.0.column')];
-        // $dir = $request->input('order.0.dir');
-        // if (empty($request->input('search.value'))) {
-        //     $products = Product::with('category', 'brand', 'unit')->offset($start)
-        //                 ->where('is_active', true)
-        //                 ->limit($limit)
-        //                 ->orderBy($order, $dir)
-        //                 ->get();
-        // } else {
-        //     $search = $request->input('search.value');
-        //     $products =  Product::select('products.*')
-        //                 ->with('category', 'brand', 'unit')
-        //                 ->join('categories', 'products.category_id', '=', 'categories.id')
-        //                 ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-        //                 ->where([
-        //                     ['products.name', 'LIKE', "%{$search}%"],
-        //                     ['products.is_active', true]
-        //                 ])
-        //                 ->orWhere([
-        //                     ['products.code', 'LIKE', "%{$search}%"],
-        //                     ['products.is_active', true]
-        //                 ])
-        //                 ->orWhere([
-        //                     ['categories.name', 'LIKE', "%{$search}%"],
-        //                     ['categories.is_active', true],
-        //                     ['products.is_active', true]
-        //                 ])
-        //                 ->orWhere([
-        //                     ['brands.title', 'LIKE', "%{$search}%"],
-        //                     ['brands.is_active', true],
-        //                     ['products.is_active', true]
-        //                 ])
-        //                 ->offset($start)
-        //                 ->limit($limit)
-        //                 ->orderBy($order, $dir)->get();
+        if ($request->input('length') != -1) {
+            $limit = $request->input('length');
+        } else {
+            $limit = $totalData;
+        }
+        $start = $request->input('start');
+        $order = 'services.'.$columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        if (empty($request->input('search.value'))) {
+            $products = Service::with('category', 'unit')->offset($start)
+                        ->where('is_active', true)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+            $products =  Service::select('services.*')
+                        ->with('category', 'unit')
+                        ->join('categories', 'services.service_category_id', '=', 'categories.id')
+                        ->where([
+                            ['services.name', 'LIKE', "%{$search}%"],
+                            ['services.is_active', true]
+                        ])
+                        ->orWhere([
+                            ['services.code', 'LIKE', "%{$search}%"],
+                            ['services.is_active', true]
+                        ])
+                        ->orWhere([
+                            ['categories.name', 'LIKE', "%{$search}%"],
+                            ['categories.is_active', true],
+                            ['services.is_active', true]
+                        ])
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)->get();
 
-        //     $totalFiltered = Product::
-        //                     join('categories', 'products.category_id', '=', 'categories.id')
-        //                     ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-        //                     ->where([
-        //                         ['products.name','LIKE',"%{$search}%"],
-        //                         ['products.is_active', true]
-        //                     ])
-        //                     ->orWhere([
-        //                         ['products.code', 'LIKE', "%{$search}%"],
-        //                         ['products.is_active', true]
-        //                     ])
-        //                     ->orWhere([
-        //                         ['categories.name', 'LIKE', "%{$search}%"],
-        //                         ['categories.is_active', true],
-        //                         ['products.is_active', true]
-        //                     ])
-        //                     ->orWhere([
-        //                         ['brands.title', 'LIKE', "%{$search}%"],
-        //                         ['brands.is_active', true],
-        //                         ['products.is_active', true]
-        //                     ])
-        //                     ->count();
-        // }
-        $products = Service::all();
+            $totalFiltered = Service::
+                            join('categories', 'services.service_category_id', '=', 'categories.id')
+                            ->where([
+                                ['services.name','LIKE',"%{$search}%"],
+                                ['services.is_active', true]
+                            ])
+                            ->orWhere([
+                                ['services.code', 'LIKE', "%{$search}%"],
+                                ['services.is_active', true]
+                            ])
+                            ->orWhere([
+                                ['categories.name', 'LIKE', "%{$search}%"],
+                                ['categories.is_active', true],
+                                ['services.is_active', true]
+                            ])
+                            ->count();
+        }
+        // $products = Service::all();
         $data = array();
         if (!empty($products)) {
             foreach ($products as $key=>$product) {
@@ -154,7 +142,7 @@ class ServiceController extends Controller
                         </li>';
                 }
                 if (in_array("service-delete", $request['all_permission'])) {
-                    $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"]).'
+                    $nestedData['options'] .= \Form::open(["route" => ["services.destroy", $product->id], "method" => "DELETE"]).'
                             <li>
                               <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="fa fa-trash"></i> '.trans("file.delete").'</button> 
                             </li>'.\Form::close().'
@@ -308,17 +296,6 @@ class ServiceController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Service $service)
-    {
-        //
-    }
-
     //
 
     public function generateCode()
@@ -327,9 +304,127 @@ class ServiceController extends Controller
         return $id;
     }
 
+    
+    public function search(Request $request)
+    {
+        $product_code = explode(" ", $request['data']);
+        $lims_product_data = Service::where('code', $product_code[0])->first();
+        
+        $product[] = $lims_product_data->name;
+        $product[] = $lims_product_data->code;
+        $product[] = $lims_product_data->qty;
+        $product[] = $lims_product_data->price;
+        $product[] = $lims_product_data->id;
+        return $product;
+    }
     public function saleUnit($id)
     {
         $unit = Unit::where("base_unit", $id)->orWhere('id', $id)->pluck('unit_name', 'id');
         return json_encode($unit);
+    }
+    public function getData($id)
+    {
+        $data = Service::select('name', 'code')->where('id', $id)->get();
+        return $data[0];
+    }
+
+
+    public function limsProductSearch(Request $request)
+    {
+        $todayDate = date('Y-m-d');
+        $product_code = explode(" ", $request['data']);
+
+        $lims_product_data = Service::where('code', $product_code[0])->first();
+        $product[] = $lims_product_data->name;
+        $product[] = $lims_product_data->code;
+        $product[] = $lims_product_data->price;
+
+        // $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
+        $product[] = $lims_product_data->promotion_price;
+        return $product;
+    }
+
+    public function importProduct(Request $request)
+    {
+        //get file
+        $upload=$request->file('file');
+        $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
+        if ($ext != 'csv') {
+            return redirect()->back()->with('message', 'Please upload a CSV file');
+        }
+
+        $filePath=$upload->getRealPath();
+        //open and read
+        $file=fopen($filePath, 'r');
+        $header= fgetcsv($file);
+        $escapedHeader=[];
+        //validate
+        foreach ($header as $key => $value) {
+            $lheader=strtolower($value);
+            $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+            array_push($escapedHeader, $escapedItem);
+        }
+        //looping through other columns
+        while ($columns=fgetcsv($file)) {
+            foreach ($columns as $key => $value) {
+                $value=preg_replace('/\D/', '', $value);
+            }
+            $data= array_combine($escapedHeader, $columns);
+           
+            
+
+            $lims_category_data = ServiceCategory::firstOrCreate(['name' => $data['category'], 'is_active' => true]);
+
+            $lims_unit_data = Unit::where('unit_code', $data['unitcode'])->first();
+
+            $product = Service::firstOrNew([ 'name'=>$data['name'], 'is_active'=>true ]);
+            if ($data['image']) {
+                $product->image = $data['image'];
+            } else {
+                $product->image = 'zummXD2dvAtI.png';
+            }
+            $product->name = $data['name'];
+            $product->code = $data['code'];
+            // $product->type = strtolower($data['type']);
+            // $product->barcode_symbology = 'C128';
+            // $product->brand_id = $brand_id;
+            $product->service_category_id = $lims_category_data->id;
+            $product->unit_id = $lims_unit_data->id;
+            // $product->purchase_unit_id = $lims_unit_data->id;
+            // $product->sale_unit_id = $lims_unit_data->id;
+            // $product->cost = $data['cost'];
+            $product->price = $data['price'];
+            $product->tax_method = 1;
+            // $product->qty = 0;
+            $product->service_details = $data['productdetails'];
+            $product->is_active = true;
+            $product->save();
+        }
+        return redirect('services')->with('import_message', 'Product imported successfully');
+    }
+
+    public function deleteBySelection(Request $request)
+    {
+        $product_id = $request['productIdArray'];
+        foreach ($product_id as $id) {
+            $lims_product_data = Service::findOrFail($id);
+            $lims_product_data->is_active = false;
+            $lims_product_data->save();
+        }
+        return 'Product deleted successfully!';
+    }
+
+    public function destroy($id)
+    {
+        $lims_product_data = Service::findOrFail($id);
+        $lims_product_data->is_active = false;
+        if ($lims_product_data->image != 'zummXD2dvAtI.png') {
+            $images = explode(",", $lims_product_data->image);
+            foreach ($images as $key => $image) {
+                unlink('public/images/product/'.$image);
+            }
+        }
+        $lims_product_data->save();
+        return redirect('products')->with('message', 'Product deleted successfully');
     }
 }

@@ -156,10 +156,27 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::resource('purchases', 'PurchaseController');
 
     // services
+    // Route::get('services/gencode', 'ServiceController@generateCode');
+    // Route::get('services/saleunit/{id}', 'ServiceController@saleUnit');
+    // Route::resource('services', 'ServiceController');
+
+
+
     Route::get('services/gencode', 'ServiceController@generateCode');
+    Route::get('services/search', 'ServiceController@search');
     Route::get('services/saleunit/{id}', 'ServiceController@saleUnit');
+    Route::get('services/getdata/{id}', 'ServiceController@getData');
+    Route::post('importservice', 'ServiceController@importProduct')->name('service.import');
+    Route::post('exportservice', 'ServiceController@exportProduct')->name('service.export');
+    // Route::get('services/print_barcode', 'ServiceController@printBarcode')->name('product.printBarcode');
+
+    Route::get('services/lims_product_search', 'ServiceController@limsProductSearch')->name('service.search');
+    Route::post('services/deletebyselection', 'ServiceController@deleteBySelection');
+    Route::post('services/update', 'ServiceController@updateProduct');
     Route::post('services/service-data', 'ServiceController@productData')->name("service.data");
     Route::resource('services', 'ServiceController');
+
+
 
     //Service Categories
     Route::post('service_category/import', 'ServiceCategoryController@import')->name('service_category.import');
