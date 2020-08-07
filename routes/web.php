@@ -158,7 +158,7 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     // services
     Route::get('services/gencode', 'ServiceController@generateCode');
     Route::get('services/saleunit/{id}', 'ServiceController@saleUnit');
-    Route::post('service/service-data', 'ServiceController@serviceData')->name("service.data");
+    Route::post('services/service-data', 'ServiceController@productData')->name("service.data");
     Route::resource('services', 'ServiceController');
 
     //Service Categories

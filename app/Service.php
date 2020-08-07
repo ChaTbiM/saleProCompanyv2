@@ -12,4 +12,14 @@ class Service extends Model
     ];
 
     // Relationships needed
+
+    public function category()
+    {
+        return $this->belongsTo('App\ServiceCategory', "service_category_id", "id");
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo('App\Unit');
+    }
 }

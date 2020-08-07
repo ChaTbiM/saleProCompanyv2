@@ -43,79 +43,82 @@ class ServiceController extends Controller
         $columns = array(
             2 => 'name',
             3 => 'code',
-            5 => 'category_id',
-            7 => 'unit_id',
-            8 => 'price'
+            4 => 'brand_id',
+            4 => 'category_id',
+            6 => 'qty',
+            5 => 'unit_id',
+            6 => 'price'
         );
         
-        $totalData = Product::where('is_active', true)->count();
+        $totalData = Service::where('is_active', true)->count();
         $totalFiltered = $totalData;
 
-        if ($request->input('length') != -1) {
-            $limit = $request->input('length');
-        } else {
-            $limit = $totalData;
-        }
-        $start = $request->input('start');
-        $order = 'products.'.$columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        if (empty($request->input('search.value'))) {
-            $products = Product::with('category', 'brand', 'unit')->offset($start)
-                        ->where('is_active', true)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
-        } else {
-            $search = $request->input('search.value');
-            $products =  Product::select('products.*')
-                        ->with('category', 'brand', 'unit')
-                        ->join('categories', 'products.category_id', '=', 'categories.id')
-                        ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-                        ->where([
-                            ['products.name', 'LIKE', "%{$search}%"],
-                            ['products.is_active', true]
-                        ])
-                        ->orWhere([
-                            ['products.code', 'LIKE', "%{$search}%"],
-                            ['products.is_active', true]
-                        ])
-                        ->orWhere([
-                            ['categories.name', 'LIKE', "%{$search}%"],
-                            ['categories.is_active', true],
-                            ['products.is_active', true]
-                        ])
-                        ->orWhere([
-                            ['brands.title', 'LIKE', "%{$search}%"],
-                            ['brands.is_active', true],
-                            ['products.is_active', true]
-                        ])
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)->get();
+        // if ($request->input('length') != -1) {
+        //     $limit = $request->input('length');
+        // } else {
+        //     $limit = $totalData;
+        // }
+        // $start = $request->input('start');
+        // $order = 'products.'.$columns[$request->input('order.0.column')];
+        // $dir = $request->input('order.0.dir');
+        // if (empty($request->input('search.value'))) {
+        //     $products = Product::with('category', 'brand', 'unit')->offset($start)
+        //                 ->where('is_active', true)
+        //                 ->limit($limit)
+        //                 ->orderBy($order, $dir)
+        //                 ->get();
+        // } else {
+        //     $search = $request->input('search.value');
+        //     $products =  Product::select('products.*')
+        //                 ->with('category', 'brand', 'unit')
+        //                 ->join('categories', 'products.category_id', '=', 'categories.id')
+        //                 ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+        //                 ->where([
+        //                     ['products.name', 'LIKE', "%{$search}%"],
+        //                     ['products.is_active', true]
+        //                 ])
+        //                 ->orWhere([
+        //                     ['products.code', 'LIKE', "%{$search}%"],
+        //                     ['products.is_active', true]
+        //                 ])
+        //                 ->orWhere([
+        //                     ['categories.name', 'LIKE', "%{$search}%"],
+        //                     ['categories.is_active', true],
+        //                     ['products.is_active', true]
+        //                 ])
+        //                 ->orWhere([
+        //                     ['brands.title', 'LIKE', "%{$search}%"],
+        //                     ['brands.is_active', true],
+        //                     ['products.is_active', true]
+        //                 ])
+        //                 ->offset($start)
+        //                 ->limit($limit)
+        //                 ->orderBy($order, $dir)->get();
 
-            $totalFiltered = Product::
-                            join('categories', 'products.category_id', '=', 'categories.id')
-                            ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-                            ->where([
-                                ['products.name','LIKE',"%{$search}%"],
-                                ['products.is_active', true]
-                            ])
-                            ->orWhere([
-                                ['products.code', 'LIKE', "%{$search}%"],
-                                ['products.is_active', true]
-                            ])
-                            ->orWhere([
-                                ['categories.name', 'LIKE', "%{$search}%"],
-                                ['categories.is_active', true],
-                                ['products.is_active', true]
-                            ])
-                            ->orWhere([
-                                ['brands.title', 'LIKE', "%{$search}%"],
-                                ['brands.is_active', true],
-                                ['products.is_active', true]
-                            ])
-                            ->count();
-        }
+        //     $totalFiltered = Product::
+        //                     join('categories', 'products.category_id', '=', 'categories.id')
+        //                     ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+        //                     ->where([
+        //                         ['products.name','LIKE',"%{$search}%"],
+        //                         ['products.is_active', true]
+        //                     ])
+        //                     ->orWhere([
+        //                         ['products.code', 'LIKE', "%{$search}%"],
+        //                         ['products.is_active', true]
+        //                     ])
+        //                     ->orWhere([
+        //                         ['categories.name', 'LIKE', "%{$search}%"],
+        //                         ['categories.is_active', true],
+        //                         ['products.is_active', true]
+        //                     ])
+        //                     ->orWhere([
+        //                         ['brands.title', 'LIKE', "%{$search}%"],
+        //                         ['brands.is_active', true],
+        //                         ['products.is_active', true]
+        //                     ])
+        //                     ->count();
+        // }
+        $products = Service::all();
         $data = array();
         if (!empty($products)) {
             foreach ($products as $key=>$product) {
@@ -123,16 +126,12 @@ class ServiceController extends Controller
                 $nestedData['key'] = $key;
                 $product_image = explode(",", $product->image);
                 $product_image = htmlspecialchars($product_image[0]);
-                $nestedData['image'] = '<img src="'.url('public/images/product', $product_image).'" height="80" width="80">';
+                $nestedData['image'] = '<img src="'.url('public/images/service', $product_image).'" height="80" width="80">';
                 $nestedData['name'] = $product->name;
                 $nestedData['code'] = $product->code;
-                if ($product->brand_id) {
-                    $nestedData['brand'] = $product->brand->title;
-                } else {
-                    $nestedData['brand'] = "N/A";
-                }
+
                 $nestedData['category'] = $product->category->name;
-                $nestedData['qty'] = $product->qty;
+
                 if ($product->unit_id) {
                     $nestedData['unit'] = $product->unit->unit_name;
                 } else {
@@ -149,12 +148,12 @@ class ServiceController extends Controller
                             <li>
                                 <button="type" class="btn btn-link view"><i class="fa fa-eye"></i> '.trans('file.View').'</button>
                             </li>';
-                if (in_array("products-edit", $request['all_permission'])) {
+                if (in_array("service-edit", $request['all_permission'])) {
                     $nestedData['options'] .= '<li>
                             <a href="'.route('products.edit', ['id' => $product->id]).'" class="btn btn-link"><i class="fa fa-edit"></i> '.trans('file.edit').'</a>
                         </li>';
                 }
-                if (in_array("products-delete", $request['all_permission'])) {
+                if (in_array("service-delete", $request['all_permission'])) {
                     $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"]).'
                             <li>
                               <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="fa fa-trash"></i> '.trans("file.delete").'</button> 
@@ -175,12 +174,14 @@ class ServiceController extends Controller
                     $tax_method = trans('file.Inclusive');
                 }
 
-                $nestedData['product'] = array( '[ "'.$product->type.'"', ' "'.$product->name.'"', ' "'.$product->code.'"', ' "'.$nestedData['brand'].'"', ' "'.$nestedData['category'].'"', ' "'.$nestedData['unit'].'"', ' "'.$product->cost.'"', ' "'.$product->price.'"', ' "'.$tax.'"', ' "'.$tax_method.'"', ' "'.$product->alert_quantity.'"', ' "'.preg_replace('/\s+/S', " ", $product->product_details).'"', ' "'.$product->id.'"', ' "'.$product->product_list.'"', ' "'.$product->qty_list.'"', ' "'.$product->price_list.'"', ' "'.$product->qty.'"', ' "'.$product->image.'"]'
+                $nestedData['product'] = array( '["'.$product->name.'"', ' "'.$product->code.'"', ' "'.$nestedData['category'].'"', ' "'.$nestedData['unit'].'"', ' "'.$product->cost.'"', ' "'.$product->price.'"', ' "'.$tax.'"', ' "'.$tax_method.'"', ' "'.preg_replace('/\s+/S', " ", $product->service_details).'"', ' "'.$product->id.'"', ' "'.$product->image.'"]'
                 );
                 //$nestedData['imagedata'] = DNS1D::getBarcodePNG($product->code, $product->barcode_symbology);
                 $data[] = $nestedData;
             }
         }
+
+        
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),

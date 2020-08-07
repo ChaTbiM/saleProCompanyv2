@@ -198,8 +198,7 @@ class ProductController extends Controller
     
     public function create()
     {
-        // $role = Role::firstOrCreate(['id' => Auth::user()->role_id]);
-        $role = Role::find(Auth::user()->role_id());
+        $role = Role::firstOrCreate(['id' => Auth::user()->role_id]);
         if ($role->hasPermissionTo('products-add')) {
             $lims_product_list = Product::where([ ['is_active', true], ['type', 'standard'] ])->get();
             $lims_brand_list = Brand::where('is_active', true)->get();

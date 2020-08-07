@@ -123,7 +123,7 @@
                                                   <select required class="form-control selectpicker" name="unit_id">
                                                     <option value="" disabled selected>Select Product Unit...</option>
                                                     @foreach($lims_unit_list as $unit)
-                                                        @if($unit->base_unit==null && $unit->unit_code != "hr")
+                                                        @if($unit->base_unit==null)
                                                             <option value="{{$unit->id}}">{{$unit->unit_name}}</option>
                                                         @endif
                                                     @endforeach

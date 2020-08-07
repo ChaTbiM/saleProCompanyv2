@@ -18,19 +18,21 @@
 <section>
     <div class="container-fluid">
         @if(in_array("products-add", $all_permission))
-            <a href="{{route('products.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add_product')}}</a>
+            <a href="{{route('services.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add_product')}}</a>
             <a href="#" data-toggle="modal" data-target="#importProduct" class="btn btn-primary"><i class="dripicons-copy"></i> {{__('file.import_product')}}</a>
         @endif
     </div>
     <div class="table-responsive">
-        <table id="service-data-table" class="table" style="width: 100%">
+        <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
                     <th class="not-exported"></th>
                     <th>{{trans('file.Image')}}</th>
                     <th>{{trans('file.name')}}</th>
                     <th>{{trans('file.Code')}}</th>
+                    {{-- <th>{{trans('file.Brand')}}</th> --}}
                     <th>{{trans('file.category')}}</th>
+                    {{-- <th>{{trans('file.Quantity')}}</th> --}}
                     <th>{{trans('file.Unit')}}</th>
                     <th>{{trans('file.Price')}}</th>
                     <th class="not-exported">{{trans('file.action')}}</th>
@@ -41,7 +43,7 @@
     </div>
 </section>
 
-<div id="importProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
+{{-- <div id="importProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
       <div class="modal-content">
         {!! Form::open(['route' => 'product.import', 'method' => 'post', 'files' => true]) !!}
@@ -116,7 +118,7 @@
         </div>
       </div>
     </div>
-</div>
+</div> --}}
 
 
 <script>
@@ -159,136 +161,136 @@
         productDetails( $(this).parent().data('product'), $(this).parent().data('imagedata') );        
     });
 
-    $(document).on("click", ".view", function(){
-        var product = $(this).parent().parent().parent().parent().parent().data('product');
-        var imagedata = $(this).parent().parent().parent().parent().parent().data('imagedata');
-        productDetails(product, imagedata);
-    });
+    // $(document).on("click", ".view", function(){
+    //     var product = $(this).parent().parent().parent().parent().parent().data('product');
+    //     var imagedata = $(this).parent().parent().parent().parent().parent().data('imagedata');
+    //     productDetails(product, imagedata);
+    // });
 
-    $("#print-btn").on("click", function(){
-          var divToPrint=document.getElementById('product-details');
-          var newWin=window.open('','Print-Window');
-          newWin.document.open();
-          newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
-          newWin.document.close();
-          setTimeout(function(){newWin.close();},10);
-    });
+    // $("#print-btn").on("click", function(){
+    //       var divToPrint=document.getElementById('product-details');
+    //       var newWin=window.open('','Print-Window');
+    //       newWin.document.open();
+    //       newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+    //       newWin.document.close();
+    //       setTimeout(function(){newWin.close();},10);
+    // });
 
-    function productDetails(product, imagedata) {
-        product[11] = product[11].replace(/@/g, '"');
-        htmltext = slidertext = '';
+    // function productDetails(product, imagedata) {
+    //     product[11] = product[11].replace(/@/g, '"');
+    //     htmltext = slidertext = '';
 
-        htmltext = '<p><strong>{{trans("file.Type")}}: </strong>'+product[0]+'</p><p><strong>{{trans("file.name")}}: </strong>'+product[1]+'</p><p><strong>{{trans("file.Code")}}: </strong>'+product[2]+ '</p><p><strong>{{trans("file.Brand")}}: </strong>'+product[3]+'</p><p><strong>{{trans("file.category")}}: </strong>'+product[4]+'</p><p><strong>{{trans("file.Quantity")}}: </strong>'+product[16]+'</p><p><strong>{{trans("file.Unit")}}: </strong>'+product[5]+'</p><p><strong>{{trans("file.Cost")}}: </strong>'+product[6]+'</p><p><strong>{{trans("file.Price")}}: </strong>'+product[7]+'</p><p><strong>{{trans("file.Tax")}}: </strong>'+product[8]+'</p><p><strong>{{trans("file.Tax Method")}} : </strong>'+product[9]+'</p><p><strong>{{trans("file.Alert Quantity")}} : </strong>'+product[10]+'</p><p><strong>{{trans("file.Product Details")}}: </strong></p>'+product[11];
+    //     htmltext = '<p><strong>{{trans("file.Type")}}: </strong>'+product[0]+'</p><p><strong>{{trans("file.name")}}: </strong>'+product[1]+'</p><p><strong>{{trans("file.Code")}}: </strong>'+product[2]+ '</p><p><strong>{{trans("file.Brand")}}: </strong>'+product[3]+'</p><p><strong>{{trans("file.category")}}: </strong>'+product[4]+'</p><p><strong>{{trans("file.Quantity")}}: </strong>'+product[16]+'</p><p><strong>{{trans("file.Unit")}}: </strong>'+product[5]+'</p><p><strong>{{trans("file.Cost")}}: </strong>'+product[6]+'</p><p><strong>{{trans("file.Price")}}: </strong>'+product[7]+'</p><p><strong>{{trans("file.Tax")}}: </strong>'+product[8]+'</p><p><strong>{{trans("file.Tax Method")}} : </strong>'+product[9]+'</p><p><strong>{{trans("file.Alert Quantity")}} : </strong>'+product[10]+'</p><p><strong>{{trans("file.Product Details")}}: </strong></p>'+product[11];
 
-        if(product[17]) {
-            var product_image = product[17].split(",");
-            if(product_image.length > 1) {
-                slidertext = '<div id="product-img-slider" class="carousel slide" data-ride="carousel"><div class="carousel-inner">';
-                for (var i = 0; i < product_image.length; i++) {
-                    if(!i)
-                        slidertext += '<div class="carousel-item active"><img src="public/images/product/'+product_image[i]+'" height="300" width="100%"></div>';
-                    else
-                        slidertext += '<div class="carousel-item"><img src="public/images/product/'+product_image[i]+'" height="300" width="100%"></div>';
-                }
-                slidertext += '</div><a class="carousel-control-prev" href="#product-img-slider" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></a><a class="carousel-control-next" href="#product-img-slider" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></a></div>';
-            }
-            else {
-                slidertext = '<img src="public/images/product/'+product[17]+'" height="300" width="100%">';
-            }
-        }
+    //     if(product[17]) {
+    //         var product_image = product[17].split(",");
+    //         if(product_image.length > 1) {
+    //             slidertext = '<div id="product-img-slider" class="carousel slide" data-ride="carousel"><div class="carousel-inner">';
+    //             for (var i = 0; i < product_image.length; i++) {
+    //                 if(!i)
+    //                     slidertext += '<div class="carousel-item active"><img src="public/images/product/'+product_image[i]+'" height="300" width="100%"></div>';
+    //                 else
+    //                     slidertext += '<div class="carousel-item"><img src="public/images/product/'+product_image[i]+'" height="300" width="100%"></div>';
+    //             }
+    //             slidertext += '</div><a class="carousel-control-prev" href="#product-img-slider" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></a><a class="carousel-control-next" href="#product-img-slider" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></a></div>';
+    //         }
+    //         else {
+    //             slidertext = '<img src="public/images/product/'+product[17]+'" height="300" width="100%">';
+    //         }
+    //     }
         
-        $("#combo-header").text('');
-        $("table.item-list thead").remove();
-        $("table.item-list tbody").remove();
-        $("table.product-warehouse-list thead").remove();
-        $("table.product-warehouse-list tbody").remove();
-        $(".product-variant-warehouse-list thead").remove();
-        $(".product-variant-warehouse-list tbody").remove();
-        $("#product-warehouse-section").addClass('d-none');
-        $("#product-variant-warehouse-section").addClass('d-none');
-        if(product[0] == 'combo') {
-            $("#combo-header").text('{{trans("file.Combo Products")}}');
-            product_list = product[13].split(",");
-            qty_list = product[14].split(",");
-            price_list = product[15].split(",");
-            $(".item-list thead").remove();
-            $(".item-list tbody").remove();
-            var newHead = $("<thead>");
-            var newBody = $("<tbody>");
-            var newRow = $("<tr>");
-            newRow.append('<th>{{trans("file.product")}}</th><th>{{trans("file.Quantity")}}</th><th>{{trans("file.Price")}}</th>');
-            newHead.append(newRow);
+    //     $("#combo-header").text('');
+    //     $("table.item-list thead").remove();
+    //     $("table.item-list tbody").remove();
+    //     $("table.product-warehouse-list thead").remove();
+    //     $("table.product-warehouse-list tbody").remove();
+    //     $(".product-variant-warehouse-list thead").remove();
+    //     $(".product-variant-warehouse-list tbody").remove();
+    //     $("#product-warehouse-section").addClass('d-none');
+    //     $("#product-variant-warehouse-section").addClass('d-none');
+    //     if(product[0] == 'combo') {
+    //         $("#combo-header").text('{{trans("file.Combo Products")}}');
+    //         product_list = product[13].split(",");
+    //         qty_list = product[14].split(",");
+    //         price_list = product[15].split(",");
+    //         $(".item-list thead").remove();
+    //         $(".item-list tbody").remove();
+    //         var newHead = $("<thead>");
+    //         var newBody = $("<tbody>");
+    //         var newRow = $("<tr>");
+    //         newRow.append('<th>{{trans("file.product")}}</th><th>{{trans("file.Quantity")}}</th><th>{{trans("file.Price")}}</th>');
+    //         newHead.append(newRow);
 
-            $(product_list).each(function(i) {
-                $.get('products/getdata/' + product_list[i], function(data) {
-                    var newRow = $("<tr>");
-                    var cols = '';
-                    cols += '<td>' + data['name'] +' [' + data['code'] + ']</td>';
-                    cols += '<td>' + qty_list[i] + '</td>';
-                    cols += '<td>' + price_list[i] + '</td>';
+    //         $(product_list).each(function(i) {
+    //             $.get('products/getdata/' + product_list[i], function(data) {
+    //                 var newRow = $("<tr>");
+    //                 var cols = '';
+    //                 cols += '<td>' + data['name'] +' [' + data['code'] + ']</td>';
+    //                 cols += '<td>' + qty_list[i] + '</td>';
+    //                 cols += '<td>' + price_list[i] + '</td>';
 
-                    newRow.append(cols);
-                    newBody.append(newRow);
-                });
-            });
+    //                 newRow.append(cols);
+    //                 newBody.append(newRow);
+    //             });
+    //         });
 
-            $("table.item-list").append(newHead);
-            $("table.item-list").append(newBody);
-        }
-        else if(product[0] == 'standard') {
-            $.get('products/product_warehouse/' + product[12], function(data) {
-                if(data.product_warehouse[0].length != 0) {
-                    warehouse = data.product_warehouse[0];
-                    qty = data.product_warehouse[1];
-                    var newHead = $("<thead>");
-                    var newBody = $("<tbody>");
-                    var newRow = $("<tr>");
-                    newRow.append('<th>{{trans("file.Warehouse")}}</th><th>{{trans("file.Quantity")}}</th>');
-                    newHead.append(newRow);
-                    $.each(warehouse, function(index){
-                        var newRow = $("<tr>");
-                        var cols = '';
-                        cols += '<td>' + warehouse[index] + '</td>';
-                        cols += '<td>' + qty[index] + '</td>';
+    //         $("table.item-list").append(newHead);
+    //         $("table.item-list").append(newBody);
+    //     }
+    //     else if(product[0] == 'standard') {
+    //         $.get('products/product_warehouse/' + product[12], function(data) {
+    //             if(data.product_warehouse[0].length != 0) {
+    //                 warehouse = data.product_warehouse[0];
+    //                 qty = data.product_warehouse[1];
+    //                 var newHead = $("<thead>");
+    //                 var newBody = $("<tbody>");
+    //                 var newRow = $("<tr>");
+    //                 newRow.append('<th>{{trans("file.Warehouse")}}</th><th>{{trans("file.Quantity")}}</th>');
+    //                 newHead.append(newRow);
+    //                 $.each(warehouse, function(index){
+    //                     var newRow = $("<tr>");
+    //                     var cols = '';
+    //                     cols += '<td>' + warehouse[index] + '</td>';
+    //                     cols += '<td>' + qty[index] + '</td>';
 
-                        newRow.append(cols);
-                        newBody.append(newRow);
-                        $("table.product-warehouse-list").append(newHead);
-                        $("table.product-warehouse-list").append(newBody);
-                    });
-                    $("#product-warehouse-section").removeClass('d-none');
-                }
-                if(data.product_variant_warehouse[0].length != 0) {
-                    warehouse = data.product_variant_warehouse[0];
-                    variant = data.product_variant_warehouse[1];
-                    qty = data.product_variant_warehouse[2];
-                    var newHead = $("<thead>");
-                    var newBody = $("<tbody>");
-                    var newRow = $("<tr>");
-                    newRow.append('<th>{{trans("file.Warehouse")}}</th><th>{{trans("file.Variant")}}</th><th>{{trans("file.Quantity")}}</th>');
-                    newHead.append(newRow);
-                    $.each(warehouse, function(index){
-                        var newRow = $("<tr>");
-                        var cols = '';
-                        cols += '<td>' + warehouse[index] + '</td>';
-                        cols += '<td>' + variant[index] + '</td>';
-                        cols += '<td>' + qty[index] + '</td>';
+    //                     newRow.append(cols);
+    //                     newBody.append(newRow);
+    //                     $("table.product-warehouse-list").append(newHead);
+    //                     $("table.product-warehouse-list").append(newBody);
+    //                 });
+    //                 $("#product-warehouse-section").removeClass('d-none');
+    //             }
+    //             if(data.product_variant_warehouse[0].length != 0) {
+    //                 warehouse = data.product_variant_warehouse[0];
+    //                 variant = data.product_variant_warehouse[1];
+    //                 qty = data.product_variant_warehouse[2];
+    //                 var newHead = $("<thead>");
+    //                 var newBody = $("<tbody>");
+    //                 var newRow = $("<tr>");
+    //                 newRow.append('<th>{{trans("file.Warehouse")}}</th><th>{{trans("file.Variant")}}</th><th>{{trans("file.Quantity")}}</th>');
+    //                 newHead.append(newRow);
+    //                 $.each(warehouse, function(index){
+    //                     var newRow = $("<tr>");
+    //                     var cols = '';
+    //                     cols += '<td>' + warehouse[index] + '</td>';
+    //                     cols += '<td>' + variant[index] + '</td>';
+    //                     cols += '<td>' + qty[index] + '</td>';
 
-                        newRow.append(cols);
-                        newBody.append(newRow);
-                        $("table.product-variant-warehouse-list").append(newHead);
-                        $("table.product-variant-warehouse-list").append(newBody);
-                    });
-                    $("#product-variant-warehouse-section").removeClass('d-none');
-                }
-            });
-        }
+    //                     newRow.append(cols);
+    //                     newBody.append(newRow);
+    //                     $("table.product-variant-warehouse-list").append(newHead);
+    //                     $("table.product-variant-warehouse-list").append(newBody);
+    //                 });
+    //                 $("#product-variant-warehouse-section").removeClass('d-none');
+    //             }
+    //         });
+    //     }
         
-        $('#product-content').html(htmltext);
-        $('#slider-content').html(slidertext);
-        $('#product-details').modal('show');
-        $('#product-img-slider').carousel(0);
-    }
+    //     $('#product-content').html(htmltext);
+    //     $('#slider-content').html(slidertext);
+    //     $('#product-details').modal('show');
+    //     $('#product-img-slider').carousel(0);
+    // }
 
 
     //pdf Fonts 
@@ -312,7 +314,7 @@
 
 
     $(document).ready(function() {
-        var table = $('#service-data-table').DataTable( {
+        var table = $('#product-data-table').DataTable( {
             responsive: true,
             fixedHeader: {
                 header: true,
@@ -321,7 +323,7 @@
             "processing": true,
             "serverSide": true,
             "ajax":{
-                url:"{{ route('product.data') }}",
+                url:"{{ route('service.data') }}",
                 data:{
                     all_permission: all_permission
                 },
@@ -329,18 +331,19 @@
                 type:"post"
             },
             "createdRow": function( row, data, dataIndex ) {
-                $(row).addClass('product-link');
+                // $(row).addClass('product-link');
+                // $(row).attr('data-id', data['id']);
                 $(row).attr('data-product', data['product']);
-                $(row).attr('data-imagedata', data['imagedata']);
+                // $(row).attr('data-imagedata', data['imagedata']);
             },
             "columns": [
                 {"data": "key"},
                 {"data": "image"},
                 {"data": "name"},
                 {"data": "code"},
-                {"data": "brand"},
+                // {"data": "brand"},
                 {"data": "category"},
-                {"data": "qty"},
+                // {"data": "qty"},
                 {"data": "unit"},
                 {"data": "price"},
                 {"data": "options"},
@@ -358,8 +361,8 @@
             order:[['2', 'asc']],
             'columnDefs': [
                 {
-                    "orderable": false,
-                    'targets': [0, 1, 9]
+                    "orderable": true,
+                    'targets': [1,2,3,4,5]
                 },
                 {
                     'render': function(data, type, row, meta){
