@@ -23,9 +23,9 @@
                     <th class="not-exported"></th>
                     <th><?php echo e(trans('file.category')); ?></th>
                     <th><?php echo e(trans('file.Parent Category')); ?></th>
-                    <th><?php echo e(trans('file.Number of Product')); ?></th>
-                    <th><?php echo e(trans('file.Stock Quantity')); ?></th>
-                    <th><?php echo e(trans('file.Stock Worth (Price/Cost)')); ?></th>
+                    <th><?php echo e(trans('file.Number of Service')); ?></th>
+                    
+                    
                     <th class="not-exported"><?php echo e(trans('file.action')); ?></th>
                 </tr>
             </thead>
@@ -206,8 +206,8 @@
             {"data": "name"},
             {"data": "parent_id"},
             {"data": "number_of_product"},
-            {"data": "stock_qty"},
-            {"data": "stock_worth"},
+            // {"data": "stock_qty"},
+            // {"data": "stock_worth"},
             {"data": "options"},
         ],
         'language': {
@@ -223,7 +223,7 @@
         'columnDefs': [
             {
                 "orderable": false,
-                'targets': [0, 2, 3, 4, 5, 6]
+                'targets': [0,2,3,4]
             },
             {
                 'render': function(data, type, row, meta){

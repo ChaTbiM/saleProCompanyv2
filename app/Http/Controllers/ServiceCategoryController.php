@@ -54,6 +54,7 @@ class ServiceCategoryController extends Controller
                             ['is_active', true]
                         ])->count();
         }
+        
         $data = array();
         if (!empty($categories)) {
             foreach ($categories as $key=>$category) {
@@ -67,16 +68,8 @@ class ServiceCategoryController extends Controller
                     $nestedData['parent_id'] = "N/A";
                 }
 
-                $nestedData['number_of_product'] =0;
-                $nestedData['stock_qty'] = 0;
-                $total_price = 0;
-                $total_cost = 0 ;
-                
-                if (config('currency_position') == 'prefix') {
-                    $nestedData['stock_worth'] = 0;
-                } else {
-                    $nestedData['stock_worth'] = 0;
-                }
+                $nestedData['number_of_product'] = $category->service()->where('is_active', true)->count();
+                    
 
                 $nestedData['options'] = '<div class="btn-group">
                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.trans("file.action").'
@@ -88,7 +81,7 @@ class ServiceCategoryController extends Controller
                                     <button type="button" data-id="'.$category->id.'" class="open-EditCategoryDialog btn btn-link" data-toggle="modal" data-target="#editModal" ><i class="dripicons-document-edit"></i> '.trans("file.edit").'</button>
                                 </li>
                                 <li class="divider"></li>'.
-                                \Form::open(["route" => ["category.destroy", $category->id], "method" => "DELETE"]).'
+                                \Form::open(["route" => ["service_category.destroy", $category->id], "method" => "DELETE"]).'
                                 <li>
                                   <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> '.trans("file.delete").'</button> 
                                 </li>'.\Form::close().'
