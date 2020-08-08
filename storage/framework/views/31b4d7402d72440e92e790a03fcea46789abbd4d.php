@@ -668,7 +668,7 @@
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 <?php 
                   $add_permission = DB::table('permissions')->where('name', 'sales-add')->first();
-                  $add_permission_active = getPermissionActive("sales");
+                  $add_permission_active = getPermissionActive("sales-add");
 
                   $empty_database_permission = DB::table('permissions')->where('name', 'empty_database')->first();
                   $empty_database_permission_active = getPermissionActive("empty_database");
