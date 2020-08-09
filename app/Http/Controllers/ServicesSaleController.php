@@ -24,6 +24,7 @@ use App\Customer;
 use App\Service;
 use Stripe\Stripe;
 use Srmklive\PayPal\Services\ExpressCheckout;
+use App\Unit;
 
 class ServicesSaleController extends Controller
 {
@@ -53,6 +54,9 @@ class ServicesSaleController extends Controller
             $data['reference_no'] = 'sr-' . date("Ymd") . '-' . date("his");
         }
 
+
+
+
         $document = $request->document;
         if ($document) {
             $v = Validator::make(
@@ -76,7 +80,7 @@ class ServicesSaleController extends Controller
             $lims_coupon_data->used += 1;
             $lims_coupon_data->save();
         }
-        // return dd($data);
+
         if ($data['salesman_id']) {
             $data['salesman_name'] = Employee::find($data['salesman_id'])->name;
         }
@@ -109,8 +113,89 @@ class ServicesSaleController extends Controller
         $total = $data['subtotal'];
         $product_sale = [];
 
-        
+        foreach ($product_id as $i => $id) {
+            $lims_product_data = Product::where('id', $id)->first();
+            $product_sale['variant_id'] = null;
+            if ($lims_product_data->type == 'combo' && $data['sale_status'] == 1) {
+                $product_list = explode(",", $lims_product_data->product_list);
+                $qty_list = explode(",", $lims_product_data->qty_list);
+                $price_list = explode(",", $lims_product_data->price_list);
 
+                foreach ($product_list as $key => $child_id) {
+                    $child_data = Product::find($child_id);
+                    $child_warehouse_data = Product_Warehouse::where([
+                        ['product_id', $child_id],
+                        ['warehouse_id', $data['warehouse_id']],
+                    ])->first();
+
+                    $child_data->qty -= $qty[$i] * $qty_list[$key];
+                    $child_warehouse_data->qty -= $qty[$i] * $qty_list[$key];
+
+                    $child_data->save();
+                    $child_warehouse_data->save();
+                }
+            }
+
+            if ($sale_unit[$i] != 'n/a') {
+                $lims_sale_unit_data  = Unit::where('unit_name', $sale_unit[$i])->first();
+                $sale_unit_id = $lims_sale_unit_data->id;
+                if ($lims_product_data->is_variant) {
+                    $lims_product_variant_data = ProductVariant::select('id', 'variant_id', 'qty')->FindExactProductWithCode($id, $product_code[$i])->first();
+                    $product_sale['variant_id'] = $lims_product_variant_data->variant_id;
+                }
+
+                if ($data['sale_status'] == 1) {
+                    if ($lims_sale_unit_data->operator == '*') {
+                        $quantity = $qty[$i] * $lims_sale_unit_data->operation_value;
+                    } elseif ($lims_sale_unit_data->operator == '/') {
+                        $quantity = $qty[$i] / $lims_sale_unit_data->operation_value;
+                    }
+                    //deduct quantity
+                    $lims_product_data->qty = $lims_product_data->qty - $quantity;
+                    $lims_product_data->save();
+                    //deduct product variant quantity if exist
+                    if ($lims_product_data->is_variant) {
+                        $lims_product_variant_data->qty -= $quantity;
+                        $lims_product_variant_data->save();
+                        $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($id, $lims_product_variant_data->variant_id, $data['warehouse_id'])->first();
+                    } else {
+                        $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($id, $data['warehouse_id'])->first();
+                    }
+                    //deduct quantity from warehouse
+                    $lims_product_warehouse_data->qty -= $quantity;
+                    $lims_product_warehouse_data->save();
+                }
+            } else {
+                $sale_unit_id = 0;
+            }
+            if ($product_sale['variant_id']) {
+                $variant_data = Variant::select('name')->find($product_sale['variant_id']);
+                $mail_data['products'][$i] = $lims_product_data->name . ' [' . $variant_data->name . ']';
+            } else {
+                $mail_data['products'][$i] = $lims_product_data->name;
+            }
+            if ($lims_product_data->type == 'digital') {
+                $mail_data['file'][$i] = url('/public/product/files') . '/' . $lims_product_data->file;
+            } else {
+                $mail_data['file'][$i] = '';
+            }
+            if ($sale_unit_id) {
+                $mail_data['unit'][$i] = $lims_sale_unit_data->unit_code;
+            } else {
+                $mail_data['unit'][$i] = '';
+            }
+
+            $product_sale['sale_id'] = $lims_sale_data->id;
+            $product_sale['product_id'] = $id;
+            $product_sale['qty'] = $mail_data['qty'][$i] = $qty[$i];
+            $product_sale['sale_unit_id'] = $sale_unit_id;
+            $product_sale['net_unit_price'] = $net_unit_price[$i];
+            $product_sale['discount'] = $discount[$i];
+            $product_sale['tax_rate'] = $tax_rate[$i];
+            $product_sale['tax'] = $tax[$i];
+            $product_sale['total'] = $mail_data['total'][$i] = $total[$i];
+            Product_Sale::create($product_sale);
+        }
         if ($data['sale_status'] == 3) {
             $message = 'Sale successfully added to draft';
         } else {
@@ -202,7 +287,7 @@ class ServicesSaleController extends Controller
                 $paypal_data = [];
                 $paypal_data['items'] = [];
                 foreach ($data['product_id'] as $key => $product_id) {
-                    $lims_product_data = Service::find($product_id);
+                    $lims_product_data = Product::find($product_id);
                     $paypal_data['items'][] = [
                         'name' => $lims_product_data->name,
                         'price' => ($data['subtotal'][$key] / $data['qty'][$key]),

@@ -809,20 +809,23 @@
             <div class="col-md-6">
                 <div class="card">
                     @php
-                        $company_id = Auth::user()->company_id();
-                        $hasServiceModule = DB::connection("mysql_base")->select('select * from companies_modules where (company_id,module_id) = (?,?)',[$company_id,12]);
+                    $company_id = Auth::user()->company_id();
+                    $hasServiceModule = DB::connection("mysql_base")->select('select * from companies_modules where
+                    (company_id,module_id) = (?,?)',[$company_id,12]);
                     @endphp
                     @if (!empty($hasServiceModule))
                     <div class="card-header">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input form_type" type="radio" name="form_type" id="product_radio" value="product" checked>
+                            <input class="form-check-input form_type" id="is_product" type="radio" name="form_type" id="product_radio"
+                                value="product" checked>
                             <label class="form-check-label " for="inlineRadio1">product</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input form_type" type="radio" name="form_type" id="service_radio" value="service">
+                            <input class="form-check-input form_type" id="is_service" type="radio" name="form_type" id="service_radio"
+                                value="service">
                             <label class="form-check-label" for="inlineRadio2">service</label>
                         </div>
-                    </div>    
+                    </div>
                     @endif
 
                     <div class="card-body" style="padding-bottom: 0">
@@ -1748,7 +1751,50 @@
     $("ul#sale").addClass("show");
     $("ul#sale #sale-pos-menu").addClass("active");
 
-    $(".service_search").hide();
+    $(document).ready(()=>{
+        if($("#is_product").is(":checked")){
+            $(".product_search").show();
+        $(".service_search").hide();
+
+        $(".warehouse_select").show();
+        $(".biller_select").show();
+        paymentForm.attr("action","{{route('sales.store')}}"); 
+
+        }else if($("#is_service").is(":checked")){
+            $(".product_search").hide();
+
+$(".service_search").show();
+$(".warehouse_select").hide();
+$(".biller_select").hide();
+paymentForm.attr("action","{{route('services.sale')}}"); 
+            
+        }
+
+    });
+    // $(".service_search").hide();
+    
+    $(".form_type").on('change',(e)=>{
+    paymentForm = $('.payment-form');
+    choosenFormType = $(e.target).val();
+    if(choosenFormType == "product"){
+        $(".product_search").show();
+        $(".service_search").hide();
+
+        $(".warehouse_select").show();
+        $(".biller_select").show();
+        paymentForm.attr("action","{{route('sales.store')}}"); 
+    }else if(choosenFormType == "service"){
+        $(".product_search").hide();
+
+        $(".service_search").show();
+        $(".warehouse_select").hide();
+        $(".biller_select").hide();
+        paymentForm.attr("action","{{route('services.sale')}}"); 
+    }
+
+    // hide biller and warehouse
+    
+})
 
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
     var valid;
@@ -2964,28 +3010,28 @@ $('#product-table').DataTable( {
 });
 
 // change POS TYPE ( product / service)
-$(".form_type").on('change',(e)=>{
-    paymentForm = $('.payment-form');
-    choosenFormType = $(e.target).val();
-    if(choosenFormType == "product"){
-        $(".product_search").show();
-        $(".service_search").hide();
+// $(".form_type").on('change',(e)=>{
+//     paymentForm = $('.payment-form');
+//     choosenFormType = $(e.target).val();
+//     if(choosenFormType == "product"){
+//         $(".product_search").show();
+//         $(".service_search").hide();
 
-        $(".warehouse_select").show();
-        $(".biller_select").show();
-        paymentForm.attr("action","{{route('sales.store')}}"); 
-    }else if(choosenFormType == "service"){
-        $(".product_search").hide();
+//         $(".warehouse_select").show();
+//         $(".biller_select").show();
+//         paymentForm.attr("action","{{route('sales.store')}}"); 
+//     }else if(choosenFormType == "service"){
+//         $(".product_search").hide();
 
-        $(".service_search").show();
-        $(".warehouse_select").hide();
-        $(".biller_select").hide();
-        paymentForm.attr("action","{{route('services.sale')}}"); 
-    }
+//         $(".service_search").show();
+//         $(".warehouse_select").hide();
+//         $(".biller_select").hide();
+//         paymentForm.attr("action","{{route('services.sale')}}"); 
+//     }
 
-    // hide biller and warehouse
+//     // hide biller and warehouse
     
-})
+// })
 
 </script>
 @endsection
