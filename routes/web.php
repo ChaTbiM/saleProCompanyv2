@@ -109,6 +109,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('pos', 'SaleController@posSale')->name('sale.pos');
     Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
     Route::get('sales/lims_product_search', 'SaleController@limsProductSearch')->name('product_sale.search');
+    Route::get('sales/lims_service_search', 'SaleController@limsServiceSearch')->name('service_sale.search');
+
     Route::get('sales/getcustomergroup/{id}', 'SaleController@getCustomerGroup')->name('sale.getcustomergroup');
     Route::get('sales/getproduct/{id}', 'SaleController@getProduct')->name('sale.getproduct');
     Route::get('sales/getproduct/{category_id}/{brand_id}', 'SaleController@getProductByFilter');
@@ -124,6 +126,7 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('sales/{id}/create', 'SaleController@createSale');
     Route::post('sales/deletebyselection', 'SaleController@deleteBySelection');
     Route::post('services_sales', 'ServicesSaleController@store')->name('services.sale');
+    Route::get('sales/getservices', 'SaleController@getService')->name('sale.getservice');
 
     Route::resource('sales', 'SaleController');
 
@@ -173,7 +176,6 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::post('exportservice', 'ServiceController@exportProduct')->name('service.export');
     // Route::get('services/print_barcode', 'ServiceController@printBarcode')->name('product.printBarcode');
 
-    Route::get('services/lims_product_search', 'ServiceController@limsProductSearch')->name('service.search');
     Route::post('services/deletebyselection', 'ServiceController@deleteBySelection');
     Route::post('services/update', 'ServiceController@updateProduct');
     Route::post('services/service-data', 'ServiceController@productData')->name("service.data");

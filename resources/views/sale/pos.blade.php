@@ -934,13 +934,21 @@
                                             </div>
                                         </span>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="search-box form-group">
+                                    <div class="col-md-12 product_search">
+                                        <div class="search-box form-group search_products">
                                             <input type="text" name="product_code_name" id="lims_productcodeSearch"
                                                 placeholder="Scan/Search product by name/code" class="form-control"
                                                 autofocus />
                                         </div>
                                     </div>
+                                    <div class="col-md-12 service_search ">
+                                        <div class="search-box form-group search_products">
+                                            <input type="text" name="service_code_name" id="lims_servicecodeSearch"
+                                                placeholder="Scan/Search service by name" class="form-control"
+                                                autofocus />
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="form-group">
@@ -1740,9 +1748,12 @@
     $("ul#sale").addClass("show");
     $("ul#sale #sale-pos-menu").addClass("active");
 
+    $(".service_search").hide();
+
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
     var valid;
 
+var lims_service_array = [];
 // array data depend on warehouse
 var lims_product_array = [];
 var product_code = [];
@@ -1876,9 +1887,20 @@ if(keyboard_active==1){
           collision: 'flip'
         }
     });
+
+    $('#lims_servicecodeSearch').keyboard().autocomplete().addAutocomplete({
+        // add autocomplete window positioning
+        // options here (using position utility)
+        position: {
+          of: '#lims_servicecodeSearch',
+          my: 'top+18px',
+          at: 'center',
+          collision: 'flip'
+        }
+    });
 }
 
-if(role_id > 2){
+if(role_id > 2 && role_id != 3){
     $('#biller_id').addClass('d-none');
     $('#warehouse_id').addClass('d-none');
     $('select[name=warehouse_id]').val(warehouse_id);
@@ -1912,6 +1934,17 @@ $.get('sales/getproduct/' + id, function(data) {
     });
 });
 
+$.get('sales/getservices/', function(data) {
+    lims_service_array = [];
+    service_code = data[0]
+    service_name = data[1];
+    service_id = data[2];
+    $.each(service_code, function(index) {
+        lims_service_array.push(service_code[index] + ' (' + service_name[index] + ')');
+    });
+});
+
+
 if(keyboard_active==1){
     $('#lims_productcodeSearch').bind('keyboardChange', function (e, keyboard, el) {
         var customer_id = $('#customer_id').val();
@@ -1926,8 +1959,19 @@ if(keyboard_active==1){
             alert('Please select Warehouse!');
         }
     });
+
+    $('#lims_servicecodeSearch').bind('keyboardChange', function (e, keyboard, el) {
+        var customer_id = $('#customer_id').val();
+        temp_data = $('#lims_servicecodeSearch').val();
+        if(!customer_id){
+            $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            alert('Please select Customer!');
+        }
+    });
+
 }
 else{
+    
     $('#lims_productcodeSearch').on('input', function(){
         var customer_id = $('#customer_id').val();
         var warehouse_id = $('#warehouse_id').val();
@@ -1942,6 +1986,18 @@ else{
         }
 
     });
+
+    
+    $('#lims_servicecodeSearch').on('input', function(){
+        var customer_id = $('#customer_id').val();
+        temp_data = $('#limse_servicecodeSearch').val();
+        if(!customer_id){
+            $('#limse_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            alert('Please select Customer!');
+        }
+
+    });
+
 }
 
 $("#print-btn").on("click", function(){
@@ -2063,6 +2119,8 @@ $('select[name="warehouse_id"]').on('change', function() {
 });
 
 var lims_productcodeSearch = $('#lims_productcodeSearch');
+var lims_servicecodeSearch = $('#lims_servicecodeSearch');
+
 
 lims_productcodeSearch.autocomplete({
     source: function(request, response) {
@@ -2081,6 +2139,30 @@ lims_productcodeSearch.autocomplete({
     select: function(event, ui) {
         var data = ui.item.value;
         productSearch(data);
+    }
+});
+
+// need to work on lims_servicecodeSearch
+
+lims_servicecodeSearch.autocomplete({
+    source: function(request, response) {
+        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
+        //  I need ( lims_service_array ) 
+        response($.grep(lims_service_array, function(item) {
+            return matcher.test(item);
+        }));
+    },
+    response: function(event, ui) {
+        if (ui.content.length == 1) {
+            var data = ui.content[0].value;
+            console.log(data,'searching for this');
+            $(this).autocomplete( "close" );
+            serviceSearch(data);
+        };
+    },
+    select: function(event, ui) {
+        var data = ui.item.value;
+        serviceSearch(data);
     }
 });
 
@@ -2428,6 +2510,37 @@ function productSearch(data) {
                 }
             });
             $("input[name='product_code_name']").val('');
+            if(flag){
+                addNewProduct(data);
+            }
+        }
+    });
+}
+
+function serviceSearch(data){
+    $.ajax({
+        type: 'GET',
+        url: 'sales/lims_service_search',
+        data: {
+            data: data
+        },
+        success: function(data) {
+            var flag = 1;
+            $(".product-code").each(function(i) {
+                if ($(this).val() == data[1]) {
+                    rowindex = i;
+                    var pre_qty = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val();
+                    if(pre_qty)
+                        var qty = parseFloat(pre_qty) + 1;
+                    else
+                        var qty = 1;
+                    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(qty);
+                    flag = 0;
+                    checkQuantity(String(qty), true);
+                    flag = 0;
+                }
+            });
+            $("input[name='service_code_name']").val('');
             if(flag){
                 addNewProduct(data);
             }
@@ -2855,13 +2968,23 @@ $(".form_type").on('change',(e)=>{
     paymentForm = $('.payment-form');
     choosenFormType = $(e.target).val();
     if(choosenFormType == "product"){
+        $(".product_search").show();
+        $(".service_search").hide();
+
+        $(".warehouse_select").show();
+        $(".biller_select").show();
         paymentForm.attr("action","{{route('sales.store')}}"); 
     }else if(choosenFormType == "service"){
+        $(".product_search").hide();
+
+        $(".service_search").show();
+        $(".warehouse_select").hide();
+        $(".biller_select").hide();
         paymentForm.attr("action","{{route('services.sale')}}"); 
     }
-    console.log($(e.target).val(), 'check what ')
 
-    console.log(paymentForm.attr('action'),'yrlllll')
+    // hide biller and warehouse
+    
 })
 
 </script>

@@ -43,6 +43,7 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use GeniusTS\HijriDate\Date;
 use Illuminate\Support\Facades\Validator;
+use App\Service;
 
 class SaleController extends Controller
 {
@@ -809,6 +810,23 @@ class SaleController extends Controller
         return $product_data;
     }
 
+    public function getService()
+    {
+        $lims_services_data = Service::all();
+
+        $service_name = [];
+        $service_data = [];
+        //service without variant
+        foreach ($lims_services_data as $service) {
+            $service_code[] = $service->code;
+            $service_name[] = $service->name;
+            $service_id[] = $service->id;
+        }
+        $service_data = [$service_code, $service_name, $service_id];
+        return $service_data;
+    }
+
+
     public function posSale()
     {
         // dd('here');
@@ -1039,6 +1057,55 @@ class SaleController extends Controller
         $product[] = $product_variant_id;
         return $product;
     }
+
+    
+    public function limsServiceSearch(Request $request)
+    {
+        $todayDate = date('Y-m-d');
+        $product_code = explode(" ", $request['data']);
+        $product_variant_id = null;
+        $lims_product_data = Service::where('code', $product_code[0])->first();
+        
+        $product[] = $lims_product_data->name;
+        $product[] = $lims_product_data->code;
+
+        $product[] = $lims_product_data->price;
+
+        if ($lims_product_data->tax_id) {
+            $lims_tax_data = Tax::find($lims_product_data->tax_id);
+            $product[] = $lims_tax_data->rate;
+            $product[] = $lims_tax_data->name;
+        } else {
+            $product[] = 0;
+            $product[] = 'No Tax';
+        }
+        $product[] = $lims_product_data->tax_method;
+        $units = Unit::where("base_unit", $lims_product_data->unit_id)
+                ->orWhere('id', $lims_product_data->unit_id)
+                ->get();
+        $unit_name = array();
+        $unit_operator = array();
+        $unit_operation_value = array();
+        foreach ($units as $unit) {
+            if ($lims_product_data->sale_unit_id == $unit->id) {
+                array_unshift($unit_name, $unit->unit_name);
+                array_unshift($unit_operator, $unit->operator);
+                array_unshift($unit_operation_value, $unit->operation_value);
+            } else {
+                $unit_name[]  = $unit->unit_name;
+                $unit_operator[] = $unit->operator;
+                $unit_operation_value[] = $unit->operation_value;
+            }
+        }
+        $product[] = implode(",", $unit_name) . ',';
+        $product[] = implode(",", $unit_operator) . ',';
+        $product[] = implode(",", $unit_operation_value) . ',';
+
+        $product[] = $lims_product_data->id;
+        $product[] = $product_variant_id;
+        return $product;
+    }
+
 
     public function getGiftCard()
     {

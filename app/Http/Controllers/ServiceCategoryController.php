@@ -106,7 +106,7 @@ class ServiceCategoryController extends Controller
         $this->validate($request, [
             'name' => [
                 'max:255',
-                    Rule::unique('categories')->where(function ($query) {
+                    Rule::unique('service_categories')->where(function ($query) {
                         return $query->where('is_active', 1);
                     }),
             ],

@@ -329,20 +329,20 @@ class ServiceController extends Controller
     }
 
 
-    public function limsProductSearch(Request $request)
-    {
-        $todayDate = date('Y-m-d');
-        $product_code = explode(" ", $request['data']);
+    // public function limsServiceSearch(Request $request)
+    // {
+    //     $todayDate = date('Y-m-d');
+    //     $product_code = explode(" ", $request['data']);
 
-        $lims_product_data = Service::where('code', $product_code[0])->first();
-        $product[] = $lims_product_data->name;
-        $product[] = $lims_product_data->code;
-        $product[] = $lims_product_data->price;
+    //     $lims_product_data = Service::where('code', $product_code[0])->first();
+    //     $product[] = $lims_product_data->name;
+    //     $product[] = $lims_product_data->code;
+    //     $product[] = $lims_product_data->price;
 
-        // $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
-        $product[] = $lims_product_data->promotion_price;
-        return $product;
-    }
+    //     // $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
+    //     $product[] = $lims_product_data->promotion_price;
+    //     return $product;
+    // }
 
     public function importProduct(Request $request)
     {
