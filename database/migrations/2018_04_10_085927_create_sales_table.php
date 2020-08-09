@@ -18,8 +18,8 @@ class CreateSalesTable extends Migration
             $table->string('reference_no');
             
             $table->integer('customer_id');
-            $table->integer('warehouse_id');
-            $table->integer('biller_id');
+            $table->integer('warehouse_id')->nullable();
+            $table->integer('biller_id')->nullable();
             $table->integer('item');
             $table->double('total_qty');
             $table->double('total_discount');

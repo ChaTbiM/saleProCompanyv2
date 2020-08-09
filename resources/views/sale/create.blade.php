@@ -50,17 +50,13 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
+                                    <div class="col-md-4">
                                                 <label>{{trans('file.salesman')}} *</label>
                                                 <select required name="salesman_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Salesman...">
                                                     @foreach($lims_seller_list as $seller)
                                                     <option value="{{$seller->id}}">{{$seller->name}}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="row mt-3">

@@ -123,7 +123,10 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::post('sales/deletepayment', 'SaleController@deletePayment')->name('sale.delete-payment');
     Route::get('sales/{id}/create', 'SaleController@createSale');
     Route::post('sales/deletebyselection', 'SaleController@deleteBySelection');
+    Route::post('services_sales', 'ServicesSaleController@store')->name('services.sale');
+
     Route::resource('sales', 'SaleController');
+
 
     Route::get('delivery', 'DeliveryController@index')->name('delivery.index');
     Route::get('delivery/create/{id}', 'DeliveryController@create');

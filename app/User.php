@@ -50,15 +50,15 @@ class User extends Authenticatable
         }
     }
 
-    // public function company_id()
-    // {
-    //     $company_name = $this->company_name();
-    //     try {
-    //         return Company::where("name", $company_name)->get()[0]->id;
-    //     } catch (\Throwable $th) {
-    //         return null;
-    //     }
-    // }
+    public function company_id()
+    {
+        $company_name = $this->company_name();
+        try {
+            return Company::where("name", $company_name)->get()[0]->id;
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
 
     public function role_id()
     {
