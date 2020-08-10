@@ -846,7 +846,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-4 biller_select">
+                                    <div class="col-md-4 warehouse_select">
                                         <div class="form-group">
                                             @if($lims_pos_setting_data)
                                             <input type="hidden" name="warehouse_id_hidden"
@@ -861,7 +861,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 warehouse_select">
+                                    <div class="col-md-4 biller_select">
                                         <div class="form-group">
                                             @if($lims_pos_setting_data)
                                             <input type="hidden" name="biller_id_hidden"
@@ -1752,6 +1752,8 @@
     $("ul#sale #sale-pos-menu").addClass("active");
 
     $(document).ready(()=>{
+    paymentForm = $('.payment-form');
+
         if($("#is_product").is(":checked")){
             $(".product_search").show();
         $(".service_search").hide();
@@ -2036,9 +2038,9 @@ else{
     
     $('#lims_servicecodeSearch').on('input', function(){
         var customer_id = $('#customer_id').val();
-        temp_data = $('#limse_servicecodeSearch').val();
+        temp_data = $('#lims_servicecodeSearch').val();
         if(!customer_id){
-            $('#limse_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
             alert('Please select Customer!');
         }
 
@@ -2187,8 +2189,6 @@ lims_productcodeSearch.autocomplete({
         productSearch(data);
     }
 });
-
-// need to work on lims_servicecodeSearch
 
 lims_servicecodeSearch.autocomplete({
     source: function(request, response) {

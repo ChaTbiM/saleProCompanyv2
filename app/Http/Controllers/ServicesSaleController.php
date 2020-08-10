@@ -36,6 +36,7 @@ class ServicesSaleController extends Controller
 
         unset($data['biller_id']);
         unset($data['warehouse']);
+
         dd($data, $request->all());
         if ($data['pos']) {
             $data['reference_no'] = 'posr-' . date("Ymd") . '-' . date("his");

@@ -1065,7 +1065,6 @@ class SaleController extends Controller
         $product_code = explode(" ", $request['data']);
         $product_variant_id = null;
         $lims_product_data = Service::where('code', $product_code[0])->first();
-        
         $product[] = $lims_product_data->name;
         $product[] = $lims_product_data->code;
 

@@ -858,7 +858,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-4 biller_select">
+                                    <div class="col-md-4 warehouse_select">
                                         <div class="form-group">
                                             <?php if($lims_pos_setting_data): ?>
                                             <input type="hidden" name="warehouse_id_hidden"
@@ -873,7 +873,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 warehouse_select">
+                                    <div class="col-md-4 biller_select">
                                         <div class="form-group">
                                             <?php if($lims_pos_setting_data): ?>
                                             <input type="hidden" name="biller_id_hidden"
@@ -1773,6 +1773,8 @@
     $("ul#sale #sale-pos-menu").addClass("active");
 
     $(document).ready(()=>{
+    paymentForm = $('.payment-form');
+
         if($("#is_product").is(":checked")){
             $(".product_search").show();
         $(".service_search").hide();

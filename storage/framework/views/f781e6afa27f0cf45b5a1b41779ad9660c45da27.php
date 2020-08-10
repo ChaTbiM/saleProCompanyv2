@@ -487,7 +487,7 @@
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h4><?php echo e(trans('file.Best Seller').' '.date('Y') . '('.trans('file.price').')'); ?></h4>
+                  <h4><?php echo e(trans('file.Best Product Seller').' '.date('Y') . '('.trans('file.price').')'); ?></h4>
                   <div class="right-column">
                     <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
                   </div>

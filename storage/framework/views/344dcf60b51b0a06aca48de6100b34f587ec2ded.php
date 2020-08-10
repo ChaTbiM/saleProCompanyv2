@@ -1,18 +1,43 @@
  <?php $__env->startSection('content'); ?>
 <?php if(session()->has('not_permitted')): ?>
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div> 
+<div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert"
+        aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div>
 <?php endif; ?>
 <section class="forms">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
+                    <?php
+                    $company_id = Auth::user()->company_id();
+                    $hasServiceModule = DB::connection("mysql_base")->select('select * from companies_modules where
+                    (company_id,module_id) = (?,?)',[$company_id,12]);
+                    ?>
+                    <?php if(!empty($hasServiceModule)): ?>
+                    <div class="card-header  d-flex flex-column justify-content-center align-items-start pb-0">
                         <h4><?php echo e(trans('file.Add Sale')); ?></h4>
+                        <div class="mt-2">
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form_type" id="is_product" type="radio" name="form_type"
+                                    id="product_radio" value="product" checked>
+                                <label class="form-check-label " for="inlineRadio1">product</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input form_type" id="is_service" type="radio" name="form_type"
+                                    id="service_radio" value="service">
+                                <label class="form-check-label" for="inlineRadio2">service</label>
+                            </div>
+                        </div>
+
                     </div>
+                    <?php endif; ?>
                     <div class="card-body">
-                        <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
-                        <?php echo Form::open(['route' => 'sales.store', 'method' => 'post', 'files' => true, 'class' => 'payment-form']); ?>
+                        <p class="italic">
+                            <small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small>
+                        </p>
+                        <?php echo Form::open(['route' => 'sales.store', 'method' => 'post', 'files' => true, 'class' =>
+                        'payment-form']); ?>
 
                         <div class="row">
                             <div class="col-md-12">
@@ -20,31 +45,39 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label><?php echo e(trans('file.customer')); ?> *</label>
-                                            <select required name="customer_id" id="customer_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select customer...">
+                                            <select required name="customer_id" id="customer_id"
+                                                class="selectpicker form-control" data-live-search="true"
+                                                data-live-search-style="begins" title="Select customer...">
                                                 <?php $deposit = []; ?>
                                                 <?php $__currentLoopData = $lims_customer_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php $deposit[$customer->id] = $customer->deposit - $customer->expense; ?>
-                                                <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name . ' (' . $customer->phone_number . ')'); ?></option>
+                                                <option value="<?php echo e($customer->id); ?>">
+                                                    <?php echo e($customer->name . ' (' . $customer->phone_number . ')'); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 warehouse_select" >
                                         <div class="form-group">
                                             <label><?php echo e(trans('file.Warehouse')); ?> *</label>
-                                            <select required name="warehouse_id" id="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
+                                            <select required name="warehouse_id" id="warehouse_id"
+                                                class="selectpicker form-control" data-live-search="true"
+                                                data-live-search-style="begins" title="Select warehouse...">
                                                 <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 biller_select" >
                                         <div class="form-group">
                                             <label><?php echo e(trans('file.Biller')); ?> *</label>
-                                            <select required name="biller_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Biller...">
+                                            <select required name="biller_id" class="selectpicker form-control"
+                                                data-live-search="true" data-live-search-style="begins"
+                                                title="Select Biller...">
                                                 <?php $__currentLoopData = $lims_biller_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $biller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($biller->id); ?>"><?php echo e($biller->name . ' (' . $biller->company_name . ')'); ?></option>
+                                                <option value="<?php echo e($biller->id); ?>">
+                                                    <?php echo e($biller->name . ' (' . $biller->company_name . ')'); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
@@ -52,23 +85,39 @@
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-4">
-                                                <label><?php echo e(trans('file.salesman')); ?> *</label>
-                                                <select required name="salesman_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Salesman...">
-                                                    <?php $__currentLoopData = $lims_seller_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($seller->id); ?>"><?php echo e($seller->name); ?></option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </select>
+                                        <label><?php echo e(trans('file.salesman')); ?> *</label>
+                                        <select required name="salesman_id" class="selectpicker form-control"
+                                            data-live-search="true" data-live-search-style="begins"
+                                            title="Select Salesman...">
+                                            <?php $__currentLoopData = $lims_seller_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($seller->id); ?>"><?php echo e($seller->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 product_search">
                                         <label><?php echo e(trans('file.Select Product')); ?></label>
                                         <div class="search-box input-group">
-                                            <button type="button" class="btn btn-secondary btn-lg"><i class="fa fa-barcode"></i></button>
-                                            <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
+                                            <button type="button" class="btn btn-secondary btn-lg"><i
+                                                    class="fa fa-barcode"></i></button>
+                                            <input type="text" name="product_code_name" id="lims_productcodeSearch"
+                                                placeholder="Scan/Search product by name/code" class="form-control"
+                                                autofocus />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 service_search">
+                                        <label><?php echo e(trans('file.Select Product')); ?></label>
+                                        <div class="search-box input-group">
+                                            <button type="button" class="btn btn-secondary btn-lg"><i
+                                                    class="fa fa-barcode"></i></button>
+                                            <input type="text" name="service_code_name" id="lims_servicecodeSearch"
+                                                placeholder="Scan/Search service by name" class="form-control"
+                                                autofocus />
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row mt-5">
                                     <div class="col-md-12">
                                         <h5><?php echo e(trans('file.Order Table')); ?> *</h5>
@@ -153,7 +202,8 @@
                                             <label>
                                                 <strong><?php echo e(trans('file.Order Discount')); ?></strong>
                                             </label>
-                                            <input type="number" name="order_discount" class="form-control" step="any"/>
+                                            <input type="number" name="order_discount" class="form-control"
+                                                step="any" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -161,19 +211,21 @@
                                             <label>
                                                 <strong><?php echo e(trans('file.Shipping Cost')); ?></strong>
                                             </label>
-                                            <input type="number" name="shipping_cost" class="form-control" step="any"/>
+                                            <input type="number" name="shipping_cost" class="form-control" step="any" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label><?php echo e(trans('file.Attach Document')); ?></label> <i class="dripicons-question" data-toggle="tooltip" title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
+                                            <label><?php echo e(trans('file.Attach Document')); ?></label> <i
+                                                class="dripicons-question" data-toggle="tooltip"
+                                                title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
                                             <input type="file" name="document" class="form-control" />
                                             <?php if($errors->has('extension')): ?>
-                                                <span>
-                                                   <strong><?php echo e($errors->first('extension')); ?></strong>
-                                                </span>
+                                            <span>
+                                                <strong><?php echo e($errors->first('extension')); ?></strong>
+                                            </span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -216,13 +268,15 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label><?php echo e(trans('file.Recieved Amount')); ?> *</label>
-                                                <input type="number" name="paying_amount" class="form-control" id="paying-amount" step="any" />
+                                                <input type="number" name="paying_amount" class="form-control"
+                                                    id="paying-amount" step="any" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label><?php echo e(trans('file.Paying Amount')); ?> *</label>
-                                                <input type="number" name="paid_amount" class="form-control" id="paid-amount" step="any"/>
+                                                <input type="number" name="paid_amount" class="form-control"
+                                                    id="paid-amount" step="any" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -245,7 +299,10 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label> <?php echo e(trans('file.Gift Card')); ?> *</label>
-                                                <select id="gift_card_id" name="gift_card_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Gift Card..."></select>
+                                                <select id="gift_card_id" name="gift_card_id"
+                                                    class="selectpicker form-control" data-live-search="true"
+                                                    data-live-search-style="begins"
+                                                    title="Select Gift Card..."></select>
                                             </div>
                                         </div>
                                     </div>
@@ -279,7 +336,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary" id="submit-button">
+                                    <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary"
+                                        id="submit-button">
                                 </div>
                             </div>
                         </div>
@@ -312,12 +370,14 @@
             </td>
         </table>
     </div>
-    <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
+    <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        class="modal fade text-left">
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 id="modal_header" class="modal-title"></h5>
-                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                            aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -341,20 +401,21 @@
                     $tax_rate_all[] = $tax->rate;
                 }
             ?>
-                            <div class="form-group">
-                                <label><?php echo e(trans('file.Tax Rate')); ?></label>
-                                <select name="edit_tax_rate" class="form-control selectpicker">
-                                    <?php $__currentLoopData = $tax_name_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($key); ?>"><?php echo e($name); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                            <div id="edit_unit" class="form-group">
-                                <label><?php echo e(trans('file.Product Unit')); ?></label>
-                                <select name="edit_unit" class="form-control selectpicker">
-                                </select>
-                            </div>
-                            <button type="button" name="update_btn" class="btn btn-primary"><?php echo e(trans('file.update')); ?></button>
+                        <div class="form-group">
+                            <label><?php echo e(trans('file.Tax Rate')); ?></label>
+                            <select name="edit_tax_rate" class="form-control selectpicker">
+                                <?php $__currentLoopData = $tax_name_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($key); ?>"><?php echo e($name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </div>
+                        <div id="edit_unit" class="form-group">
+                            <label><?php echo e(trans('file.Product Unit')); ?></label>
+                            <select name="edit_unit" class="form-control selectpicker">
+                            </select>
+                        </div>
+                        <button type="button" name="update_btn"
+                            class="btn btn-primary"><?php echo e(trans('file.update')); ?></button>
                     </form>
                 </div>
             </div>
@@ -362,10 +423,59 @@
     </div>
 </section>
 <script type="text/javascript">
-
     $("ul#sale").siblings('a').attr('aria-expanded','true');
     $("ul#sale").addClass("show");
     $("ul#sale #sale-create-menu").addClass("active");
+
+    paymentForm = $('.payment-form');
+
+
+    $(document).ready(()=>{
+
+        if($("#is_product").is(":checked")){
+            
+            $(".product_search").show();
+        $(".service_search").hide();
+
+        $(".warehouse_select").show();
+        $(".biller_select").show();
+        paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
+
+        }else if($("#is_service").is(":checked")){
+            $(".product_search").hide();
+
+$(".service_search").show();
+$(".warehouse_select").hide();
+$(".biller_select").hide();
+paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
+            
+        }
+
+    });
+    // $(".service_search").hide();
+    
+    $(".form_type").on('change',(e)=>{
+    choosenFormType = $(e.target).val();
+    if(choosenFormType == "product"){
+        $(".product_search").show();
+        $(".service_search").hide();
+
+        $(".warehouse_select").show();
+        $(".biller_select").show();
+        paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
+    }else if(choosenFormType == "service"){
+        $(".product_search").hide();
+
+        $(".service_search").show();
+        $(".warehouse_select").hide();
+        $(".biller_select").hide();
+        paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
+    }
+
+    // hide biller and warehouse
+    
+})
+
 
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
 
@@ -374,6 +484,7 @@ $(".card-element").hide();
 $("#gift-card").hide();
 $("#cheque").hide();
 
+var lims_service_array = [];
 // array data depend on warehouse
 var lims_product_array = [];
 var product_code = [];
@@ -436,6 +547,17 @@ $('select[name="warehouse_id"]').on('change', function() {
     });
 });
 
+$.get('getservices/', function(data) {
+    lims_service_array = [];
+    service_code = data[0]
+    service_name = data[1];
+    service_id = data[2];
+    $.each(service_code, function(index) {
+        lims_service_array.push(service_code[index] + ' (' + service_name[index] + ')');
+    });
+});
+
+
 $('#lims_productcodeSearch').on('input', function(){
     var customer_id = $('#customer_id').val();
     var warehouse_id = $('#warehouse_id').val();
@@ -451,7 +573,19 @@ $('#lims_productcodeSearch').on('input', function(){
 
 });
 
+$('#lims_servicecodeSearch').on('input', function(){
+        var customer_id = $('#customer_id').val();
+        temp_data = $('#lims_servicecodeSearch').val();
+        if(!customer_id){
+            $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            alert('Please select Customer!');
+        }
+
+    });
+
 var lims_productcodeSearch = $('#lims_productcodeSearch');
+var lims_servicecodeSearch = $('#lims_servicecodeSearch');
+
 
 lims_productcodeSearch.autocomplete({
     source: function(request, response) {
@@ -472,6 +606,30 @@ lims_productcodeSearch.autocomplete({
         productSearch(data);
     }
 });
+
+lims_servicecodeSearch.autocomplete({
+    source: function(request, response) {
+        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
+        //  I need ( lims_service_array ) 
+        response($.grep(lims_service_array, function(item) {
+            return matcher.test(item);
+        }));
+    },
+    response: function(event, ui) {
+        if (ui.content.length == 1) {
+            var data = ui.content[0].value;
+            console.log(data,'searching for this');
+            $(this).autocomplete( "close" );
+            serviceSearch(data);
+        };
+    },
+    select: function(event, ui) {
+        var data = ui.item.value;
+        serviceSearch(data);
+    }
+});
+
+
 
 //Change quantity
 $("#myTable").on('input', '.qty', function() {
@@ -573,7 +731,45 @@ function productSearch(data) {
             });
             $("input[name='product_code_name']").val('');
             if(flag){
-                var newRow = $("<tr>");
+                addNewProduct(data);
+            }
+        }
+    });
+}
+
+function serviceSearch(data){
+    $.ajax({
+        type: 'GET',
+        url: 'lims_service_search',
+        data: {
+            data: data
+        },
+        success: function(data) {
+            var flag = 1;
+            $(".product-code").each(function(i) {
+                if ($(this).val() == data[1]) {
+                    rowindex = i;
+                    var pre_qty = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val();
+                    if(pre_qty)
+                        var qty = parseFloat(pre_qty) + 1;
+                    else
+                        var qty = 1;
+                    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(qty);
+                    flag = 0;
+                    checkQuantity(String(qty), true);
+                    flag = 0;
+                }
+            });
+            $("input[name='service_code_name']").val('');
+            if(flag){
+                addNewProduct(data);
+            }
+        }
+    });
+}
+
+function addNewProduct(data){
+    var newRow = $("<tr>");
                 var cols = '';
                 temp_unit_name = (data[6]).split(',');
                 cols += '<td>' + data[0] + '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
@@ -606,9 +802,6 @@ function productSearch(data) {
                 unit_operation_value.push(data[8]);
                 rowindex = newRow.index();
                 checkQuantity(1, true);
-            }
-        }
-    });
 }
 
 function edit()
