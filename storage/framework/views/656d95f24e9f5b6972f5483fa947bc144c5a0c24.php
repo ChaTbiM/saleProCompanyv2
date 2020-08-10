@@ -104,7 +104,7 @@
 
     <div style="max-width:400px;margin:0 auto">
         <?php if(preg_match('~[0-9]~', url()->previous())): ?>
-        <?php $url = '../../pos'; ?>
+        <?php $url = '../../sales'; ?>
         <?php else: ?>
         <?php $url = url()->previous(); ?>
         <?php endif; ?>
@@ -126,14 +126,14 @@
                 <img src="<?php echo e(url('public/logo', $general_setting->site_logo)); ?>" height="42" width="42"
                     style="margin:10px 0;filter: brightness(0);">
                 <?php endif; ?>
-
+                    
                 <h2><?php echo e($lims_biller_data->company_name); ?></h2>
-
                 <p><?php echo e(trans('file.Address')); ?>: <?php echo e($lims_warehouse_data->address); ?>
 
                     <br><?php echo e(trans('file.Phone Number')); ?>: <?php echo e($lims_warehouse_data->phone); ?>
 
                 </p>
+
             </div>
             <p><?php echo e(trans('file.Date')); ?>: <?php echo e($lims_sale_data->created_at); ?><br>
                 <?php echo e(trans('file.reference')); ?>: <?php echo e($lims_sale_data->reference_no); ?><br>
@@ -206,7 +206,7 @@
                     </tr>
                     <tr>
                         <th colspan="2"><?php echo e(trans('file.salesman')); ?></th>
-                        <?php if(isset($seller)): ?>
+                        <?php if(isset($seller) && !empty($seller)): ?>
 
                         <th style="text-align:right"><?php echo e($seller->name); ?></th>
                         <?php else: ?>

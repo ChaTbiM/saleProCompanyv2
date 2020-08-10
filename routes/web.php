@@ -105,6 +105,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::post('sales/sendmail', 'SaleController@sendMail')->name('sale.sendmail');
     Route::get('sales/sale_by_csv', 'SaleController@saleByCsv');
     Route::get('sales/product_sale/{id}', 'SaleController@productSaleData');
+    Route::get('sales/service_sale/{id}', 'SaleController@serviceSaleData');
+
     Route::post('importsale', 'SaleController@importSale')->name('sale.import');
     Route::get('pos', 'SaleController@posSale')->name('sale.pos');
     Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
@@ -119,6 +121,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('sales/paypalSuccess', 'SaleController@paypalSuccess');
     Route::get('sales/paypalPaymentSuccess/{id}', 'SaleController@paypalPaymentSuccess');
     Route::get('sales/gen_invoice/{id}', 'SaleController@genInvoice')->name('sale.invoice');
+    Route::get('sales/gen_service_invoice/{id}', 'SaleController@genServiceInvoice')->name('service_sale.invoice');
+
     Route::post('sales/add_payment', 'SaleController@addPayment')->name('sale.add-payment');
     Route::get('sales/getpayment/{id}', 'SaleController@getPayment')->name('sale.get-payment');
     Route::post('sales/updatepayment', 'SaleController@updatePayment')->name('sale.update-payment');

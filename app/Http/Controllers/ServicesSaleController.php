@@ -35,9 +35,10 @@ class ServicesSaleController extends Controller
         $data['user_id'] = Auth::id();
 
         unset($data['biller_id']);
-        unset($data['warehouse']);
+        unset($data['warehouse_id']);
 
-        dd($data, $request->all());
+        $data["is_product"] = 0;
+        
         if ($data['pos']) {
             $data['reference_no'] = 'posr-' . date("Ymd") . '-' . date("his");
             $balance = $data['grand_total'] - $data['paid_amount'];

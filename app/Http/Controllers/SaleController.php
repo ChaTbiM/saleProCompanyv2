@@ -44,6 +44,7 @@ use Srmklive\PayPal\Services\AdaptivePayments;
 use GeniusTS\HijriDate\Date;
 use Illuminate\Support\Facades\Validator;
 use App\Service;
+use App\ServicesSale;
 
 class SaleController extends Controller
 {
@@ -181,7 +182,11 @@ class SaleController extends Controller
                 $nestedData['key'] = $key;
                 $nestedData['date'] = date(config('date_format'), strtotime($sale->created_at->toDateString()));
                 $nestedData['reference_no'] = $sale->reference_no;
-                $nestedData['biller'] = $sale->biller->name;
+                if ($sale->is_product) {
+                    $nestedData['biller'] = $sale->biller->name;
+                } else {
+                    $nestedData['biller'] = "N/A";
+                }
                 $nestedData['customer'] = $sale->customer->name;
 
                 if ($sale->salesman) {
@@ -211,6 +216,12 @@ class SaleController extends Controller
                     $nestedData['payment_status'] = '<div class="badge badge-success">' . trans('file.Paid') . '</div>';
                 }
 
+                if ($sale->is_product) {
+                    $invoice_url = "sale.invoice";
+                } else {
+                    $invoice_url = "service_sale.invoice";
+                }
+
                 $nestedData['grand_total'] = number_format($sale->grand_total, 2);
                 $nestedData['paid_amount'] = number_format($sale->paid_amount, 2);
                 $nestedData['due'] = number_format($sale->grand_total - $sale->paid_amount, 2);
@@ -220,7 +231,7 @@ class SaleController extends Controller
                               <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                <li><a href="' . route('sale.invoice', ['id' => $sale->id]) . '" class="btn btn-link"><i class="fa fa-copy"></i> ' . trans('file.Generate Invoice') . '</a></li>
+                                <li><a href="' . route(''.$invoice_url.'', ['id' => $sale->id]) . '" class="btn btn-link"><i class="fa fa-copy"></i> ' . trans('file.Generate Invoice') . '</a></li>
                                 <li>
                                     <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i> ' . trans('file.View') . '</button>
                                 </li>';
@@ -261,7 +272,14 @@ class SaleController extends Controller
                     $coupon_code = null;
                 }
 
-                $nestedData['sale'] = array('[ "' . date(config('date_format'), strtotime($sale->created_at->toDateString())) . '"', ' "' . $sale->reference_no . '"', ' "' . $sale_status . '"', ' "' . $sale->biller->name . '"', ' "' . $sale->biller->company_name . '"', ' "' . $sale->biller->email . '"', ' "' . $sale->biller->phone_number . '"', ' "' . $sale->biller->address . '"', ' "' . $sale->biller->city . '"', ' "' . $sale->customer->name . '"', ' "' . $sale->customer->phone_number . '"', ' "' . $sale->customer->address . '"', ' "' . $sale->customer->city . '"', ' "' . $sale->id . '"', ' "' . $sale->total_tax . '"', ' "' . $sale->total_discount . '"', ' "' . $sale->total_price . '"', ' "' . $sale->order_tax . '"', ' "' . $sale->order_tax_rate . '"', ' "' . $sale->order_discount . '"', ' "' . $sale->shipping_cost . '"', ' "' . $sale->grand_total . '"', ' "' . $sale->paid_amount . '"', ' "' . $sale->sale_note . '"', ' "' . $sale->staff_note . '"', ' "' . $sale->user->name . '"', ' "' . $sale->user->email . '"', ' "' . $sale->warehouse->name . '"', ' "' . $coupon_code . '"', ' "' . $sale->coupon_discount . '"]');
+
+                $undefined = "N/A";
+
+                if ($sale->is_product) {
+                    $nestedData['sale'] = array('[ "' . date(config('date_format'), strtotime($sale->created_at->toDateString())) . '"', ' "' . $sale->reference_no . '"', ' "' . $sale_status . '"', ' "' . $sale->biller->name . '"', ' "' . $sale->biller->company_name . '"', ' "' . $sale->biller->email . '"', ' "' . $sale->biller->phone_number . '"', ' "' . $sale->biller->address . '"', ' "' . $sale->biller->city . '"', ' "' . $sale->customer->name . '"', ' "' . $sale->customer->phone_number . '"', ' "' . $sale->customer->address . '"', ' "' . $sale->customer->city . '"', ' "' . $sale->id . '"', ' "' . $sale->total_tax . '"', ' "' . $sale->total_discount . '"', ' "' . $sale->total_price . '"', ' "' . $sale->order_tax . '"', ' "' . $sale->order_tax_rate . '"', ' "' . $sale->order_discount . '"', ' "' . $sale->shipping_cost . '"', ' "' . $sale->grand_total . '"', ' "' . $sale->paid_amount . '"', ' "' . $sale->sale_note . '"', ' "' . $sale->staff_note . '"', ' "' . $sale->user->name . '"', ' "' . $sale->user->email . '"', ' "' . $sale->warehouse->name . '"', ' "' . $coupon_code . '"', ' "' . $sale->coupon_discount . '"]');
+                } else {
+                    $nestedData['sale'] = array('[ "' . date(config('date_format'), strtotime($sale->created_at->toDateString())) . '"', ' "' . $sale->reference_no . '"', ' "' . $sale_status . '"', ' "' . $undefined . '"', ' "' . $undefined . '"', ' "' . $undefined . '"', ' "' . $undefined . '"', ' "' . $undefined . '"', ' "' . $undefined . '"', ' "' . $sale->customer->name . '"', ' "' . $sale->customer->phone_number . '"', ' "' . $sale->customer->address . '"', ' "' . $sale->customer->city . '"', ' "' . $sale->id . '"', ' "' . $sale->total_tax . '"', ' "' . $sale->total_discount . '"', ' "' . $sale->total_price . '"', ' "' . $sale->order_tax . '"', ' "' . $sale->order_tax_rate . '"', ' "' . $sale->order_discount . '"', ' "' . $sale->shipping_cost . '"', ' "' . $sale->grand_total . '"', ' "' . $sale->paid_amount . '"', ' "' . $sale->sale_note . '"', ' "' . $sale->staff_note . '"', ' "' . $sale->user->name . '"', ' "' . $sale->user->email . '"', ' "' . $undefined . '"', ' "' . $coupon_code . '"', ' "' . $sale->coupon_discount . '"]');
+                }
                 $data[] = $nestedData;
             }
         }
@@ -298,6 +316,7 @@ class SaleController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = Auth::id();
+        $data["is_product"] = 1;
         if ($data['pos']) {
             $data['reference_no'] = 'posr-' . date("Ymd") . '-' . date("his");
             $balance = $data['grand_total'] - $data['paid_amount'];
@@ -1138,6 +1157,30 @@ class SaleController extends Controller
         return $product_sale;
     }
 
+
+    public function serviceSaleData($id)
+    {
+        $lims_service_sale_data = ServicesSale::where('sale_id', $id)->get();
+        foreach ($lims_service_sale_data as $key => $service_sale_data) {
+            $service = Service::find($service_sale_data->service_id);
+
+            $unit_data = Unit::find($service_sale_data->sale_unit_id);
+            if ($unit_data) {
+                $unit = $unit_data->unit_code;
+            } else {
+                $unit = '';
+            }
+            $service_sale[0][$key] = $service->name . ' [' . $service->code . ']';
+            $service_sale[1][$key] = $service_sale_data->qty;
+            $service_sale[2][$key] = $unit;
+            $service_sale[3][$key] = $service_sale_data->tax;
+            $service_sale[4][$key] = $service_sale_data->tax_rate;
+            $service_sale[5][$key] = $service_sale_data->discount;
+            $service_sale[6][$key] = $service_sale_data->total;
+        }
+        return $service_sale;
+    }
+
     public function saleByCsv()
     {
         $role = Role::find(Auth::user()->role_id());
@@ -1584,10 +1627,13 @@ class SaleController extends Controller
     public function genInvoice($id)
     {
         $lims_sale_data = Sale::find($id);
-        $seller = $lims_sale_data->salesman;
+        
         $lims_product_sale_data = Product_Sale::where('sale_id', $id)->get();
         $lims_biller_data = Biller::find($lims_sale_data->biller_id);
         $lims_warehouse_data = Warehouse::find($lims_sale_data->warehouse_id);
+        $seller = $lims_sale_data->salesman;
+
+
         $lims_customer_data = Customer::find($lims_sale_data->customer_id);
         $lims_payment_data = Payment::where('sale_id', $id)->get();
 
@@ -1600,6 +1646,28 @@ class SaleController extends Controller
         $numberInWords = $numberTransformer->toWords($lims_sale_data->grand_total);
 
         return view('sale.invoice', compact('lims_sale_data', 'seller', 'lims_product_sale_data', 'lims_biller_data', 'lims_warehouse_data', 'lims_customer_data', 'lims_payment_data', 'numberInWords'));
+    }
+
+    public function genServiceInvoice($id)
+    {
+        $lims_sale_data = Sale::find($id);
+        
+        $lims_service_sale_data = ServicesSale::where('sale_id', $id)->get();
+        $seller = $lims_sale_data->salesman;
+
+
+        $lims_customer_data = Customer::find($lims_sale_data->customer_id);
+        $lims_payment_data = Payment::where('sale_id', $id)->get();
+
+        $numberToWords = new NumberToWords();
+        if (\App::getLocale() == 'ar' || \App::getLocale() == 'hi' || \App::getLocale() == 'vi') {
+            $numberTransformer = $numberToWords->getNumberTransformer('en');
+        } else {
+            $numberTransformer = $numberToWords->getNumberTransformer(\App::getLocale());
+        }
+        $numberInWords = $numberTransformer->toWords($lims_sale_data->grand_total);
+
+        return view('sale.service_invoice', compact('lims_sale_data', 'seller', 'lims_service_sale_data', 'lims_customer_data', 'lims_payment_data', 'numberInWords'));
     }
 
     public function addPayment(Request $request)

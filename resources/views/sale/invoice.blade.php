@@ -104,7 +104,7 @@
 
     <div style="max-width:400px;margin:0 auto">
         @if(preg_match('~[0-9]~', url()->previous()))
-        @php $url = '../../pos'; @endphp
+        @php $url = '../../sales'; @endphp
         @else
         @php $url = url()->previous(); @endphp
         @endif
@@ -126,12 +126,12 @@
                 <img src="{{url('public/logo', $general_setting->site_logo)}}" height="42" width="42"
                     style="margin:10px 0;filter: brightness(0);">
                 @endif
-
+                    
                 <h2>{{$lims_biller_data->company_name}}</h2>
-
                 <p>{{trans('file.Address')}}: {{$lims_warehouse_data->address}}
                     <br>{{trans('file.Phone Number')}}: {{$lims_warehouse_data->phone}}
                 </p>
+
             </div>
             <p>{{trans('file.Date')}}: {{$lims_sale_data->created_at}}<br>
                 {{trans('file.reference')}}: {{$lims_sale_data->reference_no}}<br>
@@ -199,7 +199,7 @@
                     </tr>
                     <tr>
                         <th colspan="2">{{trans('file.salesman')}}</th>
-                        @if (isset($seller))
+                        @if (isset($seller) && !empty($seller))
 
                         <th style="text-align:right">{{$seller->name}}</th>
                         @else

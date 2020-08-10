@@ -71,7 +71,7 @@
                                     <div class="col-md-4 biller_select" >
                                         <div class="form-group">
                                             <label>{{trans('file.Biller')}} *</label>
-                                            <select required name="biller_id" class="selectpicker form-control"
+                                            <select required name="biller_id" id="biller_id" class="selectpicker form-control"
                                                 data-live-search="true" data-live-search-style="begins"
                                                 title="Select Biller...">
                                                 @foreach($lims_biller_list as $biller)
@@ -437,6 +437,9 @@
 
         $(".warehouse_select").show();
         $(".biller_select").show();
+        $("#warehouse_id").show().prop('required',true);
+        $("#biller_id").show().prop('required',true);
+
         paymentForm.attr("action","{{route('sales.store')}}"); 
 
         }else if($("#is_service").is(":checked")){
@@ -445,6 +448,9 @@
 $(".service_search").show();
 $(".warehouse_select").hide();
 $(".biller_select").hide();
+$("#warehouse_id").hide().prop('required',false);
+$("#biller_id").hide().prop('required',false);
+
 paymentForm.attr("action","{{route('services.sale')}}"); 
             
         }
@@ -460,13 +466,19 @@ paymentForm.attr("action","{{route('services.sale')}}");
 
         $(".warehouse_select").show();
         $(".biller_select").show();
+        $("#warehouse_id").show().prop('required',true);
+        $("#biller_id").show().prop('required',true);
+
         paymentForm.attr("action","{{route('sales.store')}}"); 
     }else if(choosenFormType == "service"){
+
         $(".product_search").hide();
 
         $(".service_search").show();
         $(".warehouse_select").hide();
         $(".biller_select").hide();
+        $("#warehouse_id").hide().prop('required',false);
+        $("#biller_id").hide().prop('required',false);
         paymentForm.attr("action","{{route('services.sale')}}"); 
     }
 

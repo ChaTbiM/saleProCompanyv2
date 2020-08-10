@@ -1772,51 +1772,64 @@
     $("ul#sale").addClass("show");
     $("ul#sale #sale-pos-menu").addClass("active");
 
+
     $(document).ready(()=>{
-    paymentForm = $('.payment-form');
+        paymentForm = $('.payment-form');
 
-        if($("#is_product").is(":checked")){
-            $(".product_search").show();
-        $(".service_search").hide();
+if($("#is_product").is(":checked")){
+    
+    $(".product_search").show();
+$(".service_search").hide();
 
-        $(".warehouse_select").show();
-        $(".biller_select").show();
-        paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
+$(".warehouse_select").show();
+$(".biller_select").show();
+$("#warehouse_id").show().prop('required',true);
+$("#biller_id").show().prop('required',true);
 
-        }else if($("#is_service").is(":checked")){
-            $(".product_search").hide();
+paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
+
+}else if($("#is_service").is(":checked")){
+    $(".product_search").hide();
 
 $(".service_search").show();
 $(".warehouse_select").hide();
 $(".biller_select").hide();
+$("#warehouse_id").hide().prop('required',false);
+$("#biller_id").hide().prop('required',false);
+
 paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
-            
-        }
-
-    });
-    // $(".service_search").hide();
     
-    $(".form_type").on('change',(e)=>{
-    paymentForm = $('.payment-form');
-    choosenFormType = $(e.target).val();
-    if(choosenFormType == "product"){
-        $(".product_search").show();
-        $(".service_search").hide();
+}
 
-        $(".warehouse_select").show();
-        $(".biller_select").show();
-        paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
-    }else if(choosenFormType == "service"){
-        $(".product_search").hide();
+});
+// $(".service_search").hide();
 
-        $(".service_search").show();
-        $(".warehouse_select").hide();
-        $(".biller_select").hide();
-        paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
-    }
+$(".form_type").on('change',(e)=>{
+choosenFormType = $(e.target).val();
+if(choosenFormType == "product"){
+$(".product_search").show();
+$(".service_search").hide();
 
-    // hide biller and warehouse
-    
+$(".warehouse_select").show();
+$(".biller_select").show();
+$("#warehouse_id").show().prop('required',true);
+$("#biller_id").show().prop('required',true);
+
+paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
+}else if(choosenFormType == "service"){
+
+$(".product_search").hide();
+
+$(".service_search").show();
+$(".warehouse_select").hide();
+$(".biller_select").hide();
+$("#warehouse_id").hide().prop('required',false);
+$("#biller_id").hide().prop('required',false);
+paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
+}
+
+// hide biller and warehouse
+
 })
 
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
@@ -2059,9 +2072,9 @@ else{
     
     $('#lims_servicecodeSearch').on('input', function(){
         var customer_id = $('#customer_id').val();
-        temp_data = $('#limse_servicecodeSearch').val();
+        temp_data = $('#lims_servicecodeSearch').val();
         if(!customer_id){
-            $('#limse_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
             alert('Please select Customer!');
         }
 
@@ -2210,8 +2223,6 @@ lims_productcodeSearch.autocomplete({
         productSearch(data);
     }
 });
-
-// need to work on lims_servicecodeSearch
 
 lims_servicecodeSearch.autocomplete({
     source: function(request, response) {
