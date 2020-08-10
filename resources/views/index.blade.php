@@ -202,7 +202,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-12">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <h4>{{trans('file.Recent Transaction')}}</h4>
@@ -356,10 +356,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-5">
+            {{-- Best Product Seller / Monthly --}}
+            <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h4>{{trans('file.Best Seller').' '.date('F')}}</h4>
+                  <h4>{{trans('file.Best Product Seller').' '.date('F')}}</h4>
                   <div class="right-column">
                     <div class="badge badge-primary">{{trans('file.top')}} 5</div>
                   </div>
@@ -387,10 +388,43 @@
                   </div>
               </div>
             </div>
+            {{-- Best Service Seller / Monthly  --}}
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h4>{{trans('file.Best Seller').' '.date('Y'). '('.trans('file.qty').')'}}</h4>
+                  <h4>{{trans('file.Best Service Seller').' '.date('F')}}</h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary">{{trans('file.top')}} 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th>{{trans('file.Product Details')}}</th>
+                          <th>{{trans('file.qty')}}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($best_selling_service_qty as $key=>$sale)
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td>{{$key + 1}}</td>
+                          <td>{{$service->name}}<br>[{{$service->code}}]</td>
+                          <td>{{$sale->sold_qty}}</td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+            {{-- BEst PRoduct Seller / Yearly --}}
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4>{{trans('file.Best Product Seller').' '.date('Y'). '('.trans('file.qty').')'}}</h4>
                   <div class="right-column">
                     <div class="badge badge-primary">{{trans('file.top')}} 5</div>
                   </div>
@@ -418,6 +452,39 @@
                   </div>
               </div>
             </div>
+            {{-- Best Service Seller / Yearly --}}
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4>{{trans('file.Best Service Seller').' '.date('Y'). '('.trans('file.qty').')'}}</h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary">{{trans('file.top')}} 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th>{{trans('file.Product Details')}}</th>
+                          <th>{{trans('file.qty')}}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($yearly_best_selling_service_qty as $key => $sale)
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td>{{$key + 1}}</td>
+                          <td>{{$service->name}}<br>[{{$service->code}}]</td>
+                          <td>{{$sale->sold_qty}}</td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+            {{-- Best Product Seller / Price / yearly --}}
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -441,6 +508,39 @@
                         <tr>
                           <td>{{$key + 1}}</td>
                           <td>{{$product->name}}<br>[{{$product->code}}]</td>
+                          <td>{{number_format((float)$sale->total_price, 2, '.', '')}}</td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+
+            {{-- Best Service Seller / Price / yearly --}}
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4>{{trans('file.Best Seller').' '.date('Y') . '('.trans('file.price').')'}}</h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary">{{trans('file.top')}} 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th>{{trans('file.Product Details')}}</th>
+                          <th>{{trans('file.grand total')}}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($yearly_best_selling_service_price as $key => $sale)
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td>{{$key + 1}}</td>
+                          <td>{{$service->name}}<br>[{{$service->code}}]</td>
                           <td>{{number_format((float)$sale->total_price, 2, '.', '')}}</td>
                         </tr>
                         @endforeach

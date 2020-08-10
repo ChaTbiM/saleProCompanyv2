@@ -201,7 +201,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-12">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <h4><?php echo e(trans('file.Recent Transaction')); ?></h4>
@@ -355,10 +355,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-5">
+            
+            <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h4><?php echo e(trans('file.Best Seller').' '.date('F')); ?></h4>
+                  <h4><?php echo e(trans('file.Best Product Seller').' '.date('F')); ?></h4>
                   <div class="right-column">
                     <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
                   </div>
@@ -386,10 +387,43 @@
                   </div>
               </div>
             </div>
+            
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h4><?php echo e(trans('file.Best Seller').' '.date('Y'). '('.trans('file.qty').')'); ?></h4>
+                  <h4><?php echo e(trans('file.Best Service Seller').' '.date('F')); ?></h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th><?php echo e(trans('file.Product Details')); ?></th>
+                          <th><?php echo e(trans('file.qty')); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php $__currentLoopData = $best_selling_service_qty; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=>$sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td><?php echo e($key + 1); ?></td>
+                          <td><?php echo e($service->name); ?><br>[<?php echo e($service->code); ?>]</td>
+                          <td><?php echo e($sale->sold_qty); ?></td>
+                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4><?php echo e(trans('file.Best Product Seller').' '.date('Y'). '('.trans('file.qty').')'); ?></h4>
                   <div class="right-column">
                     <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
                   </div>
@@ -417,6 +451,39 @@
                   </div>
               </div>
             </div>
+            
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4><?php echo e(trans('file.Best Service Seller').' '.date('Y'). '('.trans('file.qty').')'); ?></h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th><?php echo e(trans('file.Product Details')); ?></th>
+                          <th><?php echo e(trans('file.qty')); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php $__currentLoopData = $yearly_best_selling_service_qty; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td><?php echo e($key + 1); ?></td>
+                          <td><?php echo e($service->name); ?><br>[<?php echo e($service->code); ?>]</td>
+                          <td><?php echo e($sale->sold_qty); ?></td>
+                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
