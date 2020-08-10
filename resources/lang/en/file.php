@@ -135,6 +135,8 @@ return [
     'Sent' => 'Sent',
     'Net Profit' => 'Net Profit',
     'Best Seller' => 'Best Seller',
+    'Best Product Seller' => 'Best Product Seller',
+    'Best Service Seller' => 'Best Service Seller',
     'Best Seller From' => 'Best Seller From',
     'Product Report' => 'Product Report',
     'Purchased' => 'Purchased',

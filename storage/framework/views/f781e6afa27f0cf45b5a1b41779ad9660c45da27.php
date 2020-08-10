@@ -483,7 +483,7 @@
                   </div>
               </div>
             </div>
-
+            
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -507,6 +507,39 @@
                         <tr>
                           <td><?php echo e($key + 1); ?></td>
                           <td><?php echo e($product->name); ?><br>[<?php echo e($product->code); ?>]</td>
+                          <td><?php echo e(number_format((float)$sale->total_price, 2, '.', '')); ?></td>
+                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+
+            
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4><?php echo e(trans('file.Best Service Seller').' '.date('Y') . '('.trans('file.price').')'); ?></h4>
+                  <div class="right-column">
+                    <div class="badge badge-primary"><?php echo e(trans('file.top')); ?> 5</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>SL No</th>
+                          <th><?php echo e(trans('file.Product Details')); ?></th>
+                          <th><?php echo e(trans('file.grand total')); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php $__currentLoopData = $yearly_best_selling_service_price; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $service = DB::table('services')->find($sale->service_id); ?>
+                        <tr>
+                          <td><?php echo e($key + 1); ?></td>
+                          <td><?php echo e($service->name); ?><br>[<?php echo e($service->code); ?>]</td>
                           <td><?php echo e(number_format((float)$sale->total_price, 2, '.', '')); ?></td>
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

@@ -136,6 +136,8 @@ return [
     "Sent" => "أرسلت",
     "Net Profit" => "صافي الربح",
     "Best Seller" => "الأكثر مبيعا",
+    "Best Prdocut Seller" => "المنتجات الأكثر مبيعا",
+    "Best Service Seller" => "الخدمات الأكثر مبيعا",
     "Best Seller From" => "أفضل بائع من",
     "Product Report" => "تقرير المنتج",
     "Purchased" => "اشترى",
