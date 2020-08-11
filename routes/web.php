@@ -108,6 +108,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('sales/service_sale/{id}', 'SaleController@serviceSaleData');
 
     Route::post('importsale', 'SaleController@importSale')->name('sale.import');
+    Route::post('importservicesale', 'SaleController@importServiceSale')->name('service_sale.import');
+
     Route::get('pos', 'SaleController@posSale')->name('sale.pos');
     Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
     Route::get('sales/lims_product_search', 'SaleController@limsProductSearch')->name('product_sale.search');

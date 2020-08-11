@@ -1189,8 +1189,9 @@ class SaleController extends Controller
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_biller_list = Biller::where('is_active', true)->get();
             $lims_tax_list = Tax::where('is_active', true)->get();
+            $lims_seller_list = Employee::where('is_salesman', true)->get();
 
-            return view('sale.import', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list'));
+            return view('sale.import', compact('lims_customer_list', 'lims_seller_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list'));
         } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
         }
@@ -1320,6 +1321,172 @@ class SaleController extends Controller
             $product_sale->total = $mail_data['total'][$key] = number_format((float)$total, 2, '.', '');
             $product_sale->save();
             $lims_sale_data->total_qty += $qty[$key];
+            $lims_sale_data->total_discount += $discount[$key] * $qty[$key];
+            $lims_sale_data->total_tax += number_format((float)$product_tax, 2, '.', '');
+            $lims_sale_data->total_price += number_format((float)$total, 2, '.', '');
+        }
+        $lims_sale_data->item = $key + 1;
+        $lims_sale_data->order_tax = ($lims_sale_data->total_price - $lims_sale_data->order_discount) * ($data['order_tax_rate'] / 100);
+        $lims_sale_data->grand_total = ($lims_sale_data->total_price + $lims_sale_data->order_tax + $lims_sale_data->shipping_cost) - $lims_sale_data->order_discount;
+        $lims_sale_data->save();
+        $message = 'Sale imported successfully';
+        if ($lims_customer_data->email) {
+            //collecting male data
+            $mail_data['email'] = $lims_customer_data->email;
+            $mail_data['reference_no'] = $lims_sale_data->reference_no;
+            $mail_data['sale_status'] = $lims_sale_data->sale_status;
+            $mail_data['payment_status'] = $lims_sale_data->payment_status;
+            $mail_data['total_qty'] = $lims_sale_data->total_qty;
+            $mail_data['total_price'] = $lims_sale_data->total_price;
+            $mail_data['order_tax'] = $lims_sale_data->order_tax;
+            $mail_data['order_tax_rate'] = $lims_sale_data->order_tax_rate;
+            $mail_data['order_discount'] = $lims_sale_data->order_discount;
+            $mail_data['shipping_cost'] = $lims_sale_data->shipping_cost;
+            $mail_data['grand_total'] = $lims_sale_data->grand_total;
+            $mail_data['paid_amount'] = $lims_sale_data->paid_amount;
+            if ($mail_data['email']) {
+                try {
+                    Mail::send('mail.sale_details', $mail_data, function ($message) use ($mail_data) {
+                        $message->to($mail_data['email'])->subject('Sale Details');
+                    });
+                } catch (\Exception $e) {
+                    $message = 'Sale imported successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
+                }
+            }
+        }
+        return redirect('sales')->with('message', $message);
+    }
+
+
+    public function importServiceSale(Request $request)
+    {
+        // dd("importing Service Sale !", $request);
+        //get the file
+        $upload = $request->file('file');
+        $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
+        //checking if this is a CSV file
+        if ($ext != 'csv') {
+            return redirect()->back()->with('message', 'Please upload a CSV file');
+        }
+
+        $filePath = $upload->getRealPath();
+        $file_handle = fopen($filePath, 'r');
+        $i = 0;
+        //validate the file
+        while (!feof($file_handle)) {
+            $current_line = fgetcsv($file_handle);
+            if ($current_line && $i > 0) {
+                $product_data[] = Service::where('code', $current_line[0])->first();
+                if (!$product_data[$i - 1]) {
+                    return redirect()->back()->with('message', 'Service does not exist!');
+                }
+                $unit[] = Unit::where('unit_code', $current_line[2])->first();
+                if (!$unit[$i - 1] && $current_line[2] == 'n/a') {
+                    $unit[$i - 1] = 'n/a';
+                } elseif (!$unit[$i - 1]) {
+                    return redirect()->back()->with('message', 'Sale unit does not exist!');
+                }
+                if (strtolower($current_line[5]) != "no tax") {
+                    $tax[] = Tax::where('name', $current_line[5])->first();
+                    if (!$tax[$i - 1]) {
+                        return redirect()->back()->with('message', 'Tax name does not exist!');
+                    }
+                } else {
+                    $tax[$i - 1]['rate'] = 0;
+                }
+
+                $qty[] = $current_line[1];
+                $price[] = $current_line[3];
+                $discount[] = $current_line[4];
+            }
+            $i++;
+        }
+        //return $unit;
+        $data = $request->except('document');
+        $data['reference_no'] = 'sr-' . date("Ymd") . '-' . date("his");
+        $data['user_id'] = Auth::user()->id;
+
+
+        if ($data['salesman_id']) {
+            $data['salesman_name'] = Employee::find($data['salesman_id'])->name;
+        }
+
+        $data["is_product"] = 0;
+
+        $document = $request->document;
+        if ($document) {
+            $v = Validator::make(
+                [
+                    'extension' => strtolower($request->document->getClientOriginalExtension()),
+                ],
+                [
+                    'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
+                ]
+            );
+            if ($v->fails()) {
+                return redirect()->back()->withErrors($v->errors());
+            }
+
+            $ext = pathinfo($document->getClientOriginalName(), PATHINFO_EXTENSION);
+            $documentName = $data['reference_no'] . '.' . $ext;
+            $document->move('public/documents/sale', $documentName);
+            $data['document'] = $documentName;
+        }
+        $item = 0;
+        $grand_total = $data['shipping_cost'];
+        Sale::create($data);
+        $lims_sale_data = Sale::latest()->first();
+        $lims_customer_data = Customer::find($lims_sale_data->customer_id);
+
+        foreach ($product_data as $key => $product) {
+            if ($product['tax_method'] == 1) {
+                $net_unit_price = $price[$key] - $discount[$key];
+                $product_tax = $net_unit_price * ($tax[$key]['rate'] / 100) * $qty[$key];
+                $total = ($net_unit_price * $qty[$key]) + $product_tax;
+            } elseif ($product['tax_method'] == 2) {
+                $net_unit_price = (100 / (100 + $tax[$key]['rate'])) * ($price[$key] - $discount[$key]);
+                $product_tax = ($price[$key] - $discount[$key] - $net_unit_price) * $qty[$key];
+                $total = ($price[$key] - $discount[$key]) * $qty[$key];
+            }
+            if ($data['sale_status'] == 1 && $unit[$key] != 'n/a') {
+                $sale_unit_id = $unit[$key]['id'];
+                // if ($unit[$key]['operator'] == '*') {
+                //     $quantity = $qty[$key] * $unit[$key]['operation_value'];
+                // } elseif ($unit[$key]['operator'] == '/') {
+                //     $quantity = $qty[$key] / $unit[$key]['operation_value'];
+                // }
+                // $product['qty'] -= $quantity;
+                // $product_warehouse = Product_Warehouse::where([
+                //     ['product_id', $product['id']],
+                //     ['warehouse_id', $data['warehouse_id']]
+                // ])->first();
+                // $product_warehouse->qty -= $quantity;
+                $product->save();
+            // $product_warehouse->save();
+            } else {
+                $sale_unit_id = 0;
+            }
+            //collecting mail data
+            $mail_data['products'][$key] = $product['name'];
+            $mail_data['file'][$key] = '';
+
+            if ($sale_unit_id) {
+                $mail_data['unit'][$key] = $unit[$key]['unit_code'];
+            } else {
+                $mail_data['unit'][$key] = '';
+            }
+
+            $product_sale = new ServicesSale();
+            $product_sale->sale_id = $lims_sale_data->id;
+            $product_sale->service_id = $product['id'];
+            $product_sale->qty = $mail_data['qty'][$key] = $qty[$key];
+            $product_sale->net_unit_price = number_format((float)$net_unit_price, 2, '.', '');
+            $product_sale->discount = $discount[$key] * $qty[$key];
+            $product_sale->tax_rate = $tax[$key]['rate'];
+            $product_sale->tax = number_format((float)$product_tax, 2, '.', '');
+            $product_sale->total = $mail_data['total'][$key] = number_format((float)$total, 2, '.', '');
+            $product_sale->save();
+            // $lims_sale_data->total_qty += $qty[$key];
             $lims_sale_data->total_discount += $discount[$key] * $qty[$key];
             $lims_sale_data->total_tax += number_format((float)$product_tax, 2, '.', '');
             $lims_sale_data->total_price += number_format((float)$total, 2, '.', '');
