@@ -486,12 +486,7 @@ paymentForm.attr("action","<?php echo e(route('services.sale')); ?>");
 
    // Remove Table Items After Changing types
 $('table.order-list tbody').children().remove();
-$("#subtotal").text('0.00')
-$("#grand-total").text('0.00')
-$("#item").text('0');
-
-
-    
+calculateTotal();
 })
 
 
@@ -960,6 +955,10 @@ function unitConversion() {
 
 function calculateTotal() {
     //Sum of quantity
+
+    $('#total-qty').text('0') ; // Clear Total quanity
+    $('#total').text('0.00') ; // Clear Total quanity
+
     var total_qty = 0;
     $(".qty").each(function() {
 
@@ -1031,6 +1030,7 @@ function calculateGrandTotal() {
         $('#paid-amount').val(grand_total.toFixed(2));
     }
     $('input[name="grand_total"]').val(grand_total.toFixed(2));
+   
 }
 
 $('input[name="order_discount"]').on("input", function() {
