@@ -237,6 +237,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('report/monthly_purchase/{year}', 'ReportController@monthlyPurchase');
     Route::post('report/monthly_purchase/{year}', 'ReportController@monthlyPurchaseByWarehouse')->name('report.monthlyPurchaseByWarehouse');
     Route::get('report/best_seller', 'ReportController@bestSeller');
+    Route::get('report/best_seller_service', 'ReportController@bestServiceSeller');
+
     Route::post('report/best_seller', 'ReportController@bestSellerByWarehouse')->name('report.bestSellerByWarehouse');
     Route::post('report/profit_loss', 'ReportController@profitLoss')->name('report.profitLoss');
 

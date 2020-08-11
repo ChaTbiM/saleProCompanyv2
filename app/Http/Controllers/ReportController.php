@@ -30,6 +30,8 @@ use DB;
 use Auth;
 use App\Role;
 use Spatie\Permission\Models\Permission;
+use App\Service;
+use App\ServicesSale;
 
 class ReportController extends Controller
 {
@@ -443,6 +445,36 @@ class ReportController extends Controller
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $warehouse_id = 0;
             return view('report.best_seller', compact('product', 'sold_qty', 'start_month', 'lims_warehouse_list', 'warehouse_id'));
+        } else {
+            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
+    }
+
+    public function bestServiceSeller()
+    {
+        $role = Role::find(Auth::user()->role_id());
+        if ($role->hasPermissionTo('best-seller-service')) {
+            $start = strtotime(date("Y-m", strtotime("-2 months")) . '-01');
+            $end = strtotime(date("Y") . '-' . date("m") . '-31');
+
+            while ($start <= $end) {
+                $start_date = date("Y-m", $start) . '-' . '01';
+                $end_date = date("Y-m", $start) . '-' . '31';
+
+                $best_selling_qty = ServicesSale::select(DB::raw('service_id, sum(qty) as sold_qty'))->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->groupBy('service_id')->orderBy('sold_qty', 'desc')->take(1)->get();
+                if (!count($best_selling_qty)) {
+                    $service[] = '';
+                    $sold_qty[] = 0;
+                }
+                foreach ($best_selling_qty as $best_seller) {
+                    $service_data = Service::find($best_seller->service_id);
+                    $service[] = $service_data->name . ': ' . $service_data->code;
+                    $sold_qty[] = $best_seller->sold_qty;
+                }
+                $start = strtotime("+1 month", $start);
+            }
+            $start_month = date("F Y", strtotime('-2 month'));
+            return view('report.best_seller_service', compact('service', 'sold_qty', 'start_month'));
         } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
         }

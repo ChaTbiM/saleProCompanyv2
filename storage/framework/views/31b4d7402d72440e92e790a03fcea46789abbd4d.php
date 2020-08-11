@@ -434,6 +434,8 @@
                 <?php
                   $profit_loss_active = getPermissionActive("profit-loss");
                   $best_seller_active = getPermissionActive("best-seller");
+                  $best_seller_service_active = getPermissionActive("best-seller-service");
+
                   $warehouse_report_active = getPermissionActive("warehouse-report");
                   $warehouse_stock_report_active = getPermissionActive("warehouse-stock-report");
                   $product_report_active = getPermissionActive("product-report");
@@ -469,6 +471,12 @@
                     <a href="<?php echo e(url('report/best_seller')); ?>"><?php echo e(trans('file.Best Seller')); ?></a>
                   </li>
                   <?php endif; ?>
+                  <?php if(!empty($best_seller_service_active)): ?>
+                  <li id="best-seller-service-report-menu">
+                    <a href="<?php echo e(url('report/best_seller_service')); ?>"><?php echo e(trans('file.Best Service Seller ')); ?></a>
+                  </li>
+                  <?php endif; ?>
+
                   <?php if(!empty($product_report_active)): ?>
                   <li id="product-report-menu">
                     <?php echo Form::open(['route' => 'report.product', 'method' => 'post', 'id' => 'product-report-form']); ?>
