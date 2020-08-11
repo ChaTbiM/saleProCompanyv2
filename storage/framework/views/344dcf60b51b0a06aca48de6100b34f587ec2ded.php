@@ -484,7 +484,13 @@ paymentForm.attr("action","<?php echo e(route('services.sale')); ?>");
         paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
     }
 
-    // hide biller and warehouse
+   // Remove Table Items After Changing types
+$('table.order-list tbody').children().remove();
+$("#subtotal").text('0.00')
+$("#grand-total").text('0.00')
+$("#item").text('0');
+
+
     
 })
 

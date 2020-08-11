@@ -482,8 +482,9 @@ paymentForm.attr("action","{{route('services.sale')}}");
         paymentForm.attr("action","{{route('services.sale')}}"); 
     }
 
-    // hide biller and warehouse
-    
+   // Remove Table Items After Changing types
+$('table.order-list tbody').children().remove();
+calculateTotal();
 })
 
 

@@ -1784,7 +1784,8 @@ paymentForm.attr("action","{{route('services.sale')}}");
 // $(".service_search").hide();
 
 $(".form_type").on('change',(e)=>{
-choosenFormType = $(e.target).val();
+// Changing Sale Type
+    choosenFormType = $(e.target).val();
 if(choosenFormType == "product"){
 $(".product_search").show();
 $(".service_search").hide();
@@ -1807,8 +1808,10 @@ $("#biller_id").hide().prop('required',false);
 paymentForm.attr("action","{{route('services.sale')}}"); 
 }
 
-// hide biller and warehouse
+// Remove Table Items After Changing types
+$('table.order-list tbody').children().remove();
 
+calculateTotal();
 })
 
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
