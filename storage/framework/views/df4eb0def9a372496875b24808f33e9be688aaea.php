@@ -223,6 +223,10 @@
 
 <script type="text/javascript">
 
+    $("ul#report").siblings('a').attr('aria-expanded','true');
+    $("ul#report").addClass("show");
+    $("ul#report #product-report-menu").addClass("active");
+
     //pdf Fonts 
     pdfMake.fonts = {
          Arial: {
@@ -241,9 +245,7 @@
  
  // 
 
-    $("ul#report").siblings('a').attr('aria-expanded','true');
-    $("ul#report").addClass("show");
-    $("ul#report #product-report-menu").addClass("active");
+   
 
     $('#warehouse_id').val($('input[name="warehouse_id_hidden"]').val());
     $('.selectpicker').selectpicker('refresh');

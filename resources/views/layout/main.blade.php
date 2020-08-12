@@ -439,6 +439,8 @@
                   $warehouse_report_active = getPermissionActive("warehouse-report");
                   $warehouse_stock_report_active = getPermissionActive("warehouse-stock-report");
                   $product_report_active = getPermissionActive("product-report");
+                  $service_report_active = getPermissionActive("service-report");
+
 
                   $daily_sale_active = getPermissionActive("daily-saly");
                   $monthly_sale_active = getPermissionActive("monthly-sale");
@@ -481,10 +483,21 @@
                     <input type="hidden" name="start_date" value="1988-04-18" />
                     <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
                     <input type="hidden" name="warehouse_id" value="0" />
-                    <a id="report-link" href="">{{trans('file.Product Report')}}</a>
+                    <a id="report-link" href="#">{{trans('file.Product Report')}}</a>
                     {!! Form::close() !!}
                   </li>
                   @endif
+
+                  @if(!empty($service_report_active))
+                  <li id="service-report-menu">
+                    {!! Form::open(['route' => 'report.service', 'method' => 'post', 'id' => 'service-report-form']) !!}
+                    <input type="hidden" name="start_date" value="1988-04-18" />
+                    <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                    <a id="service-link" href="#">{{trans('file.Service Report')}}</a>
+                    {!! Form::close() !!}
+                  </li>
+                  @endif
+
                   @if(!empty($daily_sale_active))
                   <li id="daily-sale-report-menu">
                     <a href="{{url('report/daily_sale/'.date('Y').'/'.date('m'))}}">{{trans('file.Daily Sale')}}</a>
@@ -1123,6 +1136,12 @@
         e.preventDefault();
         $("#product-report-form").submit();
       });
+
+      $("a#service-link").click(function(e){
+        e.preventDefault();
+        $("#service-report-form").submit();
+      });
+
 
       $("a#purchase-report-link").click(function(e){
         e.preventDefault();

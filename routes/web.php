@@ -231,6 +231,7 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('report/daily_sale/{year}/{month}', 'ReportController@dailySale');
     Route::post('report/daily_sale/{year}/{month}', 'ReportController@dailySaleByWarehouse')->name('report.dailySaleByWarehouse');
     Route::get('report/monthly_sale/{year}', 'ReportController@monthlySale');
+
     Route::post('report/monthly_sale/{year}', 'ReportController@monthlySaleByWarehouse')->name('report.monthlySaleByWarehouse');
     Route::get('report/daily_purchase/{year}/{month}', 'ReportController@dailyPurchase');
     Route::post('report/daily_purchase/{year}/{month}', 'ReportController@dailyPurchaseByWarehouse')->name('report.dailyPurchaseByWarehouse');
@@ -246,7 +247,13 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
 
 
     Route::post('report/product_report', 'ReportController@productReport')->name('report.product');
-    Route::get('report/product_report', 'ReportController@productReport')->name('report.productLang'); // Added
+    Route::get('report/product_report', 'ReportController@productReport')->name('report.product');
+
+    Route::post('report/service_report', 'ReportController@serviceReport')->name('report.service');
+    Route::get('report/service_report', 'ReportController@serviceReport')->name('report.service');
+
+    // Route::get('report/product_report', 'ReportController@productReport')->name('report.productLang'); // Added
+    // Route::get('report/service_report', 'ReportController@serviceReport')->name('report.serviceLang');
 
     Route::post('report/purchase', 'ReportController@purchaseReport')->name('report.purchase');
     Route::get('report/purchase', 'ReportController@purchaseReport')->name('report.purchaseLang'); // Added

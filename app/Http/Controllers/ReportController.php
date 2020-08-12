@@ -613,12 +613,15 @@ class ReportController extends Controller
     {
         $data = $request->all();
 
-        $start_date = date('1988-04-18');
-        $end_date = date('Y-m-d');
 
         if ($request->method() == "GET") {
             $warehouse_id = 0;
+            $start_date = date('1988-04-18');
+
+            $end_date = date('Y-m-d');
         } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
             $warehouse_id = $data['warehouse_id'];
         }
 
@@ -744,6 +747,25 @@ class ReportController extends Controller
         }
         $lims_warehouse_list = Warehouse::where('is_active', true)->get();
         return view('report.product_report', compact('product_id', 'variant_id', 'product_name', 'product_qty', 'start_date', 'end_date', 'lims_warehouse_list', 'warehouse_id'));
+    }
+
+    public function serviceReport(Request $request)
+    {
+        $data = $request->all();
+        // $start_date = date('1988-04-18');
+        // $end_date = date('Y-m-d');
+
+        if ($request->method() == "GET") {
+            $start_date = date('1988-04-18');
+            $end_date = date('Y-m-d');
+        } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+        }
+
+        $lims_service_all = Service::all();
+       
+        return view('report.service_report', compact('lims_service_all', 'start_date', 'end_date'));
     }
 
     public function purchaseReport(Request $request)
