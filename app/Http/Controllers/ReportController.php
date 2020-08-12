@@ -309,6 +309,40 @@ class ReportController extends Controller
         }
     }
 
+    public function monthlyServiceSale($year)
+    {
+        $role = Role::find(Auth::user()->role_id());
+        if ($role->hasPermissionTo('monthly-service-sale')) {
+            $start = strtotime($year . '-01-01');
+            $end = strtotime($year . '-12-31');
+            while ($start <= $end) {
+                $start_date = $year . '-' . date('m', $start) . '-' . '01';
+                $end_date = $year . '-' . date('m', $start) . '-' . '31';
+
+                $temp_total_discount = Sale::whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->where('is_product', 0)->sum('total_discount');
+                $total_discount[] = number_format((float) $temp_total_discount, 2, '.', '');
+
+                $temp_order_discount = Sale::whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->where('is_product', 0)->sum('order_discount');
+                $order_discount[] = number_format((float) $temp_order_discount, 2, '.', '');
+
+                $temp_total_tax = Sale::whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->where('is_product', 0)->sum('total_tax');
+                $total_tax[] = number_format((float) $temp_total_tax, 2, '.', '');
+
+                $temp_order_tax = Sale::whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->where('is_product', 0)->sum('order_tax');
+                $order_tax[] = number_format((float) $temp_order_tax, 2, '.', '');
+
+
+                $temp_total = Sale::whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->where('is_product', 0)->sum('grand_total');
+                $total[] = number_format((float) $temp_total, 2, '.', '');
+                $start = strtotime("+1 month", $start);
+            }
+            return view('report.service_monthly_sale', compact('year', 'total_discount', 'order_discount', 'total_tax', 'order_tax', 'total'));
+        } else {
+            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
+    }
+
+
     public function monthlySaleByWarehouse(Request $request, $year)
     {
         $data = $request->all();

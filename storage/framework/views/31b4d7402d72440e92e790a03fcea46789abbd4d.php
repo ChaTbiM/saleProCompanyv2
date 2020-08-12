@@ -444,6 +444,8 @@
 
                   $daily_sale_active = getPermissionActive("daily-saly");
                   $monthly_sale_active = getPermissionActive("monthly-sale");
+                  $monthly_service_sale_active = getPermissionActive("monthly-service-sale");
+
                   $daily_purchase_active = getPermissionActive("daily-purchase");
                   $monthly_purchase_active = getPermissionActive("monthly-purchase");
                   $purchase_report_active = getPermissionActive("purchase-report");
@@ -512,6 +514,11 @@
                   <?php if(!empty($monthly_sale_active)): ?>
                   <li id="monthly-sale-report-menu">
                     <a href="<?php echo e(url('report/monthly_sale/'.date('Y'))); ?>"><?php echo e(trans('file.Monthly Sale')); ?></a>
+                  </li>
+                  <?php endif; ?>
+                  <?php if(!empty($monthly_service_sale_active)): ?>
+                  <li id="monthly-service-sale-report-menu">
+                    <a href="<?php echo e(url('report/service_monthly_sale/'.date('Y'))); ?>"><?php echo e(trans('file.Monthly Sale')); ?></a>
                   </li>
                   <?php endif; ?>
                   <?php if(!empty($daily_purchase_active)): ?>
