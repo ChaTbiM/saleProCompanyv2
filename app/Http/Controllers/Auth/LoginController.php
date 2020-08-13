@@ -30,7 +30,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return redirect()->away('http://127.0.0.1:8000/');
+        return redirect()->away('https://akeedgroups.com/');
 
     }
 
@@ -47,7 +47,7 @@ class LoginController extends Controller
 
         $request->session()->invalidate();
 
-        return $this->loggedOut($request) ?: redirect()->away('http://127.0.0.1:8000/');
+        return $this->loggedOut($request) ?: redirect()->away('https://akeedgroups.com/');
     }
 
     /**

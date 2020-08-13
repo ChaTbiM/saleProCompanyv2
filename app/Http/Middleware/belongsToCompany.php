@@ -16,12 +16,11 @@ class belongsToCompany
      */
     public function handle($request, Closure $next)
     {
-
         if (!Auth::check()) {
-            return redirect()->away('http://127.0.0.1:8000/login');
+            return redirect()->away('https://akeedgroups.com/login');
         }
 
-        $company_name = \App\GeneralSetting::find(1)->site_title; // 
+        $company_name = \App\GeneralSetting::find(1)->site_title; //
         // dd(Auth::user()->companies[0]->name);
 
         $companies = collect(Auth::user()->companies);
@@ -31,6 +30,6 @@ class belongsToCompany
             }
         }
 
-        return redirect()->away('http://127.0.0.1:8000/home');
+        return redirect()->away('https://akeedgroups.com/home');
     }
 }

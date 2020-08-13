@@ -46,6 +46,7 @@
             </thead>
             <tbody>
                 @foreach($lims_employee_all as $key=>$employee)
+                <?php dd(url('public/images/employee',$employee->image).".png") ?>
                 @php $department = \App\Department::find($employee->department_id); @endphp
                 <tr data-id="{{$employee->id}}">
                     <td>{{$key}}</td>
