@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\BillerAccordingToCompany;
 
 class Biller extends Model
 {
+    protected $connection = "mysql_base";
     protected $fillable =[
         "name", "image", "company_name", "vat_number",
         "email", "phone_number", "address", "city",
@@ -14,6 +16,13 @@ class Biller extends Model
 
     public function sale()
     {
-    	return $this->hasMany('App\Sale');
+        return $this->hasMany('App\Sale');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+  
+        return static::addGlobalScope(new BillerAccordingToCompany);
     }
 }
