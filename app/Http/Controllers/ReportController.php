@@ -550,8 +550,17 @@ class ReportController extends Controller
 
     public function profitLoss(Request $request)
     {
-        $start_date = date('Y-m') . '-' . '01';
-        $end_date = date('Y-m-d');
+        // $start_date = date('Y-m') . '-' . '01';
+        // $end_date = date('Y-m-d');
+
+        if ($request->method() == "GET") {
+            $start_date = date('1988-04-18');
+
+            $end_date = date('Y-m-d');
+        } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+        }
 
         // $start_date = $request['start_date'];
         // $end_date = $request['end_date'];

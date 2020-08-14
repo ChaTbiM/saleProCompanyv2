@@ -520,4 +520,5 @@ return [
     "Type date or sale reference..." => "",
     "Type date or purchase reference..." => "",
     "Tax Number" => "",
+
 ];

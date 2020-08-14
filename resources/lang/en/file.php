@@ -553,4 +553,5 @@ return [
     "Stock Quantity" => "Stock Quantity",
     "Stock Worth (Price/Cost)" => "Stock Worth (Price/Cost)",
     "Number of Product" => "Number of Product",
+    "home" => "Home"
 ];
