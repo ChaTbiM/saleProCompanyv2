@@ -398,7 +398,7 @@
               @if(!empty($department_active))
               <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li>
               @endif
-              @if(!empty($index_employee_active))
+              @if($index_employee_active)
               <li id="employee-menu"><a href="{{route('employees.index')}}">{{trans('file.Employee')}}</a></li>
               @endif
               @if(!empty($attendance_active))

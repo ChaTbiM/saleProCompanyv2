@@ -46,7 +46,6 @@
             </thead>
             <tbody>
                 <?php $__currentLoopData = $lims_employee_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=>$employee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php dd(url('public/images/employee',$employee->image).".png") ?>
                 <?php $department = \App\Department::find($employee->department_id); ?>
                 <tr data-id="<?php echo e($employee->id); ?>">
                     <td><?php echo e($key); ?></td>
@@ -138,7 +137,7 @@
             <div class="modal-body">
                 <p class="italic">
                     <small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
-                <?php echo Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true]); ?>
+                <?php echo Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true, 'class' => 'employee-form']); ?>
 
                 <div class="row">
 
@@ -259,7 +258,10 @@
         return false;
     }
 
+    
+
     $('.edit-btn').on('click', function() {
+
         $("#editModal input[name='employee_id']").val( $(this).data('id') );
         $("#editModal input[name='name']").val( $(this).data('name') );
         $("#editModal select[name='department_id']").val( $(this).data('department_id') );
@@ -271,6 +273,9 @@
         let isSalesman = $(this).data('is_salesman');
         if(isSalesman){
             $("#editModal input[name='is_salesman']").prop('checked',true);
+        }else{
+            $("#editModal input[name='is_salesman']").prop('checked',false);
+
         }
 
         $("#editModal input[name='comment']").val( $(this).data('comment') );

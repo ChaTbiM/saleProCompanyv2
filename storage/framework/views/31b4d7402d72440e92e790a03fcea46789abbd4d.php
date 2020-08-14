@@ -398,7 +398,7 @@
               <?php if(!empty($department_active)): ?>
               <li id="dept-menu"><a href="<?php echo e(route('departments.index')); ?>"><?php echo e(trans('file.Department')); ?></a></li>
               <?php endif; ?>
-              <?php if(!empty($index_employee_active)): ?>
+              <?php if($index_employee_active): ?>
               <li id="employee-menu"><a href="<?php echo e(route('employees.index')); ?>"><?php echo e(trans('file.Employee')); ?></a></li>
               <?php endif; ?>
               <?php if(!empty($attendance_active)): ?>

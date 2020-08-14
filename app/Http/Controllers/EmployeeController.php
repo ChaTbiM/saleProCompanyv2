@@ -38,7 +38,6 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        // dd(Employee::find(7)->files);
         $role = Role::find(Auth::user()->role_id());
         if ($role->hasPermissionTo('employees-add')) {
             $lims_role_list = Role::where('is_active', true)->get();
@@ -70,8 +69,7 @@ class EmployeeController extends Controller
             'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
         ]);
         
-        
-        if ($data['is_salesman'] == "on") {
+        if (isset($request->is_salesman) && $data['is_salesman'] == "on") {
             $data['is_salesman'] = 1;
         } else {
             $data['is_salesman'] = 0;
@@ -93,27 +91,20 @@ class EmployeeController extends Controller
         $data['name'] = $data['employee_name'];
         $data['is_active'] = true;
 
-        DB::transaction(function () use ($data,$files) {
-            try {
-                $employee = Employee::create($data);
-                $employee_id = $employee->id;
-    
-                if (isset($files)) {
-                    $this->storeFiles($files);
-                }
-            } catch (\Throwable $th) {
-                $message = "employee was not created , please try again";
-                return redirect('employees')->with('message', $message);
+        DB::transaction(function () use ($data, $files) {
+            $employee = Employee::create($data);
+            $employee_id = $employee->id;
+            
+            if (isset($files)) {
+                $this->storeFiles($files, $employee_id);
             }
         });
-
 
         return redirect('employees')->with('message', $message);
     }
     
     public function update(Request $request, $id)
     {
-        // dd($request);
         $files = $request->files;
         $lims_employee_data = Employee::find($request['employee_id']);
         if ($lims_employee_data->user_id) {
@@ -147,7 +138,7 @@ class EmployeeController extends Controller
         
         $data = $request->except('image');
 
-        if ($data['is_salesman'] == "on") {
+        if (isset($request->is_salesman) && $data['is_salesman'] == "on") {
             $data['is_salesman'] = 1;
         } else {
             $data['is_salesman'] = 0;

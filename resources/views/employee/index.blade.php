@@ -46,7 +46,6 @@
             </thead>
             <tbody>
                 @foreach($lims_employee_all as $key=>$employee)
-                <?php dd(url('public/images/employee',$employee->image).".png") ?>
                 @php $department = \App\Department::find($employee->department_id); @endphp
                 <tr data-id="{{$employee->id}}">
                     <td>{{$key}}</td>
@@ -134,7 +133,7 @@
             <div class="modal-body">
                 <p class="italic">
                     <small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                {!! Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true]) !!}
+                {!! Form::open(['route' => ['employees.update', 1], 'method' => 'put', 'files' => true, 'class' => 'employee-form']) !!}
                 <div class="row">
 
                     <div class="col-md-6 form-group">
@@ -253,7 +252,10 @@
         return false;
     }
 
+    
+
     $('.edit-btn').on('click', function() {
+
         $("#editModal input[name='employee_id']").val( $(this).data('id') );
         $("#editModal input[name='name']").val( $(this).data('name') );
         $("#editModal select[name='department_id']").val( $(this).data('department_id') );
@@ -265,6 +267,9 @@
         let isSalesman = $(this).data('is_salesman');
         if(isSalesman){
             $("#editModal input[name='is_salesman']").prop('checked',true);
+        }else{
+            $("#editModal input[name='is_salesman']").prop('checked',false);
+
         }
 
         $("#editModal input[name='comment']").val( $(this).data('comment') );

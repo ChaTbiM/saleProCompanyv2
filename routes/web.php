@@ -332,10 +332,10 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::resource('departments', 'DepartmentController');
 
     Route::post('employees/deletebyselection', 'EmployeeController@deleteBySelection');
-    Route::resource('employees', 'EmployeeController');
     Route::get('employees/{id}/files', 'EmployeeController@files');
     Route::delete('employees/files/{file_id}/delete', 'EmployeeController@deleteFile')->name('deleteFile');
     Route::post('employees/{id}/files/add', 'EmployeeController@addFiles')->name('addFiles');
+    Route::resource('employees', 'EmployeeController');
     
 
 
