@@ -31,6 +31,7 @@ class ServicesSaleController extends Controller
     //
     public function store(Request $request)
     {
+        dd($request);
         $data = $request->all();
         $data['user_id'] = Auth::id();
 

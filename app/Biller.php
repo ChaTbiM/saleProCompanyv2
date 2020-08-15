@@ -8,6 +8,7 @@ use App\Scopes\BillerAccordingToCompany;
 class Biller extends Model
 {
     protected $connection = "mysql_base";
+ 
     protected $fillable =[
         "name", "image", "company_name", "vat_number",
         "email", "phone_number", "address", "city",

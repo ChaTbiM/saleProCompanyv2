@@ -816,13 +816,13 @@
                     @if (!empty($hasServiceModule))
                     <div class="card-header">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input form_type" id="is_product" type="radio" name="form_type" id="product_radio"
-                                value="product" checked>
+                            <input class="form-check-input form_type" id="is_product" type="radio" name="form_type"
+                                id="product_radio" value="product" checked>
                             <label class="form-check-label " for="inlineRadio1">product</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input form_type" id="is_service" type="radio" name="form_type" id="service_radio"
-                                value="service">
+                            <input class="form-check-input form_type" id="is_service" type="radio" name="form_type"
+                                id="service_radio" value="service">
                             <label class="form-check-label" for="inlineRadio2">service</label>
                         </div>
                     </div>
@@ -918,16 +918,16 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <span class="col-md-2 totals-title">{{trans('file.salesman')}} : </span><span
-                                            id="salesman">
+                                        <span class="col-md-2 totals-title salesman">{{trans('file.salesman')}} :
+                                        </span><span id="salesman" class="salesman">
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     @if($salesmans)
                                                     {{-- <input type="hidden" name="salesman_id_hidden" value={{$salesmans[0]->id}}>
                                                     --}}
                                                     @endif
-                                                    <select required id="salesman_id" name="salesman_id"
-                                                        class="selectpicker form-control" data-live-search="true"
+                                                    <select required id="salesman_id"  name="salesman_id"
+                                                        class="selectpicker form-control salesman" data-live-search="true"
                                                         data-live-search-style="begins" title="Select salesman...">
                                                         @foreach($salesmans as $salesman)
                                                         <option value="{{$salesman->id}}">{{$salesman->name}}</option>
@@ -1760,6 +1760,8 @@ if($("#is_product").is(":checked")){
     $(".product_search").show();
 $(".service_search").hide();
 
+$('.salesman').show().prop('required',true);
+
 $(".warehouse_select").show();
 $(".biller_select").show();
 $("#warehouse_id").show().prop('required',true);
@@ -1770,6 +1772,7 @@ paymentForm.attr("action","{{route('sales.store')}}");
 }else if($("#is_service").is(":checked")){
     $(".product_search").hide();
 
+    $('.salesman').hide().prop('required',false);
 $(".service_search").show();
 $(".warehouse_select").hide();
 $(".biller_select").hide();
@@ -1784,11 +1787,14 @@ paymentForm.attr("action","{{route('services.sale')}}");
 // $(".service_search").hide();
 
 $(".form_type").on('change',(e)=>{
+    $('#featured-filter').trigger('click');
 // Changing Sale Type
     choosenFormType = $(e.target).val();
 if(choosenFormType == "product"){
 $(".product_search").show();
 $(".service_search").hide();
+
+$('.salesman').show().prop('required',true);
 
 $(".warehouse_select").show();
 $(".biller_select").show();
@@ -1799,6 +1805,8 @@ paymentForm.attr("action","{{route('sales.store')}}");
 }else if(choosenFormType == "service"){
 
 $(".product_search").hide();
+
+$('.salesman').hide().prop('required',false);
 
 $(".service_search").show();
 $(".warehouse_select").hide();
@@ -2108,14 +2116,28 @@ $('.brand-img').on('click', function(){
     $(".table-container").children().remove();
     $.get('sales/getproduct/' + category_id + '/' + brand_id, function(data) {
         populateProduct(data);
+
     });
 });
 
+$(document).ready(()=>{
+
+    $('#featured-filter').trigger('click');    
+})
+
 $('#featured-filter').on('click', function(){
     $(".table-container").children().remove();
-    $.get('sales/getfeatured', function(data) {
+    if($("#is_product").is(":checked")){
+        $.get('sales/getfeatured', function(data) {
         populateProduct(data);
+
     });
+    }else if($("#is_service").is(":checked")){
+    $.get('sales/getservicesfeatured', function(data) {
+        populateService(data);
+    });
+}
+    
 });
 
 function populateProduct(data) {
@@ -2128,6 +2150,49 @@ function populateProduct(data) {
                 tableData += '</tr><tr><td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="public/images/product/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
             else
                 tableData += '<td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="public/images/product/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
+        });
+
+        if(data['name'].length % 5){
+            var number = 5 - (data['name'].length % 5);
+            while(number > 0)
+            {
+                tableData += '<td style="border:none;"></td>';
+                number--;
+            }
+        }
+
+        tableData += '</tr></tbody></table>';
+        $(".table-container").html(tableData);
+        $('#product-table').DataTable( {
+          "order": [],
+          'pageLength': product_row_number,
+           'language': {
+              'paginate': {
+                  'previous': '<i class="fa fa-angle-left"></i>',
+                  'next': '<i class="fa fa-angle-right"></i>'
+              }
+          },
+          dom: 'tp'
+        });
+        $('table.product-list').hide();
+        $('table.product-list').show(500);
+    }
+    else{
+        tableData += '<td class="text-center">No data avaialable</td></tr></tbody></table>'
+        $(".table-container").html(tableData);
+    }
+}
+
+function populateService(data) {
+    var tableData = '<table id="product-table" class="table no-shadow product-list"> <thead class="d-none"> <tr> <th></th> <th></th> <th></th> <th></th> <th></th> </tr></thead> <tbody><tr>';
+
+    if (Object.keys(data).length != 0) {
+        $.each(data['name'], function(index) {
+            var product_info = data['code'][index]+' (' + data['name'][index] + ')';
+            if(index % 5 == 0 && index != 0)
+                tableData += '</tr><tr><td class="service-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="public/images/service/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
+            else
+                tableData += '<td class="service-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="public/images/service/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
         });
 
         if(data['name'].length % 5){
@@ -2279,8 +2344,12 @@ $(document).on('click', '.product-img', function() {
     else if(!warehouse_id)
         alert('Please select Warehouse!');
     else{
+        console.log($(this).data(),'this product what?');
+
         var data = $(this).data('product');
         data = data.split(" ");
+        console.log(product_code,'product code')
+
         pos = product_code.indexOf(data[0]);
         if(pos < 0)
             alert('Product is not avaialable in the selected warehouse');
@@ -2289,6 +2358,26 @@ $(document).on('click', '.product-img', function() {
         }
     }
 });
+
+
+$(document).on('click', '.service-img', function() {
+    var customer_id = $('#customer_id').val();
+    if(!customer_id){
+        alert('Please select Customer!');
+    }
+        var data = $(this).data('product');
+
+        data = data.split(" ");
+        pos = service_code.indexOf(data[0]);
+        if(pos < 0)
+            alert('Product is not avaialable in the selected warehouse');
+        else{
+            serviceSearch(data[0]);
+        }
+});
+
+
+
 //Delete product
 $("table.order-list tbody").on("click", ".ibtnDel", function(event) {
     var audio = $("#mysoundclip2")[0];

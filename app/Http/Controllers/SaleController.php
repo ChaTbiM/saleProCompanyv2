@@ -1002,6 +1002,25 @@ class SaleController extends Controller
         return $data;
     }
 
+    public function getServiceFeatured()
+    {
+        $data = [];
+        $lims_service_list = Service::where(
+            'is_active',
+            true
+        )->select('services.id', 'services.name', 'services.code', 'services.image')->get();
+
+        $index = 0;
+        foreach ($lims_service_list as $service) {
+            $data['name'][$index] = $service->name;
+            $data['code'][$index] = $service->code;
+            $images = explode(",", $service->image);
+            $data['image'][$index] = $images[0];
+            $index++;
+        }
+        return $data;
+    }
+
     public function getCustomerGroup($id)
     {
         $lims_customer_data = Customer::find($id);

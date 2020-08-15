@@ -15,6 +15,7 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 
 Auth::routes();
+Route::get('testo', 'SaleController@getServiceFeatured');
 
 
 Route::group(['middleware' => 'auth'], function () {
@@ -119,6 +120,8 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('sales/getproduct/{id}', 'SaleController@getProduct')->name('sale.getproduct');
     Route::get('sales/getproduct/{category_id}/{brand_id}', 'SaleController@getProductByFilter');
     Route::get('sales/getfeatured', 'SaleController@getFeatured');
+    Route::get('sales/getservicesfeatured', 'SaleController@getServiceFeatured');
+
     Route::get('sales/get_gift_card', 'SaleController@getGiftCard');
     Route::get('sales/paypalSuccess', 'SaleController@paypalSuccess');
     Route::get('sales/paypalPaymentSuccess/{id}', 'SaleController@paypalPaymentSuccess');
