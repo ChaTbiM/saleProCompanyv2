@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Warehouse extends Model
 {
+    protected $connection = "mysql_base";
+    
     protected $fillable =[
 
         "name", "phone", "email", "address", "is_active"
@@ -13,7 +15,6 @@ class Warehouse extends Model
 
     public function product()
     {
-    	return $this->hasMany('App\Product');
-    	
+        return $this->hasMany('App\Product');
     }
 }
