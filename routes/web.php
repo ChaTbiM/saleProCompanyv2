@@ -15,7 +15,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 
 Auth::routes();
-Route::get('testo', 'SaleController@getServiceFeatured');
 
 
 Route::group(['middleware' => 'auth'], function () {
