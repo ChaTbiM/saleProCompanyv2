@@ -556,5 +556,6 @@ return [
     "Stock Worth (Price/Cost)" => "قيمة الأسهم (السعر / التكلفة)",
     "Number of Product" => "رقم المنتج",
     "home" => "الصفحة الرئيسية",
+    "service"=>"الخدمات",
     
     ];

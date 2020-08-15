@@ -973,7 +973,8 @@
                                             class="table table-hover table-striped order-list table-fixed">
                                             <thead>
                                                 <tr>
-                                                    <th class="col-sm-4"><?php echo e(trans('file.product')); ?></th>
+                                                    
+                                                    <th class="col-sm-4" id="product-service"><?php echo e(trans('file.product')); ?></th>
                                                     <th class="col-sm-2"><?php echo e(trans('file.Price')); ?></th>
                                                     <th class="col-sm-3"><?php echo e(trans('file.Quantity')); ?></th>
                                                     <th class="col-sm-3"><?php echo e(trans('file.Subtotal')); ?></th>
@@ -1773,11 +1774,22 @@
     $("ul#sale #sale-pos-menu").addClass("active");
 
 
+    
+function changeTableType (type){
+    if(type == "product"){
+        $('#product-service').text("<?php echo e(__('file.product')); ?>")
+
+    }else if (type == "service"){
+        $('#product-service').text("<?php echo e(__('file.service')); ?>")
+
+    }
+}
+
     $(document).ready(()=>{
         paymentForm = $('.payment-form');
 
 if($("#is_product").is(":checked")){
-    
+    changeTableType("product");
     $(".product_search").show();
 $(".service_search").hide();
 
@@ -1791,6 +1803,8 @@ $("#biller_id").show().prop('required',true);
 paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
 
 }else if($("#is_service").is(":checked")){
+    changeTableType("service");
+
     $(".product_search").hide();
 
     $('.salesman').hide().prop('required',false);
@@ -1812,6 +1826,8 @@ $(".form_type").on('change',(e)=>{
 // Changing Sale Type
     choosenFormType = $(e.target).val();
 if(choosenFormType == "product"){
+    changeTableType("product");
+
 $(".product_search").show();
 $(".service_search").hide();
 
@@ -1824,6 +1840,7 @@ $("#biller_id").show().prop('required',true);
 
 paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
 }else if(choosenFormType == "service"){
+    changeTableType("service");
 
 $(".product_search").hide();
 
@@ -3135,29 +3152,6 @@ $('#product-table').DataTable( {
     dom: 'tp'
 });
 
-// change POS TYPE ( product / service)
-// $(".form_type").on('change',(e)=>{
-//     paymentForm = $('.payment-form');
-//     choosenFormType = $(e.target).val();
-//     if(choosenFormType == "product"){
-//         $(".product_search").show();
-//         $(".service_search").hide();
-
-//         $(".warehouse_select").show();
-//         $(".biller_select").show();
-//         paymentForm.attr("action","<?php echo e(route('sales.store')); ?>"); 
-//     }else if(choosenFormType == "service"){
-//         $(".product_search").hide();
-
-//         $(".service_search").show();
-//         $(".warehouse_select").hide();
-//         $(".biller_select").hide();
-//         paymentForm.attr("action","<?php echo e(route('services.sale')); ?>"); 
-//     }
-
-//     // hide biller and warehouse
-    
-// })
 
 </script>
 <?php $__env->stopSection(); ?>
