@@ -85,7 +85,7 @@
             <p>{{trans('file.Do not have an account?')}}</p><a href="{{url('register')}}" class="signup">{{trans('file.Register')}}</a>
           </div>
           <div class="copyrights text-center">
-            <p>{{trans('file.Developed By')}} <a href="http://lion-coders.com" class="external">LionCoders</a></p>
+            <p>{{trans('file.Developed By')}} DZ-DEV</p>
           </div>
         </div>
       </div>

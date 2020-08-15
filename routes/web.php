@@ -359,4 +359,7 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
 
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
+
+
+    Route::get('read_me', 'ReadmeController@index')->name('readme');
 });

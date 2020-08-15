@@ -770,7 +770,7 @@
               </ul>
             </li>
             <li class="nav-item">
-              <a class="dropdown-item" href="{{ url('read_me') }}" target="_blank"><i class="dripicons-information"></i>
+              <a class="dropdown-item" href="{{ route('readme') }}" target="_blank"><i class="dripicons-information"></i>
                 {{trans('file.Help')}}</a>
             </li>
             <li class="nav-item">
@@ -1144,8 +1144,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-sm-12">
-            <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} <a
-                href="https://lion-coders.com" class="external">LionCoders</a></p>
+            <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} DZ-DEV</p>
           </div>
         </div>
       </div>
