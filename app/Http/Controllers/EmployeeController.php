@@ -28,6 +28,7 @@ class EmployeeController extends Controller
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
             }
+
             $lims_employee_all = Employee::where('is_active', true)->get();
             $lims_department_list = Department::where('is_active', true)->get();
             return view('employee.index', compact('lims_employee_all', 'lims_department_list', 'all_permission'));
