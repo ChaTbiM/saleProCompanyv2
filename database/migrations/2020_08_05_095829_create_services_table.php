@@ -18,7 +18,7 @@ class CreateServicesTable extends Migration
 
             $table->string('name');
             $table->string('code');
-            $table->integer('unit_id');
+            $table->integer('unit_id'); // must have default of hour (SERVICE) unit_id
             
             $table->integer("service_category_id")->unsigned()->nullable();
             
