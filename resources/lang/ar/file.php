@@ -558,6 +558,7 @@ return [
     "home" => "الصفحة الرئيسية",
     "service"=>"الخدمات",
     "add service"=> "إضافة خدمة",
+    "import service"=> "إستيراد خدمة",
     "service list"=> "قائمة الخدمات",
     "service categories" => "فئات الخدمات",
     "Number Of Services" => "عدد الخدمات",

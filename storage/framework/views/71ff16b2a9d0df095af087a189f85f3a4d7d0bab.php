@@ -16,7 +16,6 @@
 <?php endif; ?>
 
 <section>
-    <?php dd($all_permission) ?>
     <div class="container-fluid">
         <?php if(in_array("services-add", $all_permission)): ?>
             <a href="<?php echo e(route('services.create')); ?>" class="btn btn-info"><i class="dripicons-plus"></i> <?php echo e(__('file.add service')); ?></a>

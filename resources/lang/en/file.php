@@ -556,6 +556,7 @@ return [
     "home" => "Home",
     "service"=>"Service",
     "add service"=> "add service",
+    "import service"=> "import service",
     "service list"=> "service list",
     "service categories" => "service categories",
     "Number Of Services" => "Number Of Services",
