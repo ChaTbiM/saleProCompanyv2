@@ -20,13 +20,14 @@ class SettingController extends Controller
 {
     public function emptyDatabase()
     {
-        if(!config("user.user_verified"))
+        if (!config("user.user_verified")) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        }
         $tables = DB::select('SHOW TABLES');
         $str = 'Tables_in_' . config("database.database_name");
         foreach ($tables as $table) {
-            if($table->$str != 'accounts' && $table->$str != 'general_settings' && $table->$str != 'hrm_settings' && $table->$str != 'languages' && $table->$str != 'migrations' && $table->$str != 'password_resets' && $table->$str != 'permissions' && $table->$str != 'pos_setting' && $table->$str != 'roles' && $table->$str != 'role_has_permissions' && $table->$str != 'users') {
-                DB::table($table->$str)->truncate();    
+            if ($table->$str != 'accounts' && $table->$str != 'general_settings' && $table->$str != 'hrm_settings' && $table->$str != 'languages' && $table->$str != 'migrations' && $table->$str != 'password_resets' && $table->$str != 'permissions' && $table->$str != 'pos_setting' && $table->$str != 'roles' && $table->$str != 'role_has_permissions' && $table->$str != 'users' && $table->$str != 'units') {
+                DB::table($table->$str)->truncate();
             }
         }
         return redirect()->back()->with('message', 'Database cleared successfully');
@@ -37,7 +38,7 @@ class SettingController extends Controller
         $lims_account_list = Account::where('is_active', true)->get();
         $zones_array = array();
         $timestamp = time();
-        foreach(timezone_identifiers_list() as $key => $zone) {
+        foreach (timezone_identifiers_list() as $key => $zone) {
             date_default_timezone_set($zone);
             $zones_array[$key]['zone'] = $zone;
             $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
@@ -47,8 +48,9 @@ class SettingController extends Controller
 
     public function generalSettingStore(Request $request)
     {
-        if(!config("user.user_verified"))
+        if (!config("user.user_verified")) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        }
 
         $this->validate($request, [
             'site_logo' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
@@ -87,14 +89,15 @@ class SettingController extends Controller
     }
 
     public function mailSetting()
-    {  
+    {
         return view('setting.mail_setting');
     }
 
     public function mailSettingStore(Request $request)
     {
-        if(!config("user.user_verified"))
+        if (!config("user.user_verified")) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        }
 
         $data = $request->all();
         //writting mail info in .env file
@@ -116,18 +119,18 @@ class SettingController extends Controller
 
     public function smsSettingStore(Request $request)
     {
-        if(!config("user.user_verified"))
+        if (!config("user.user_verified")) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        }
         
         $data = $request->all();
         //writting bulksms info in .env file
         $path = '.env';
-        if($data['gateway'] == 'twilio'){
+        if ($data['gateway'] == 'twilio') {
             $searchArray = array('SMS_GATEWAY='.env('SMS_GATEWAY'), 'ACCOUNT_SID='.env('ACCOUNT_SID'), 'AUTH_TOKEN='.env('AUTH_TOKEN'), 'Twilio_Number='.env('Twilio_Number') );
 
             $replaceArray = array('SMS_GATEWAY='.$data['gateway'], 'ACCOUNT_SID='.$data['account_sid'], 'AUTH_TOKEN='.$data['auth_token'], 'Twilio_Number='.$data['twilio_number'] );
-        }
-        else{
+        } else {
             $searchArray = array( 'SMS_GATEWAY='.env('SMS_GATEWAY'), 'CLICKATELL_API_KEY='.env('CLICKATELL_API_KEY') );
             $replaceArray = array( 'SMS_GATEWAY='.$data['gateway'], 'CLICKATELL_API_KEY='.$data['api_key'] );
         }
@@ -147,11 +150,11 @@ class SettingController extends Controller
         $data = $request->all();
         $numbers = explode(",", $data['mobile']);
 
-        if( env('SMS_GATEWAY') == 'twilio') {
+        if (env('SMS_GATEWAY') == 'twilio') {
             $account_sid = env('ACCOUNT_SID');
             $auth_token = env('AUTH_TOKEN');
             $twilio_phone_number = env('Twilio_Number');
-            try{
+            try {
                 $client = new Client($account_sid, $auth_token);
                 foreach ($numbers as $number) {
                     $client->messages->create(
@@ -162,26 +165,23 @@ class SettingController extends Controller
                         )
                     );
                 }
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 return redirect()->back()->with('not_permitted', 'Please setup your <a href="sms_setting">SMS Setting</a> to send SMS.');
             }
             $message = "SMS sent successfully";
-        }
-        elseif( env('SMS_GATEWAY') == 'clickatell') {
+        } elseif (env('SMS_GATEWAY') == 'clickatell') {
             try {
                 $clickatell = new \Clickatell\Rest(env('CLICKATELL_API_KEY'));
                 foreach ($numbers as $number) {
                     $result = $clickatell->sendMessage(['to' => [$number], 'content' => $data['message']]);
                 }
-            } 
-            catch (ClickatellException $e) {
+            } catch (ClickatellException $e) {
                 return redirect()->back()->with('not_permitted', 'Please setup your <a href="sms_setting">SMS Setting</a> to send SMS.');
             }
             $message = "SMS sent successfully";
+        } else {
+            return redirect()->back()->with('not_permitted', 'Please setup your <a href="sms_setting">SMS Setting</a> to send SMS.');
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Please setup your <a href="sms_setting">SMS Setting</a> to send SMS.');    
         return redirect()->back()->with('message', $message);
     }
     
@@ -199,24 +199,24 @@ class SettingController extends Controller
         $lims_hrm_setting_data->checkout = $data['checkout'];
         $lims_hrm_setting_data->save();
         return redirect()->back()->with('message', 'Data updated successfully');
-
     }
     public function posSetting()
     {
-    	$lims_customer_list = Customer::where('is_active', true)->get();
+        $lims_customer_list = Customer::where('is_active', true)->get();
         $lims_warehouse_list = Warehouse::where('is_active', true)->get();
         $lims_biller_list = Biller::where('is_active', true)->get();
         $lims_pos_setting_data = PosSetting::latest()->first();
         
-    	return view('setting.pos_setting', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data'));
+        return view('setting.pos_setting', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data'));
     }
 
     public function posSettingStore(Request $request)
     {
-        if(!config("user.user_verified"))
+        if (!config("user.user_verified")) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        }
 
-    	$data = $request->all();
+        $data = $request->all();
         //writting paypal info in .env file
         $path = '.env';
         $searchArray = array('PAYPAL_LIVE_API_USERNAME='.env('PAYPAL_LIVE_API_USERNAME'), 'PAYPAL_LIVE_API_PASSWORD='.env('PAYPAL_LIVE_API_PASSWORD'), 'PAYPAL_LIVE_API_SECRET='.env('PAYPAL_LIVE_API_SECRET') );
@@ -225,19 +225,20 @@ class SettingController extends Controller
 
         file_put_contents($path, str_replace($searchArray, $replaceArray, file_get_contents($path)));
 
-    	$pos_setting = PosSetting::firstOrNew(['id' => 1]);
-    	$pos_setting->id = 1;
-    	$pos_setting->customer_id = $data['customer_id'];
-    	$pos_setting->warehouse_id = $data['warehouse_id'];
-    	$pos_setting->biller_id = $data['biller_id'];
-    	$pos_setting->product_number = $data['product_number'];
-    	$pos_setting->stripe_public_key = $data['stripe_public_key'];
-    	$pos_setting->stripe_secret_key = $data['stripe_secret_key'];
-        if(!isset($data['keybord_active']))
+        $pos_setting = PosSetting::firstOrNew(['id' => 1]);
+        $pos_setting->id = 1;
+        $pos_setting->customer_id = $data['customer_id'];
+        $pos_setting->warehouse_id = $data['warehouse_id'];
+        $pos_setting->biller_id = $data['biller_id'];
+        $pos_setting->product_number = $data['product_number'];
+        $pos_setting->stripe_public_key = $data['stripe_public_key'];
+        $pos_setting->stripe_secret_key = $data['stripe_secret_key'];
+        if (!isset($data['keybord_active'])) {
             $pos_setting->keybord_active = false;
-        else
+        } else {
             $pos_setting->keybord_active = true;
-    	$pos_setting->save();
-    	return redirect()->back()->with('message', 'POS setting updated successfully');
+        }
+        $pos_setting->save();
+        return redirect()->back()->with('message', 'POS setting updated successfully');
     }
 }
