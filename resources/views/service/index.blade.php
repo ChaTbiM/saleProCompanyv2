@@ -19,7 +19,7 @@
     <div class="container-fluid">
         @if(in_array("services-add", $all_permission))
             <a href="{{route('services.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add service')}}</a>
-            <a href="#" data-toggle="modal" data-target="#importProduct" class="btn btn-primary"><i class="dripicons-copy"></i> {{__('file.import service')}}</a>
+            {{-- <a href="#" data-toggle="modal" data-target="#importProduct" class="btn btn-primary"><i class="dripicons-copy"></i> {{__('file.import service')}}</a> --}}
         @endif
     </div>
     <div class="table-responsive">
