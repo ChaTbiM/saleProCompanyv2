@@ -16,7 +16,6 @@
 @endif
 
 <section>
-    <?php dd($all_permission) ?>
     <div class="container-fluid">
         @if(in_array("services-add", $all_permission))
             <a href="{{route('services.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add service')}}</a>
