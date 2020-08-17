@@ -23,7 +23,7 @@
                     <th class="not-exported"></th>
                     <th>{{trans('file.category')}}</th>
                     <th>{{trans('file.Parent Category')}}</th>
-                    <th>{{trans('file.Number of Service')}}</th>
+                    <th>{{trans('file.Number Of Services')}}</th>
                     {{-- <th>{{trans('file.Stock Quantity')}}</th> --}}
                     {{-- <th>{{trans('file.Stock Worth (Price/Cost)')}}</th> --}}
                     <th class="not-exported">{{trans('file.action')}}</th>

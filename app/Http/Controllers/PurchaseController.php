@@ -38,7 +38,7 @@ class PurchaseController extends Controller
                 $lims_purchase_list = Purchase::orderBy('id', 'desc')->get();
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
             $lims_pos_setting_data = PosSetting::latest()->first();

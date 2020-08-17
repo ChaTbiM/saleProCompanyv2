@@ -26,7 +26,7 @@ class ServiceController extends Controller
         if ($role->hasPermissionTo('services-index')) {
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission) {
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             }
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
@@ -191,10 +191,10 @@ class ServiceController extends Controller
     public function create()
     {
         $role = Role::find(Auth::user()->role_id());
-        if ($role->hasPermissionTo('products-add')) {
+        if ($role->hasPermissionTo('services-add')) {
             $lims_product_list = Service::where('is_active', true)->get();
             $lims_category_list = ServiceCategory::where('is_active', true)->get();
-            $lims_unit_list = Unit::where([['is_active',true],['unit_code','hr']])->get();
+            $lims_unit_list = Unit::where([['is_active',true],['unit_code','hour']])->get();
             $lims_brand_list = Brand::all(); // remove later
             $lims_tax_list = Tax::where('is_active', true)->get();
             return view('service.create', compact('lims_product_list', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list'));
@@ -214,19 +214,19 @@ class ServiceController extends Controller
         $this->validate($request, [
             'code' => [
                 'max:255',
-                    Rule::unique('products')->where(function ($query) {
+                    Rule::unique('services')->where(function ($query) {
                         return $query->where('is_active', 1);
                     }),
             ],
             'name' => [
                 'max:255',
-                    Rule::unique('products')->where(function ($query) {
+                    Rule::unique('services')->where(function ($query) {
                         return $query->where('is_active', 1);
                     }),
             ]
         ]);
         $data = $request->except('image', 'file');
-
+        $data['unit_id'] = 11;
         $data['service_details'] = str_replace('"', '@', $data['service_details']);
 
         if ($data['starting_date']) {

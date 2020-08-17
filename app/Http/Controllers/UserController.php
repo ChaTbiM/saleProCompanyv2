@@ -27,7 +27,7 @@ class UserController extends Controller
         if($role->hasPermissionTo('users-index')){
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
 
                 $company_name = GeneralSetting::find(1)->site_title; // 
                 $company_id = Company::all()->where("name",$company_name)[0]->id;

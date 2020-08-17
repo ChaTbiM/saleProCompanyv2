@@ -19,7 +19,7 @@ class SupplierController extends Controller
         if($role->hasPermissionTo('suppliers-index')){
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
             $lims_supplier_all = Supplier::where('is_active', true)->get();

@@ -30,7 +30,7 @@ class ProductController extends Controller
         if ($role->hasPermissionTo('products-index')) {
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission) {
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             }
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';

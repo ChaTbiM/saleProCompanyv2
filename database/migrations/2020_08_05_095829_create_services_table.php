@@ -24,7 +24,7 @@ class CreateServicesTable extends Migration
             
             $table->foreign('service_category_id')
             ->references('id')
-            ->on('services')
+            ->on('units')
             ->onDelete('cascade');
             
             $table->string('price');

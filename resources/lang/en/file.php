@@ -555,4 +555,15 @@ return [
     "Number of Product" => "Number of Product",
     "home" => "Home",
     "service"=>"Service",
+    "add service"=> "add service",
+    "service list"=> "service list",
+    "service categories" => "service categories",
+    "Number Of Services" => "Number Of Services",
+    "Service Details" => "Service Details",
+    "Service Name"=>"Service Name",
+    "Service Code"=>"Service Code",
+    "service category"=>"service category",
+    "Service Price" => "Service Price",
+    "Service Tax" => "Service Tax",
+    "Service Image" => "Service Image"
 ];

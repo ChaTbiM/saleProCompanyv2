@@ -68,7 +68,7 @@ class RoleController extends Controller
         $lims_role_data = Roles::find($id);
         $permissions = Role::findByName($lims_role_data->name)->permissions;
         foreach ($permissions as $permission)
-            $all_permission[] = $permission->name;
+            $all_permission[] = $permission->permission_name;
         if(empty($all_permission))
             $all_permission[] = 'dummy text';
         return view('role.permission', compact('lims_role_data', 'all_permission'));

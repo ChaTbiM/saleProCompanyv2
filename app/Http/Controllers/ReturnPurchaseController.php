@@ -30,7 +30,7 @@ class ReturnPurchaseController extends Controller
         if($role->hasPermissionTo('purchase-return-index')){
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
             if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')

@@ -54,7 +54,7 @@ class SaleController extends Controller
         if ($role->hasPermissionTo('sales-index')) {
             $permissions = Role::findUserPermissions(); // findByName
             foreach ($permissions as $permission) {
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             }
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
@@ -854,7 +854,7 @@ class SaleController extends Controller
             $permissions = Role::findUserPermissions(); // findByName
             $salesmans = Employee::where('is_salesman', '=', 1)->get();
             foreach ($permissions as $permission) {
-                $all_permission[] = $permission->name;
+                $all_permission[] = $permission->permission_name;
             }
             if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';

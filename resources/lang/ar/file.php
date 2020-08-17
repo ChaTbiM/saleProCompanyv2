@@ -557,5 +557,15 @@ return [
     "Number of Product" => "رقم المنتج",
     "home" => "الصفحة الرئيسية",
     "service"=>"الخدمات",
-    
+    "add service"=> "إضافة خدمة",
+    "service list"=> "قائمة الخدمات",
+    "service categories" => "فئات الخدمات",
+    "Number Of Services" => "عدد الخدمات",
+    "Service Details" => "تفاصيل الخدمة",
+    "Service Name"=>"إسم الخدمة",
+    "Service Code"=>"كود الخدمة",
+    "service category"=>"فئة الخدمة",
+    "Service Price" => "سعر الخدمة",
+    "Service Tax" => "الضريبة على الخدمة",
+    "Service Image" => "صورة للخدمة"
     ];

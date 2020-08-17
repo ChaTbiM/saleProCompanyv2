@@ -46,32 +46,7 @@
                                       <span class="validation-msg"></span>
                                     </div>
                                 </div>
-                                <div id="unit" class="col-md-12">
-                                    <div class="row ">
-                                        <div class="col-md-4 form-group">
-                                                <label>{{trans('file.Service Unit')}} *</strong> </label>
-                                                <div class="input-group">
-                                                  <select required class="form-control selectpicker" name="unit_id">
-                                                    <option value="" disabled selected>Select Service Unit...</option>
-                                                    @foreach($lims_unit_list as $unit)
-                                                        @if($unit->base_unit==null)
-                                                            <option value="{{$unit->id}}">{{$unit->unit_name}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                  </select>
-                                              </div>
-                                              <span class="validation-msg"></span>
-                                        </div>
-                                        <div class="col-md-4">
-                                                <label>{{trans('file.Sale Unit')}}</strong> </label>
-                                                <div class="input-group">
-                                                  <select class="form-control selectpicker" name="sale_unit_id"> 
-                                                  </select>
-                                              </div>
-                                        </div>
-                                                                     
-                                    </div>                                
-                                </div>
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>{{trans('file.Service Price')}} *</strong> </label>
