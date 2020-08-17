@@ -1,85 +1,89 @@
-@extends('layout.main') @section('content')
+ <?php $__env->startSection('content'); ?>
 
-@if($errors->has('unit_code'))
+<?php if($errors->has('unit_code')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ $errors->first('unit_code') }}</div>
-@endif
-@if($errors->has('unit_name'))
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e($errors->first('unit_code')); ?></div>
+<?php endif; ?>
+<?php if($errors->has('unit_name')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ $errors->first('unit_name') }}</div>
-@endif
-@if(session()->has('message'))
-  <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div> 
-@endif
-@if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div> 
-@endif
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e($errors->first('unit_name')); ?></div>
+<?php endif; ?>
+<?php if(session()->has('message')): ?>
+  <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('message')); ?></div> 
+<?php endif; ?>
+<?php if(session()->has('not_permitted')): ?>
+  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div> 
+<?php endif; ?>
 
 <section>
     <div class="container-fluid">
-        <a href="#" data-toggle="modal" data-target="#createModal" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Unit')}}</a>&nbsp;
-        <a href="#" data-toggle="modal" data-target="#importUnit" class="btn btn-primary"><i class="dripicons-copy"></i> {{trans('file.Import Unit')}}</a>
+        <a href="#" data-toggle="modal" data-target="#createModal" class="btn btn-info"><i class="dripicons-plus"></i> <?php echo e(trans('file.Add Unit')); ?></a>&nbsp;
+        <a href="#" data-toggle="modal" data-target="#importUnit" class="btn btn-primary"><i class="dripicons-copy"></i> <?php echo e(trans('file.Import Unit')); ?></a>
     </div>
     <div class="table-responsive">
         <table id="unit-table" class="table">
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th>{{trans('file.Code')}}</th>
-                    <th>{{trans('file.name')}}</th>
-                    <th>{{trans('file.Base Unit')}}</th>                 
-                    <th>{{trans('file.Operator')}}</th>
-                    <th>{{trans('file.Operation Value')}}</th>
-                    <th class="not-exported">{{trans('file.action')}}</th>
+                    <th><?php echo e(trans('file.Code')); ?></th>
+                    <th><?php echo e(trans('file.name')); ?></th>
+                    <th><?php echo e(trans('file.Base Unit')); ?></th>                 
+                    <th><?php echo e(trans('file.Operator')); ?></th>
+                    <th><?php echo e(trans('file.Operation Value')); ?></th>
+                    <th class="not-exported"><?php echo e(trans('file.action')); ?></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($lims_unit_all as $key=>$unit)
-                @if($unit->id == 11 || $unit->unit_code == "hour" || $unit->unit_name == "hour")
-                    @continue
-                @endif
-                <tr data-id="{{$unit->id}}">
-                    <td>{{$key}}</td>
-                    <td>{{ $unit->unit_code }}</td>
-                    <td>{{ $unit->unit_name }}</td>
-                    @if($unit->base_unit)
+                <?php $__currentLoopData = $lims_unit_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=>$unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if($unit->id == 11 || $unit->unit_code == "hour" || $unit->unit_name == "hour"): ?>
+                    <?php continue; ?>
+                <?php endif; ?>
+                <tr data-id="<?php echo e($unit->id); ?>">
+                    <td><?php echo e($key); ?></td>
+                    <td><?php echo e($unit->unit_code); ?></td>
+                    <td><?php echo e($unit->unit_name); ?></td>
+                    <?php if($unit->base_unit): ?>
                         <?php $base_unit = DB::table('units')->where('id', $unit->base_unit)->first(); ?>
-                        <td>{{ $base_unit->unit_name }}</td>
-                    @else
+                        <td><?php echo e($base_unit->unit_name); ?></td>
+                    <?php else: ?>
                         <td>N/A</td>
-                    @endif
-                    @if($unit->operator)
-                        <td>{{ $unit->operator }}</td>
-                    @else
+                    <?php endif; ?>
+                    <?php if($unit->operator): ?>
+                        <td><?php echo e($unit->operator); ?></td>
+                    <?php else: ?>
                         <td>N/A</td>
-                    @endif
-                    @if($unit->operation_value)
-                        <td>{{ $unit->operation_value }}</td>
-                    @else
+                    <?php endif; ?>
+                    <?php if($unit->operation_value): ?>
+                        <td><?php echo e($unit->operation_value); ?></td>
+                    <?php else: ?>
                         <td>N/A</td>
-                    @endif
+                    <?php endif; ?>
                     <td>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo e(trans('file.action')); ?>
+
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                                 <li>
-                                    <button type="button" data-id="{{$unit->id}}" class="open-EditUnitDialog btn btn-link" data-toggle="modal" data-target="#editModal"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}
+                                    <button type="button" data-id="<?php echo e($unit->id); ?>" class="open-EditUnitDialog btn btn-link" data-toggle="modal" data-target="#editModal"><i class="dripicons-document-edit"></i> <?php echo e(trans('file.edit')); ?>
+
                                 </button>
                                 </li>
                                 <li class="divider"></li>
-                                {{ Form::open(['route' => ['unit.destroy', $unit->id], 'method' => 'DELETE'] ) }}
+                                <?php echo e(Form::open(['route' => ['unit.destroy', $unit->id], 'method' => 'DELETE'] )); ?>
+
                                 <li>
-                                    <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
+                                    <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> <?php echo e(trans('file.delete')); ?></button>
                                 </li>
-                                {{ Form::close() }}
+                                <?php echo e(Form::close()); ?>
+
                             </ul>
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
     </div>
@@ -89,43 +93,47 @@
 <div id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
         <div class="modal-content">
-            {!! Form::open(['route' => 'unit.store', 'method' => 'post']) !!}
+            <?php echo Form::open(['route' => 'unit.store', 'method' => 'post']); ?>
+
             <div class="modal-header">
-                <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Unit')}}</h5>
+                <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Unit')); ?></h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
             </div>
             <div class="modal-body">
-                <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                 <form>
                     <div class="form-group">
-                    <label>{{trans('file.Code')}} *</label>
-                    {{Form::text('unit_code',null,array('required' => 'required', 'class' => 'form-control'))}}
+                    <label><?php echo e(trans('file.Code')); ?> *</label>
+                    <?php echo e(Form::text('unit_code',null,array('required' => 'required', 'class' => 'form-control'))); ?>
+
                     </div>
                     <div class="form-group">
-                        <label>{{trans('file.name')}} *</label>
-                        {{Form::text('unit_name',null,array('required' => 'required', 'class' => 'form-control'))}}
+                        <label><?php echo e(trans('file.name')); ?> *</label>
+                        <?php echo e(Form::text('unit_name',null,array('required' => 'required', 'class' => 'form-control'))); ?>
+
                     </div>
                     <div class="form-group">
-                        <label>{{trans('file.Base Unit')}}</label>
+                        <label><?php echo e(trans('file.Base Unit')); ?></label>
                         <select class="form-control selectpicker" id="base_unit_create" name="base_unit">
                             <option value="">No Base Unit</option>
-                            @foreach($lims_unit_all as $unit)
-                                @if($unit->base_unit==null)
-                                <option value="{{$unit->id}}">{{$unit->unit_name}}</option>
-                                @endif
-                            @endforeach
+                            <?php $__currentLoopData = $lims_unit_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if($unit->base_unit==null): ?>
+                                <option value="<?php echo e($unit->id); ?>"><?php echo e($unit->unit_name); ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                     <div class="form-group operator">
-                        <label>{{trans('file.Operator')}}</label> <input type="text" name="operator" placeholder="Enter your Name" class="form-control" />
+                        <label><?php echo e(trans('file.Operator')); ?></label> <input type="text" name="operator" placeholder="Enter your Name" class="form-control" />
                     </div>
                     <div class="form-group operation_value">
-                        <label>{{trans('file.Operation Value')}}</label><input type="number" name="operation_value" placeholder="Enter operation value" class="form-control" step="any"/>
+                        <label><?php echo e(trans('file.Operation Value')); ?></label><input type="number" name="operation_value" placeholder="Enter operation value" class="form-control" step="any"/>
                     </div>
-                    <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary">
+                    <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary">
             </form>
         </div>
-        {{ Form::close() }}
+        <?php echo e(Form::close()); ?>
+
     </div>
 </div>
 </div>
@@ -133,44 +141,48 @@
 <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
       <div class="modal-content">
-        {!! Form::open(['route' => ['unit.update',1], 'method' => 'put']) !!}
+        <?php echo Form::open(['route' => ['unit.update',1], 'method' => 'put']); ?>
+
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title"> {{trans('file.Update Unit')}}</h5>
+          <h5 id="exampleModalLabel" class="modal-title"> <?php echo e(trans('file.Update Unit')); ?></h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
         <div class="modal-body">
-          <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+          <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
             <form>
                 <input type="hidden" name="unit_id">
                 <div class="form-group">
-                <label>{{trans('file.Code')}} *</label>
-                {{Form::text('unit_code',null,array('required' => 'required', 'class' => 'form-control'))}}
+                <label><?php echo e(trans('file.Code')); ?> *</label>
+                <?php echo e(Form::text('unit_code',null,array('required' => 'required', 'class' => 'form-control'))); ?>
+
                 </div>
                 <div class="form-group">
-                    <label>{{trans('file.name')}} *</label>
-                    {{Form::text('unit_name',null,array('required' => 'required', 'class' => 'form-control'))}}
+                    <label><?php echo e(trans('file.name')); ?> *</label>
+                    <?php echo e(Form::text('unit_name',null,array('required' => 'required', 'class' => 'form-control'))); ?>
+
                 </div>
                 <div class="form-group">
-                    <label>{{trans('file.Base Unit')}}</label>
+                    <label><?php echo e(trans('file.Base Unit')); ?></label>
                     <select class="form-control selectpicker" id="base_unit_edit" name="base_unit">
                         <option value="">No Base Unit</option>
-                        @foreach($lims_unit_all as $unit)
-                            @if($unit->base_unit==null)
-                            <option value="{{$unit->id}}">{{$unit->unit_name}}</option>
-                            @endif
-                        @endforeach
+                        <?php $__currentLoopData = $lims_unit_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if($unit->base_unit==null): ?>
+                            <option value="<?php echo e($unit->id); ?>"><?php echo e($unit->unit_name); ?></option>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 <div class="form-group operator">
-                    <label>{{trans('file.Operator')}}</label> <input type="text" name="operator" placeholder="Enter your Name" class="form-control" />
+                    <label><?php echo e(trans('file.Operator')); ?></label> <input type="text" name="operator" placeholder="Enter your Name" class="form-control" />
                 </div>
                 <div class="form-group operation_value">
-                    <label>{{trans('file.Operation Value')}}</label><input type="number" name="operation_value" placeholder="Enter operation value" class="form-control" step="any"/>
+                    <label><?php echo e(trans('file.Operation Value')); ?></label><input type="number" name="operation_value" placeholder="Enter operation value" class="form-control" step="any"/>
                 </div>
-                <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary">
+                <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary">
             </form>
         </div>
-        {{ Form::close() }}
+        <?php echo e(Form::close()); ?>
+
       </div>
     </div>
 </div>
@@ -178,31 +190,34 @@
 <div id="importUnit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
       <div class="modal-content">
-        {!! Form::open(['route' => 'unit.import', 'method' => 'post', 'files' => true]) !!}
+        <?php echo Form::open(['route' => 'unit.import', 'method' => 'post', 'files' => true]); ?>
+
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title"> {{trans('file.Import Unit')}}</h5>
+          <h5 id="exampleModalLabel" class="modal-title"> <?php echo e(trans('file.Import Unit')); ?></h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
         <div class="modal-body">
-            <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-            <p>{{trans('file.The correct column order is')}} (unit_code*, unit_name*, base_unit [unit code], operator, operation_value) {{trans('file.and you must follow this')}}.</p>
+            <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+            <p><?php echo e(trans('file.The correct column order is')); ?> (unit_code*, unit_name*, base_unit [unit code], operator, operation_value) <?php echo e(trans('file.and you must follow this')); ?>.</p>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>{{trans('file.Upload CSV File')}} *</label>
-                        {{Form::file('file', array('class' => 'form-control','required'))}}
+                        <label><?php echo e(trans('file.Upload CSV File')); ?> *</label>
+                        <?php echo e(Form::file('file', array('class' => 'form-control','required'))); ?>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label> {{trans('file.Sample File')}}</label>
-                        <a href="public/sample_file/sample_unit.csv" class="btn btn-info btn-block btn-md"><i class="dripicons-download"></i>  {{trans('file.Download')}}</a>
+                        <label> <?php echo e(trans('file.Sample File')); ?></label>
+                        <a href="public/sample_file/sample_unit.csv" class="btn btn-info btn-block btn-md"><i class="dripicons-download"></i>  <?php echo e(trans('file.Download')); ?></a>
                     </div>
                 </div>
             </div>
-            <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary">
+            <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary">
         </div>
-        {{ Form::close() }}
+        <?php echo e(Form::close()); ?>
+
       </div>
     </div>
 </div>
@@ -343,9 +358,9 @@ $(document).ready(function() {
     $('#unit-table').DataTable( {
         "order": [],
         'language': {
-            'lengthMenu': '_MENU_ {{trans("file.records per page")}}',
-             "info":      '<small>{{trans("file.Showing")}} _START_ - _END_ (_TOTAL_)</small>',
-            "search":  '{{trans("file.Search")}}',
+            'lengthMenu': '_MENU_ <?php echo e(trans("file.records per page")); ?>',
+             "info":      '<small><?php echo e(trans("file.Showing")); ?> _START_ - _END_ (_TOTAL_)</small>',
+            "search":  '<?php echo e(trans("file.Search")); ?>',
             'paginate': {
                     'previous': '<i class="dripicons-chevron-left"></i>',
                     'next': '<i class="dripicons-chevron-right"></i>'
@@ -377,7 +392,7 @@ $(document).ready(function() {
         buttons: [
             {
                 extend: 'pdf',
-                text: '{{trans("file.PDF")}}',
+                text: '<?php echo e(trans("file.PDF")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible'
@@ -388,7 +403,7 @@ $(document).ready(function() {
             },
             {
                 extend: 'csv',
-                text: '{{trans("file.CSV")}}',
+                text: '<?php echo e(trans("file.CSV")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible'
@@ -396,14 +411,14 @@ $(document).ready(function() {
             },
             {
                 extend: 'print',
-                text: '{{trans("file.Print")}}',
+                text: '<?php echo e(trans("file.Print")); ?>',
                 exportOptions: {
                     columns: ':visible:Not(.not-exported)',
                     rows: ':visible'
                 },
             },
             {
-                text: '{{trans("file.delete")}}',
+                text: '<?php echo e(trans("file.delete")); ?>',
                 className: 'buttons-delete',
                 action: function ( e, dt, node, config ) {
                     if(user_verified == '1') {
@@ -435,10 +450,11 @@ $(document).ready(function() {
             },
             {
                 extend: 'colvis',
-                text: '{{trans("file.Column visibility")}}',
+                text: '<?php echo e(trans("file.Column visibility")); ?>',
                 columns: ':gt(0)'
             },
         ],
     } );
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
