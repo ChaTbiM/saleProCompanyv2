@@ -300,13 +300,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                            
                         @foreach($lims_return_data as $key=>$return)
                         <tr>
                             <td>{{$key}}</td>
                             <td>{{ date($general_setting->date_format, strtotime($return->created_at->toDateString())) }}<br>{{ $return->created_at->toTimeString()}}</td>
                             <td>{{$return->reference_no}}</td>
                             <td>{{$return->customer->name}}</td>
+                            @if(isset($return->biller->name))
                             <td>{{$return->biller->name}}</td>
+                            @else
+                            <td>/</td>
+                            @endif
                             <td>
                                 @foreach($lims_product_return_data[$key] as $product_return_data)
                                 <?php 

@@ -268,7 +268,7 @@ Route::group(['middleware' => ['auth', 'active','belongsToCompany']], function (
     Route::get('report/payment_report_by_date', 'ReportController@paymentReportByDate')->name('report.paymentByDateLang'); // Added
 
     Route::post('report/warehouse_report', 'ReportController@warehouseReport')->name('report.warehouse');
-    Route::get('report/warehouse_report', 'ReportController@warehouseReport')->name('report.warehouseLang');//Added
+    // Route::get('report/warehouse_report', 'ReportController@warehouseReport')->name('report.warehouseLang');//Added
 
     Route::post('report/user_report', 'ReportController@userReport')->name('report.user');
     Route::get('report/user_report', 'ReportController@userReport')->name('report.userLang'); // Added

@@ -980,14 +980,12 @@ class ReportController extends Controller
     public function warehouseReport(Request $request)
     {
         $data = $request->all();
-        $start_date = date('1988-04-18');
-        $end_date = date('Y-m-d');
+        
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $warehouse_id = $data['warehouse_id'];
 
-        if ($request->method() == "GET") {
-            $warehouse_id = 0;
-        } else {
-            $warehouse_id = $data['warehouse_id'];
-        }
+
 
         $lims_purchase_data = Purchase::where('warehouse_id', $warehouse_id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->orderBy('created_at', 'desc')->get();
         $lims_sale_data = Sale::with('customer')->where('warehouse_id', $warehouse_id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->orderBy('created_at', 'desc')->get();
