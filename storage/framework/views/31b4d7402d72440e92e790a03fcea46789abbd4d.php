@@ -1022,11 +1022,12 @@
               <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true"
                 id="warehouse-id" data-live-search-style="begins" title="Select warehouse...">
                 <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                input
                 <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </select>
             </div>
-
+            <input type="hidden" name="warehouse_id"  />
             <input type="hidden" name="start_date" value="1988-04-18" />
             <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 

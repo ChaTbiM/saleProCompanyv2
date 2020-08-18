@@ -980,7 +980,7 @@ class ReportController extends Controller
     public function warehouseReport(Request $request)
     {
         $data = $request->all();
-        
+
         $start_date = $request->start_date;
         $end_date = $request->end_date;
         $warehouse_id = $data['warehouse_id'];

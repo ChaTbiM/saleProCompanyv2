@@ -60,11 +60,11 @@ class SaleController extends Controller
                 $all_permission[] = 'dummy text';
             }
 
-            if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
-                $lims_sale_all = Sale::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
-            } else {
+            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+            //     $lims_sale_all = Sale::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
+            // } else {
                 $lims_sale_all = Sale::orderBy('id', 'desc')->get();
-            }
+            // }
 
             $lims_gift_card_list = GiftCard::where("is_active", true)->get();
             $lims_pos_setting_data = PosSetting::latest()->first();
@@ -87,11 +87,11 @@ class SaleController extends Controller
         );
 
 
-        if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
-            $totalData = Sale::where('user_id', Auth::id())->count();
-        } else {
+        // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+        //     $totalData = Sale::where('user_id', Auth::id())->count();
+        // } else {
             $totalData = Sale::count();
-        }
+        // }
 
         $totalFiltered = $totalData;
         if ($request->input('length') != -1) {
@@ -103,53 +103,53 @@ class SaleController extends Controller
         $order = 'sales.' . $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         if (empty($request->input('search.value'))) {
-            if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
+            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+            //     $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
+            //         ->where('user_id', Auth::id())
+            //         ->limit($limit)
+            //         ->orderBy($order, $dir)
+            //         ->get();
+            // } else {
                 $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
-                    ->where('user_id', Auth::id())
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
-            } else {
-                $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-            }
+            // }
         } else {
             $search = $request->input('search.value');
-            if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
-                $sales =  Sale::select('sales.*')
-                    ->with('biller', 'customer', 'warehouse', 'user')
-                    ->join('customers', 'sales.customer_id', '=', 'customers.id')
-                    ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-                    ->where('sales.user_id', Auth::id())
-                    ->orwhere([
-                        ['sales.reference_no', 'LIKE', "%{$search}%"],
-                        ['sales.user_id', Auth::id()]
-                    ])
-                    ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-                    ->orwhere([
-                        ['customers.name', 'LIKE', "%{$search}%"],
-                        ['sales.user_id', Auth::id()]
-                    ])
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)->get();
+            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+            //     $sales =  Sale::select('sales.*')
+            //         ->with('biller', 'customer', 'warehouse', 'user')
+            //         ->join('customers', 'sales.customer_id', '=', 'customers.id')
+            //         ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+            //         ->where('sales.user_id', Auth::id())
+            //         ->orwhere([
+            //             ['sales.reference_no', 'LIKE', "%{$search}%"],
+            //             ['sales.user_id', Auth::id()]
+            //         ])
+            //         ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
+            //         ->orwhere([
+            //             ['customers.name', 'LIKE', "%{$search}%"],
+            //             ['sales.user_id', Auth::id()]
+            //         ])
+            //         ->offset($start)
+            //         ->limit($limit)
+            //         ->orderBy($order, $dir)->get();
 
-                $totalFiltered = Sale::join('customers', 'sales.customer_id', '=', 'customers.id')
-                    ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-                    ->where('sales.user_id', Auth::id())
-                    ->orwhere([
-                        ['sales.reference_no', 'LIKE', "%{$search}%"],
-                        ['sales.user_id', Auth::id()]
-                    ])
-                    ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-                    ->orwhere([
-                        ['customers.name', 'LIKE', "%{$search}%"],
-                        ['sales.user_id', Auth::id()]
-                    ])
-                    ->count();
-            } else {
+            //     $totalFiltered = Sale::join('customers', 'sales.customer_id', '=', 'customers.id')
+            //         ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+            //         ->where('sales.user_id', Auth::id())
+            //         ->orwhere([
+            //             ['sales.reference_no', 'LIKE', "%{$search}%"],
+            //             ['sales.user_id', Auth::id()]
+            //         ])
+            //         ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
+            //         ->orwhere([
+            //             ['customers.name', 'LIKE', "%{$search}%"],
+            //             ['sales.user_id', Auth::id()]
+            //         ])
+            //         ->count();
+            // } else {
                 $sales =  Sale::select('sales.*')
                     ->with('biller', 'customer', 'warehouse', 'user')
                     ->join('customers', 'sales.customer_id', '=', 'customers.id')
@@ -169,7 +169,7 @@ class SaleController extends Controller
                     ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
                     ->orwhere('customers.name', 'LIKE', "%{$search}%")
                     ->count();
-            }
+            // }
         }
 
 
@@ -890,7 +890,7 @@ class SaleController extends Controller
             $lims_brand_list = Brand::where('is_active', true)->get();
             $lims_category_list = Category::where('is_active', true)->get();
 
-            if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
+            if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
                 $recent_sale = Sale::where([
                     ['sale_status', 1],
                     ['user_id', Auth::id()]

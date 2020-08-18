@@ -308,13 +308,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                            
                         <?php $__currentLoopData = $lims_return_data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=>$return): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td><?php echo e($key); ?></td>
                             <td><?php echo e(date($general_setting->date_format, strtotime($return->created_at->toDateString()))); ?><br><?php echo e($return->created_at->toTimeString()); ?></td>
                             <td><?php echo e($return->reference_no); ?></td>
                             <td><?php echo e($return->customer->name); ?></td>
+                            <?php if(isset($return->biller->name)): ?>
                             <td><?php echo e($return->biller->name); ?></td>
+                            <?php else: ?>
+                            <td>/</td>
+                            <?php endif; ?>
                             <td>
                                 <?php $__currentLoopData = $lims_product_return_data[$key]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product_return_data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php 

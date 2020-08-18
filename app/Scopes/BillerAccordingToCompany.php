@@ -17,7 +17,7 @@ class BillerAccordingToCompany implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $company_name = "hygiene"; // change according to company (tenant)
+        $company_name = "hafko"; // change according to company (tenant)
         $builder->where('company_name', '=', $company_name);
     }
 }

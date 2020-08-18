@@ -1002,11 +1002,12 @@
               <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true"
                 id="warehouse-id" data-live-search-style="begins" title="Select warehouse...">
                 @foreach($lims_warehouse_list as $warehouse)
+                input
                 <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
                 @endforeach
               </select>
             </div>
-
+            <input type="hidden" name="warehouse_id"  />
             <input type="hidden" name="start_date" value="1988-04-18" />
             <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
 
