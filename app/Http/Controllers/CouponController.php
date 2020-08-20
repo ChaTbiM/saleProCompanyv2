@@ -14,12 +14,12 @@ class CouponController extends Controller
     public function index()
     {
         $role = Role::find(Auth::user()->role_id());
-        if($role->hasPermissionTo('unit')) {
+        if ($role->hasPermissionTo('coupon')) {
             $lims_coupon_all = Coupon::where('is_active', true)->orderBy('id', 'desc')->get();
             return view('coupon.index', compact('lims_coupon_all'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function create()
@@ -56,8 +56,9 @@ class CouponController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        if($data['type'] == 'percentage')
+        if ($data['type'] == 'percentage') {
             $data['minimum_amount'] = 0;
+        }
         $lims_coupon_data = Coupon::find($data['coupon_id']);
         $lims_coupon_data->update($data);
         return redirect('coupons')->with('message', 'Coupon updated successfully');
