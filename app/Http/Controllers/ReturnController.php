@@ -29,42 +29,45 @@ class ReturnController extends Controller
     public function index()
     {
         $role = Role::find(Auth::user()->role_id());
-        if($role->hasPermissionTo('returns-index')){
+        if ($role->hasPermissionTo('returns-index')) {
             $permissions = Role::findUserPermissions(); // findByName
-            foreach ($permissions as $permission)
+            foreach ($permissions as $permission) {
                 $all_permission[] = $permission->permission_name;
-            if(empty($all_permission))
+            }
+            if (empty($all_permission)) {
                 $all_permission[] = 'dummy text';
+            }
             
-            if(Auth::user()->role_id()> 2 && config('staff_access') == 'own')
-                $lims_return_all = Returns::with('biller', 'customer', 'warehouse', 'user')->orderBy('id', 'desc')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
-            else
-                $lims_return_all = Returns::with('biller', 'customer', 'warehouse', 'user')->orderBy('id', 'desc')->get();
+            // if (Auth::user()->role_id()> 2 && config('staff_access') == 'own') {
+            //     $lims_return_all = Returns::with('biller', 'customer', 'warehouse', 'user')->orderBy('id', 'desc')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
+            // } else {
+            $lims_return_all = Returns::with('biller', 'customer', 'warehouse', 'user')->orderBy('id', 'desc')->get();
+            // }
             return view('return.index', compact('lims_return_all', 'all_permission'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function create()
     {
         $role = Role::find(Auth::user()->role_id());
-        if($role->hasPermissionTo('returns-add')){
-            $lims_customer_list = Customer::where('is_active',true)->get();
-            $lims_warehouse_list = Warehouse::where('is_active',true)->get();
-            $lims_biller_list = Biller::where('is_active',true)->get();
-            $lims_tax_list = Tax::where('is_active',true)->get();
+        if ($role->hasPermissionTo('returns-add')) {
+            $lims_customer_list = Customer::where('is_active', true)->get();
+            $lims_warehouse_list = Warehouse::where('is_active', true)->get();
+            $lims_biller_list = Biller::where('is_active', true)->get();
+            $lims_tax_list = Tax::where('is_active', true)->get();
             return view('return.create', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list'));
-        }
-        else
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function getCustomerGroup($id)
     {
-         $lims_customer_data = Customer::find($id);
-         $lims_customer_group_data = CustomerGroup::find($lims_customer_data->customer_group_id);
-         return $lims_customer_group_data->percentage;
+        $lims_customer_data = Customer::find($id);
+        $lims_customer_group_data = CustomerGroup::find($lims_customer_data->customer_group_id);
+        return $lims_customer_group_data->percentage;
     }
 
     public function getProduct($id)
@@ -75,16 +78,14 @@ class ReturnController extends Controller
         $product_name = [];
         $product_qty = [];
         $product_data = [];
-        foreach ($lims_product_warehouse_data as $product_warehouse) 
-        {
+        foreach ($lims_product_warehouse_data as $product_warehouse) {
             $product_qty[] = $product_warehouse->qty;
             $lims_product_data = Product::select('code', 'name', 'type')->find($product_warehouse->product_id);
             $product_code[] =  $lims_product_data->code;
             $product_name[] = $lims_product_data->name;
             $product_type[] = $lims_product_data->type;
         }
-        foreach ($lims_product_with_variant_warehouse_data as $product_warehouse) 
-        {
+        foreach ($lims_product_with_variant_warehouse_data as $product_warehouse) {
             $product_qty[] = $product_warehouse->qty;
             $lims_product_data = Product::select('name', 'type')->find($product_warehouse->product_id);
             $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_warehouse->product_id, $product_warehouse->variant_id)->first();
@@ -93,8 +94,7 @@ class ReturnController extends Controller
             $product_type[] = $lims_product_data->type;
         }
         $lims_product_data = Product::select('code', 'name', 'type')->where('is_active', true)->whereNotIn('type', ['standard'])->get();
-        foreach ($lims_product_data as $product) 
-        {
+        foreach ($lims_product_data as $product) {
             $product_qty[] = $product->qty;
             $product_code[] =  $product->code;
             $product_name[] = $product->name;
@@ -110,10 +110,10 @@ class ReturnController extends Controller
     public function limsProductSearch(Request $request)
     {
         $todayDate = date('Y-m-d');
-        $product_code = explode(" ",$request['data']);
+        $product_code = explode(" ", $request['data']);
         $lims_product_data = Product::where('code', $product_code[0])->first();
         $product_variant_id = null;
-        if(!$lims_product_data) {
+        if (!$lims_product_data) {
             $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
                 ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.additional_price')
                 ->where('product_variants.item_code', $product_code)
@@ -124,23 +124,22 @@ class ReturnController extends Controller
         }
         $product[] = $lims_product_data->name;
         $product[] = $lims_product_data->code;
-        if($lims_product_data->promotion && $todayDate <= $lims_product_data->last_date){
+        if ($lims_product_data->promotion && $todayDate <= $lims_product_data->last_date) {
             $product[] = $lims_product_data->promotion_price;
-        }
-        else
+        } else {
             $product[] = $lims_product_data->price;
+        }
         
-        if($lims_product_data->tax_id) {
+        if ($lims_product_data->tax_id) {
             $lims_tax_data = Tax::find($lims_product_data->tax_id);
             $product[] = $lims_tax_data->rate;
             $product[] = $lims_tax_data->name;
-        }
-        else{
+        } else {
             $product[] = 0;
             $product[] = 'No Tax';
         }
         $product[] = $lims_product_data->tax_method;
-        if($lims_product_data->type == 'standard'){
+        if ($lims_product_data->type == 'standard') {
             $units = Unit::where("base_unit", $lims_product_data->unit_id)
                     ->orWhere('id', $lims_product_data->unit_id)
                     ->get();
@@ -148,23 +147,20 @@ class ReturnController extends Controller
             $unit_operator = array();
             $unit_operation_value = array();
             foreach ($units as $unit) {
-                if($lims_product_data->sale_unit_id == $unit->id) {
+                if ($lims_product_data->sale_unit_id == $unit->id) {
                     array_unshift($unit_name, $unit->unit_name);
                     array_unshift($unit_operator, $unit->operator);
                     array_unshift($unit_operation_value, $unit->operation_value);
-                }
-                else {
+                } else {
                     $unit_name[]  = $unit->unit_name;
                     $unit_operator[] = $unit->operator;
                     $unit_operation_value[] = $unit->operation_value;
                 }
             }
-            $product[] = implode(",",$unit_name) . ',';
-            $product[] = implode(",",$unit_operator) . ',';
-            $product[] = implode(",",$unit_operation_value) . ',';     
-        }
-        
-        else{
+            $product[] = implode(",", $unit_name) . ',';
+            $product[] = implode(",", $unit_operator) . ',';
+            $product[] = implode(",", $unit_operation_value) . ',';
+        } else {
             $product[] = 'n/a'. ',';
             $product[] = 'n/a'. ',';
             $product[] = 'n/a'. ',';
@@ -192,8 +188,9 @@ class ReturnController extends Controller
                     'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
                 ]
             );
-            if ($v->fails())
+            if ($v->fails()) {
                 return redirect()->back()->withErrors($v->errors());
+            }
             
             $documentName = $document->getClientOriginalName();
             $document->move('public/return/documents', $documentName);
@@ -224,15 +221,16 @@ class ReturnController extends Controller
         foreach ($product_id as $key => $pro_id) {
             $lims_product_data = Product::find($pro_id);
             $variant_id = null;
-            if($sale_unit[$key] != 'n/a'){
+            if ($sale_unit[$key] != 'n/a') {
                 $lims_sale_unit_data  = Unit::where('unit_name', $sale_unit[$key])->first();
                 $sale_unit_id = $lims_sale_unit_data->id;
-                if($lims_sale_unit_data->operator == '*')
+                if ($lims_sale_unit_data->operator == '*') {
                     $quantity = $qty[$key] * $lims_sale_unit_data->operation_value;
-                elseif($lims_sale_unit_data->operator == '/')
+                } elseif ($lims_sale_unit_data->operator == '/') {
                     $quantity = $qty[$key] / $lims_sale_unit_data->operation_value;
+                }
 
-                if($lims_product_data->is_variant) {
+                if ($lims_product_data->is_variant) {
                     $lims_product_variant_data = ProductVariant::
                         select('id', 'variant_id', 'qty')
                         ->FindExactProductWithCode($pro_id, $product_code[$key])
@@ -242,18 +240,17 @@ class ReturnController extends Controller
                     $lims_product_variant_data->save();
                     $variant_data = Variant::find($lims_product_variant_data->variant_id);
                     $variant_id = $variant_data->id;
-                }
-                else
+                } else {
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($pro_id, $data['warehouse_id'])->first();
+                }
 
                 $lims_product_data->qty +=  $quantity;
                 $lims_product_warehouse_data->qty += $quantity;
 
                 $lims_product_data->save();
                 $lims_product_warehouse_data->save();
-            }
-            else {
-                if($lims_product_data->type == 'combo'){
+            } else {
+                if ($lims_product_data->type == 'combo') {
                     $product_list = explode(",", $lims_product_data->product_list);
                     $qty_list = explode(",", $lims_product_data->qty_list);
                     $price_list = explode(",", $lims_product_data->price_list);
@@ -274,15 +271,17 @@ class ReturnController extends Controller
                 }
                 $sale_unit_id = 0;
             }
-            if($lims_product_data->is_variant)
+            if ($lims_product_data->is_variant) {
                 $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name . ']';
-            else
+            } else {
                 $mail_data['products'][$key] = $lims_product_data->name;
+            }
             
-            if($sale_unit_id)
+            if ($sale_unit_id) {
                 $mail_data['unit'][$key] = $lims_sale_unit_data->unit_code;
-            else
+            } else {
                 $mail_data['unit'][$key] = '';
+            }
 
             $mail_data['qty'][$key] = $qty[$key];
             $mail_data['total'][$key] = $total[$key];
@@ -291,14 +290,12 @@ class ReturnController extends Controller
             );
         }
         $message = 'Return created successfully';
-        if($mail_data['email']){
-            try{
-                Mail::send( 'mail.return_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Return Details' );
+        if ($mail_data['email']) {
+            try {
+                Mail::send('mail.return_details', $mail_data, function ($message) use ($mail_data) {
+                    $message->to($mail_data['email'])->subject('Return Details');
                 });
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 $message = 'Return created successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
             }
         }
@@ -311,7 +308,7 @@ class ReturnController extends Controller
         $lims_return_data = Returns::find($data['return_id']);
         $lims_product_return_data = ProductReturn::where('return_id', $data['return_id'])->get();
         $lims_customer_data = Customer::find($lims_return_data->customer_id);
-        if($lims_customer_data->email) {
+        if ($lims_customer_data->email) {
             //collecting male data
             $mail_data['email'] = $lims_customer_data->email;
             $mail_data['reference_no'] = $lims_return_data->reference_no;
@@ -323,37 +320,35 @@ class ReturnController extends Controller
 
             foreach ($lims_product_return_data as $key => $product_return_data) {
                 $lims_product_data = Product::find($product_return_data->product_id);
-                if($product_return_data->variant_id){
+                if ($product_return_data->variant_id) {
                     $variant_data = Variant::find($product_return_data->variant_id);
                     $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name .']';
-                }
-                else
+                } else {
                     $mail_data['products'][$key] = $lims_product_data->name;
+                }
 
-                if($product_return_data->sale_unit_id){
+                if ($product_return_data->sale_unit_id) {
                     $lims_unit_data = Unit::find($product_return_data->sale_unit_id);
                     $mail_data['unit'][$key] = $lims_unit_data->unit_code;
-                }
-                else
+                } else {
                     $mail_data['unit'][$key] = '';
+                }
 
                 $mail_data['qty'][$key] = $product_return_data->qty;
                 $mail_data['total'][$key] = $product_return_data->qty;
             }
 
-            try{
-                Mail::send( 'mail.return_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Return Details' );
+            try {
+                Mail::send('mail.return_details', $mail_data, function ($message) use ($mail_data) {
+                    $message->to($mail_data['email'])->subject('Return Details');
                 });
                 $message = 'Mail sent successfully';
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 $message = 'Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
             }
-        }
-        else
+        } else {
             $message = 'Customer doesnt have email!';
+        }
         
         return redirect()->back()->with('message', $message);
     }
@@ -363,13 +358,13 @@ class ReturnController extends Controller
         $lims_product_return_data = ProductReturn::where('return_id', $id)->get();
         foreach ($lims_product_return_data as $key => $product_return_data) {
             $product = Product::find($product_return_data->product_id);
-            if($product_return_data->sale_unit_id != 0){
+            if ($product_return_data->sale_unit_id != 0) {
                 $unit_data = Unit::find($product_return_data->sale_unit_id);
                 $unit = $unit_data->unit_code;
-            }
-            else
+            } else {
                 $unit = '';
-            if($product_return_data->variant_id) {
+            }
+            if ($product_return_data->variant_id) {
                 $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_return_data->product_id, $product_return_data->variant_id)->first();
                 $product->code = $lims_product_variant_data->item_code;
             }
@@ -388,17 +383,17 @@ class ReturnController extends Controller
     public function edit($id)
     {
         $role = Role::find(Auth::user()->role_id());
-        if($role->hasPermissionTo('returns-edit')){
-            $lims_customer_list = Customer::where('is_active',true)->get();
-            $lims_warehouse_list = Warehouse::where('is_active',true)->get();
-            $lims_biller_list = Biller::where('is_active',true)->get();
-            $lims_tax_list = Tax::where('is_active',true)->get();
+        if ($role->hasPermissionTo('returns-edit')) {
+            $lims_customer_list = Customer::where('is_active', true)->get();
+            $lims_warehouse_list = Warehouse::where('is_active', true)->get();
+            $lims_biller_list = Biller::where('is_active', true)->get();
+            $lims_tax_list = Tax::where('is_active', true)->get();
             $lims_return_data = Returns::find($id);
             $lims_product_return_data = ProductReturn::where('return_id', $id)->get();
-            return view('return.edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list', 'lims_return_data','lims_product_return_data'));
-        }
-        else
+            return view('return.edit', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list', 'lims_return_data', 'lims_product_return_data'));
+        } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        }
     }
 
     public function update(Request $request, $id)
@@ -415,8 +410,9 @@ class ReturnController extends Controller
                     'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
                 ]
             );
-            if ($v->fails())
+            if ($v->fails()) {
                 return redirect()->back()->withErrors($v->errors());
+            }
 
             $documentName = $document->getClientOriginalName();
             $document->move('public/return/documents', $documentName);
@@ -441,7 +437,7 @@ class ReturnController extends Controller
             $old_product_id[] = $product_return_data->product_id;
             $old_product_variant_id[] = null;
             $lims_product_data = Product::find($product_return_data->product_id);
-            if($lims_product_data->type == 'combo'){
+            if ($lims_product_data->type == 'combo') {
                 $product_list = explode(",", $lims_product_data->product_list);
                 $qty_list = explode(",", $lims_product_data->qty_list);
 
@@ -458,49 +454,50 @@ class ReturnController extends Controller
                     $child_data->save();
                     $child_warehouse_data->save();
                 }
-            }
-            elseif($product_return_data->sale_unit_id != 0){
+            } elseif ($product_return_data->sale_unit_id != 0) {
                 $lims_sale_unit_data = Unit::find($product_return_data->sale_unit_id);
-                if ($lims_sale_unit_data->operator == '*')
+                if ($lims_sale_unit_data->operator == '*') {
                     $quantity = $product_return_data->qty * $lims_sale_unit_data->operation_value;
-                elseif($lims_sale_unit_data->operator == '/')
+                } elseif ($lims_sale_unit_data->operator == '/') {
                     $quantity = $product_return_data->qty / $lims_sale_unit_data->operation_value;
+                }
 
-                if($product_return_data->variant_id) {
+                if ($product_return_data->variant_id) {
                     $lims_product_variant_data = ProductVariant::select('id', 'qty')->FindExactProduct($product_return_data->product_id, $product_return_data->variant_id)->first();
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($product_return_data->product_id, $product_return_data->variant_id, $lims_return_data->warehouse_id)
                     ->first();
                     $old_product_variant_id[$key] = $lims_product_variant_data->id;
                     $lims_product_variant_data->qty -= $quantity;
                     $lims_product_variant_data->save();
-                }
-                else
+                } else {
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($product_return_data->product_id, $lims_return_data->warehouse_id)
                     ->first();
+                }
 
                 $lims_product_data->qty -= $quantity;
                 $lims_product_warehouse_data->qty -= $quantity;
                 $lims_product_data->save();
                 $lims_product_warehouse_data->save();
             }
-            if($product_return_data->variant_id && !(in_array($old_product_variant_id[$key], $product_variant_id)) ){
+            if ($product_return_data->variant_id && !(in_array($old_product_variant_id[$key], $product_variant_id))) {
+                $product_return_data->delete();
+            } elseif (!(in_array($old_product_id[$key], $product_id))) {
                 $product_return_data->delete();
             }
-            elseif( !(in_array($old_product_id[$key], $product_id)) )
-                $product_return_data->delete();
         }
         foreach ($product_id as $key => $pro_id) {
             $lims_product_data = Product::find($pro_id);
             $product_return['variant_id'] = null;
-            if($sale_unit[$key] != 'n/a'){
+            if ($sale_unit[$key] != 'n/a') {
                 $lims_sale_unit_data = Unit::where('unit_name', $sale_unit[$key])->first();
                 $sale_unit_id = $lims_sale_unit_data->id;
-                if ($lims_sale_unit_data->operator == '*')
+                if ($lims_sale_unit_data->operator == '*') {
                     $quantity = $qty[$key] * $lims_sale_unit_data->operation_value;
-                elseif($lims_sale_unit_data->operator == '/')
+                } elseif ($lims_sale_unit_data->operator == '/') {
                     $quantity = $qty[$key] / $lims_sale_unit_data->operation_value;
+                }
 
-                if($lims_product_data->is_variant) {
+                if ($lims_product_data->is_variant) {
                     $lims_product_variant_data = ProductVariant::select('id', 'variant_id', 'qty')->FindExactProductWithCode($pro_id, $product_code[$key])->first();
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($pro_id, $lims_product_variant_data->variant_id, $data['warehouse_id'])
                     ->first();
@@ -509,8 +506,7 @@ class ReturnController extends Controller
                     $product_return['variant_id'] = $lims_product_variant_data->variant_id;
                     $lims_product_variant_data->qty += $quantity;
                     $lims_product_variant_data->save();
-                }
-                else {
+                } else {
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($pro_id, $data['warehouse_id'])
                     ->first();
                 }
@@ -520,9 +516,8 @@ class ReturnController extends Controller
 
                 $lims_product_data->save();
                 $lims_product_warehouse_data->save();
-            }
-            else {
-                if($lims_product_data->type == 'combo'){
+            } else {
+                if ($lims_product_data->type == 'combo') {
                     $product_list = explode(",", $lims_product_data->product_list);
                     $qty_list = explode(",", $lims_product_data->qty_list);
 
@@ -543,15 +538,17 @@ class ReturnController extends Controller
                 $sale_unit_id = 0;
             }
 
-            if($lims_product_data->is_variant)
+            if ($lims_product_data->is_variant) {
                 $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name .']';
-            else
+            } else {
                 $mail_data['products'][$key] = $lims_product_data->name;
+            }
 
-            if($sale_unit_id)
+            if ($sale_unit_id) {
                 $mail_data['unit'][$key] = $lims_sale_unit_data->unit_code;
-            else
+            } else {
                 $mail_data['unit'][$key] = '';
+            }
 
             $mail_data['qty'][$key] = $qty[$key];
             $mail_data['total'][$key] = $total[$key];
@@ -566,21 +563,20 @@ class ReturnController extends Controller
             $product_return['tax'] = $tax[$key];
             $product_return['total'] = $total[$key];
 
-            if($product_return['variant_id'] && in_array($product_variant_id[$key], $old_product_variant_id)) {
+            if ($product_return['variant_id'] && in_array($product_variant_id[$key], $old_product_variant_id)) {
                 ProductReturn::where([
                     ['product_id', $pro_id],
                     ['variant_id', $product_return['variant_id']],
                     ['return_id', $id]
                 ])->update($product_return);
-            }
-            elseif( $product_return['variant_id'] === null && (in_array($pro_id, $old_product_id)) ) {
+            } elseif ($product_return['variant_id'] === null && (in_array($pro_id, $old_product_id))) {
                 ProductReturn::where([
                     ['return_id', $id],
                     ['product_id', $pro_id]
                     ])->update($product_return);
-            }
-            else
+            } else {
                 ProductReturn::create($product_return);
+            }
         }
         $lims_return_data->update($data);
         $lims_customer_data = Customer::find($data['customer_id']);
@@ -593,14 +589,12 @@ class ReturnController extends Controller
         $mail_data['order_tax_rate'] = $lims_return_data->order_tax_rate;
         $mail_data['grand_total'] = $lims_return_data->grand_total;
         $message = 'Return updated successfully';
-        if($mail_data['email']){
-            try{
-                Mail::send( 'mail.return_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Return Details' );
+        if ($mail_data['email']) {
+            try {
+                Mail::send('mail.return_details', $mail_data, function ($message) use ($mail_data) {
+                    $message->to($mail_data['email'])->subject('Return Details');
                 });
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 $message = 'Return updated successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
             }
         }
@@ -616,7 +610,7 @@ class ReturnController extends Controller
 
             foreach ($lims_product_return_data as $key => $product_return_data) {
                 $lims_product_data = Product::find($product_return_data->product_id);
-                if( $lims_product_data->type == 'combo' ){
+                if ($lims_product_data->type == 'combo') {
                     $product_list = explode(",", $lims_product_data->product_list);
                     $qty_list = explode(",", $lims_product_data->qty_list);
 
@@ -633,22 +627,22 @@ class ReturnController extends Controller
                         $child_data->save();
                         $child_warehouse_data->save();
                     }
-                }
-                elseif($product_return_data->sale_unit_id != 0){
+                } elseif ($product_return_data->sale_unit_id != 0) {
                     $lims_sale_unit_data = Unit::find($product_return_data->sale_unit_id);
 
-                    if ($lims_sale_unit_data->operator == '*')
+                    if ($lims_sale_unit_data->operator == '*') {
                         $quantity = $product_return_data->qty * $lims_sale_unit_data->operation_value;
-                    elseif($lims_sale_unit_data->operator == '/')
+                    } elseif ($lims_sale_unit_data->operator == '/') {
                         $quantity = $product_return_data->qty / $lims_sale_unit_data->operation_value;
-                    if($product_return_data->variant_id) {
+                    }
+                    if ($product_return_data->variant_id) {
                         $lims_product_variant_data = ProductVariant::select('id', 'qty')->FindExactProduct($product_return_data->product_id, $product_return_data->variant_id)->first();
                         $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($product_return_data->product_id, $product_return_data->variant_id, $lims_return_data->warehouse_id)->first();
                         $lims_product_variant_data->qty -= $quantity;
                         $lims_product_variant_data->save();
-                    }
-                    else
+                    } else {
                         $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($product_return_data->product_id, $lims_return_data->warehouse_id)->first();
+                    }
 
                     $lims_product_data->qty -= $quantity;
                     $lims_product_warehouse_data->qty -= $quantity;
@@ -658,7 +652,7 @@ class ReturnController extends Controller
                 }
             }
             $lims_return_data->delete();
-            }
+        }
         return 'Return deleted successfully!';
     }
 
@@ -669,7 +663,7 @@ class ReturnController extends Controller
 
         foreach ($lims_product_return_data as $key => $product_return_data) {
             $lims_product_data = Product::find($product_return_data->product_id);
-            if( $lims_product_data->type == 'combo' ){
+            if ($lims_product_data->type == 'combo') {
                 $product_list = explode(",", $lims_product_data->product_list);
                 $qty_list = explode(",", $lims_product_data->qty_list);
 
@@ -686,23 +680,23 @@ class ReturnController extends Controller
                     $child_data->save();
                     $child_warehouse_data->save();
                 }
-            }
-            elseif($product_return_data->sale_unit_id != 0){
+            } elseif ($product_return_data->sale_unit_id != 0) {
                 $lims_sale_unit_data = Unit::find($product_return_data->sale_unit_id);
 
-                if ($lims_sale_unit_data->operator == '*')
+                if ($lims_sale_unit_data->operator == '*') {
                     $quantity = $product_return_data->qty * $lims_sale_unit_data->operation_value;
-                elseif($lims_sale_unit_data->operator == '/')
+                } elseif ($lims_sale_unit_data->operator == '/') {
                     $quantity = $product_return_data->qty / $lims_sale_unit_data->operation_value;
+                }
                 
-                if($product_return_data->variant_id) {
+                if ($product_return_data->variant_id) {
                     $lims_product_variant_data = ProductVariant::select('id', 'qty')->FindExactProduct($product_return_data->product_id, $product_return_data->variant_id)->first();
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($product_return_data->product_id, $product_return_data->variant_id, $lims_return_data->warehouse_id)->first();
                     $lims_product_variant_data->qty -= $quantity;
                     $lims_product_variant_data->save();
-                }
-                else
+                } else {
                     $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($product_return_data->product_id, $lims_return_data->warehouse_id)->first();
+                }
 
                 $lims_product_data->qty -= $quantity;
                 $lims_product_warehouse_data->qty -= $quantity;
@@ -712,6 +706,7 @@ class ReturnController extends Controller
             }
         }
         $lims_return_data->delete();
-        return redirect('return-sale')->with('not_permitted', 'Data deleted successfully');;
+        return redirect('return-sale')->with('not_permitted', 'Data deleted successfully');
+        ;
     }
 }
