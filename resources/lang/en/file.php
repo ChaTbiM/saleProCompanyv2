@@ -566,5 +566,6 @@ return [
     "service category"=>"service category",
     "Service Price" => "Service Price",
     "Service Tax" => "Service Tax",
-    "Service Image" => "Service Image"
+    "Service Image" => "Service Image",
+    "Best Service Seller"=>"Best Service Seller"
 ];

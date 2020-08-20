@@ -568,5 +568,7 @@ return [
     "service category"=>"فئة الخدمة",
     "Service Price" => "سعر الخدمة",
     "Service Tax" => "الضريبة على الخدمة",
-    "Service Image" => "صورة للخدمة"
+    "Service Image" => "صورة للخدمة",
+    "Service Report" => "تقرير الخدمات",
+    "Best Service Seller"=>"أفضل الخدمات مبيعا"
     ];
