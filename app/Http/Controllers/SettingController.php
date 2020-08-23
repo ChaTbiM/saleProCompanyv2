@@ -27,7 +27,9 @@ class SettingController extends Controller
         $str = 'Tables_in_' . config("database.database_name");
         foreach ($tables as $table) {
             if ($table->$str != 'accounts' && $table->$str != 'general_settings' && $table->$str != 'hrm_settings' && $table->$str != 'languages' && $table->$str != 'migrations' && $table->$str != 'password_resets' && $table->$str != 'permissions' && $table->$str != 'pos_setting' && $table->$str != 'roles' && $table->$str != 'role_has_permissions' && $table->$str != 'users' && $table->$str != 'units') {
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
                 DB::table($table->$str)->truncate();
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
         }
         return redirect()->back()->with('message', 'Database cleared successfully');
