@@ -34,6 +34,7 @@ class SettingController extends Controller
         }
         return redirect()->back()->with('message', 'Database cleared successfully');
     }
+    
     public function generalSetting()
     {
         $lims_general_setting_data = GeneralSetting::latest()->first();

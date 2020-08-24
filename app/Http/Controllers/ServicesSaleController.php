@@ -31,12 +31,12 @@ class ServicesSaleController extends Controller
     //
     public function store(Request $request)
     {
-        dd($request);
         $data = $request->all();
         $data['user_id'] = Auth::id();
 
         unset($data['biller_id']);
         unset($data['warehouse_id']);
+        unset($data['salesman_id']);
 
         $data["is_product"] = 0;
         
@@ -86,10 +86,6 @@ class ServicesSaleController extends Controller
             $lims_coupon_data = Coupon::find($data['coupon_id']);
             $lims_coupon_data->used += 1;
             $lims_coupon_data->save();
-        }
-
-        if ($data['salesman_id']) {
-            $data['salesman_name'] = Employee::find($data['salesman_id'])->name;
         }
 
 

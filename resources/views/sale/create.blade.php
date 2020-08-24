@@ -56,7 +56,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 warehouse_select" >
+                                    <div class="col-md-4 warehouse_select">
                                         <div class="form-group">
                                             <label>{{trans('file.Warehouse')}} *</label>
                                             <select required name="warehouse_id" id="warehouse_id"
@@ -68,12 +68,12 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 biller_select" >
+                                    <div class="col-md-4 biller_select">
                                         <div class="form-group">
                                             <label>{{trans('file.Biller')}} *</label>
-                                            <select required name="biller_id" id="biller_id" class="selectpicker form-control"
-                                                data-live-search="true" data-live-search-style="begins"
-                                                title="Select Biller...">
+                                            <select required name="biller_id" id="biller_id"
+                                                class="selectpicker form-control" data-live-search="true"
+                                                data-live-search-style="begins" title="Select Biller...">
                                                 @foreach($lims_biller_list as $biller)
                                                 <option value="{{$biller->id}}">
                                                     {{$biller->name . ' (' . $biller->company_name . ')'}}</option>
@@ -82,9 +82,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="row mt-3 biller_select">
                                     <div class="col-md-4">
-                                        <label>{{trans('file.salesman')}} *</label>
+                                        <label >{{trans('file.salesman')}} *</label>
                                         <select required name="salesman_id" class="selectpicker form-control"
                                             data-live-search="true" data-live-search-style="begins"
                                             title="Select Salesman...">
@@ -433,25 +433,32 @@
         if($("#is_product").is(":checked")){
             
             $(".product_search").show();
-        $(".service_search").hide();
+            $(".service_search").hide();
 
-        $(".warehouse_select").show();
-        $(".biller_select").show();
-        $("#warehouse_id").show().prop('required',true);
-        $("#biller_id").show().prop('required',true);
+            $(".warehouse_select").show();
+            $(".biller_select").show();
+            $(".salesman").show();
+            $("#warehouse_id").show().prop('required',true);
+            $("#biller_id").show().prop('required',true);
+            $("#salesman_id").hide().prop('required',true);
 
-        paymentForm.attr("action","{{route('sales.store')}}"); 
+            paymentForm.attr("action","{{route('sales.store')}}"); 
 
         }else if($("#is_service").is(":checked")){
             $(".product_search").hide();
 
-$(".service_search").show();
-$(".warehouse_select").hide();
-$(".biller_select").hide();
-$("#warehouse_id").hide().prop('required',false);
-$("#biller_id").hide().prop('required',false);
+            $(".salesman").hide();
 
-paymentForm.attr("action","{{route('services.sale')}}"); 
+
+            $(".service_search").show();
+            $(".warehouse_select").hide();
+            $(".biller_select").hide();
+
+            $("#warehouse_id").hide().prop('required',false);
+            $("#biller_id").hide().prop('required',false);
+            $("#salesman_id").hide().prop('required',false);
+
+            paymentForm.attr("action","{{route('services.sale')}}"); 
             
         }
 
