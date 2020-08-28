@@ -570,5 +570,6 @@ return [
     "Service Tax" => "الضريبة على الخدمة",
     "Service Image" => "صورة للخدمة",
     "Service Report" => "تقرير الخدمات",
-    "Best Service Seller"=>"أفضل الخدمات مبيعا"
+    "Best Service Seller"=>"أفضل الخدمات مبيعا",
+    "service provider" => "بائع الخدمات"
     ];

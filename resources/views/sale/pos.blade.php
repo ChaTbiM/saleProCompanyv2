@@ -922,15 +922,27 @@
                                         </span><span id="salesman" class="salesman">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    @if($salesmans)
-                                                    {{-- <input type="hidden" name="salesman_id_hidden" value={{$salesmans[0]->id}}>
-                                                    --}}
-                                                    @endif
                                                     <select required id="salesman_id"  name="salesman_id"
                                                         class="selectpicker form-control salesman" data-live-search="true"
                                                         data-live-search-style="begins" title="Select salesman...">
                                                         @foreach($salesmans as $salesman)
                                                         <option value="{{$salesman->id}}">{{$salesman->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-12 service_provider">
+                                        <span class="col-md-3 totals-title service_provider">{{trans('file.service provider')}} :
+                                        </span><span id="service_provider" class="service_provider">
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <select required id="service_provider_id"  name="service_provider_id"
+                                                        class="selectpicker form-control service_provider" data-live-search="true"
+                                                        data-live-search-style="begins" title="Select service provider...">
+                                                        @foreach($service_providers as $service_provider)
+                                                        <option value="{{$service_provider->id}}">{{$service_provider->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -1772,7 +1784,11 @@ if($("#is_product").is(":checked")){
     $(".product_search").show();
 $(".service_search").hide();
 
-$('.salesman').show().prop('required',true);
+$('.salesman').show()
+$('salesman_id').prop('required',true);
+
+$('.service_provider').hide();
+$('#service_provider_id').prop('required',false);
 
 $(".warehouse_select").show();
 $(".biller_select").show();
@@ -1787,6 +1803,10 @@ paymentForm.attr("action","{{route('sales.store')}}");
     $(".product_search").hide();
 
     $('.salesman').hide().prop('required',false);
+
+    $('.service_provider').show();
+    $('#service_provider_id').prop('required',true);
+
 $(".service_search").show();
 $(".warehouse_select").hide();
 $(".biller_select").hide();
@@ -1812,6 +1832,10 @@ $(".service_search").hide();
 
 $('.salesman').show().prop('required',true);
 
+$('.service_provider').hide();
+$('#service_provider_id').prop('required',false);
+
+
 $(".warehouse_select").show();
 $(".biller_select").show();
 $("#warehouse_id").show().prop('required',true);
@@ -1824,6 +1848,9 @@ paymentForm.attr("action","{{route('sales.store')}}");
 $(".product_search").hide();
 
 $('.salesman').hide().prop('required',false);
+
+$('.service_provider').show();
+$('#service_provider_id').prop('required',true);
 
 $(".service_search").show();
 $(".warehouse_select").hide();
