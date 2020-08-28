@@ -827,6 +827,7 @@ class SaleController extends Controller
         if ($role->hasPermissionTo('sales-add')) {
             $permissions = Role::findUserPermissions(); // findByName
             $salesmans = Employee::where('is_salesman', '=', 1)->get();
+            $service_providers = Employee::where('is_service_provider', '=', 1)->get();
             foreach ($permissions as $permission) {
                 $all_permission[] = $permission->permission_name;
             }
@@ -880,7 +881,9 @@ class SaleController extends Controller
             $lims_coupon_list = Coupon::where('is_active', true)->get();
             $flag = 0;
 
-            return view('sale.pos', compact('all_permission', 'salesmans', 'lims_customer_list', 'lims_customer_group_all', 'lims_warehouse_list', 'lims_product_list', 'product_number', 'lims_tax_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_brand_list', 'lims_category_list', 'recent_sale', 'recent_draft', 'lims_coupon_list', 'flag'));
+
+
+            return view('sale.pos', compact('all_permission', 'salesmans', 'service_providers', 'lims_customer_list', 'lims_customer_group_all', 'lims_warehouse_list', 'lims_product_list', 'product_number', 'lims_tax_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_brand_list', 'lims_category_list', 'recent_sale', 'recent_draft', 'lims_coupon_list', 'flag'));
         } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
         }
