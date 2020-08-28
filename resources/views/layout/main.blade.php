@@ -523,7 +523,7 @@
               @endif
               @if(!empty($best_seller_service_active))
               <li id="best-seller-service-report-menu">
-                <a href="{{url('report/best_seller_service')}}">{{trans('file.Best Service Seller ')}}</a>
+                <a href="{{url('report/best_seller_service')}}">{{trans('file.Best Service Seller')}}</a>
               </li>
               @endif
 

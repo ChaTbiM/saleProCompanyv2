@@ -20,7 +20,7 @@ return [
     'download' => 'تحميل',
 
     "name" => "اسم",
-    "submit" => "خضع",
+    "submit" => "إرسال",
     "update" => "تحديث",
     "salesman" => "بائع",
     "The field labels marked with * are required input fields" => "تعد تسميات الحقل التي تحمل علامة * حقول إدخال مطلوبة",
