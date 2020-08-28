@@ -60,11 +60,7 @@ class SaleController extends Controller
                 $all_permission[] = 'dummy text';
             }
 
-            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
-            //     $lims_sale_all = Sale::orderBy('id', 'desc')->where('user_id', Auth::id())->get();
-            // } else {
-                $lims_sale_all = Sale::orderBy('id', 'desc')->get();
-            // }
+            $lims_sale_all = Sale::orderBy('id', 'desc')->get();
 
             $lims_gift_card_list = GiftCard::where("is_active", true)->get();
             $lims_pos_setting_data = PosSetting::latest()->first();
@@ -85,13 +81,12 @@ class SaleController extends Controller
             7 => 'grand_total',
             8 => 'paid_amount',
         );
-
-
-        // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
-        //     $totalData = Sale::where('user_id', Auth::id())->count();
-        // } else {
-            $totalData = Sale::count();
-        // }
+        
+        
+        // if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
+        // $totalData = Sale::where('user_id', Auth::id())->count();
+        // else
+        $totalData = Sale::count();
 
         $totalFiltered = $totalData;
         if ($request->input('length') != -1) {
@@ -100,167 +95,149 @@ class SaleController extends Controller
             $limit = $totalData;
         }
         $start = $request->input('start');
-        $order = 'sales.' . $columns[$request->input('order.0.column')];
+        $order = 'sales.'.$columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         if (empty($request->input('search.value'))) {
-            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+            // if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
             //     $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
-            //         ->where('user_id', Auth::id())
-            //         ->limit($limit)
-            //         ->orderBy($order, $dir)
-            //         ->get();
-            // } else {
-                $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-            // }
+            //                 ->where('user_id', Auth::id())
+            //                 ->limit($limit)
+            //                 ->orderBy($order, $dir)
+            //                 ->get();
+            // else
+            $sales = Sale::with('biller', 'customer', 'warehouse', 'user')->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->get();
         } else {
             $search = $request->input('search.value');
-            // if (Auth::user()->role_id() == 4 && config('staff_access') == 'own') {
+            // if(Auth::user()->role_id > 2 && config('staff_access') == 'own') {
             //     $sales =  Sale::select('sales.*')
-            //         ->with('biller', 'customer', 'warehouse', 'user')
-            //         ->join('customers', 'sales.customer_id', '=', 'customers.id')
-            //         ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-            //         ->where('sales.user_id', Auth::id())
-            //         ->orwhere([
-            //             ['sales.reference_no', 'LIKE', "%{$search}%"],
-            //             ['sales.user_id', Auth::id()]
-            //         ])
-            //         ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-            //         ->orwhere([
-            //             ['customers.name', 'LIKE', "%{$search}%"],
-            //             ['sales.user_id', Auth::id()]
-            //         ])
-            //         ->offset($start)
-            //         ->limit($limit)
-            //         ->orderBy($order, $dir)->get();
+            //                 ->with('biller', 'customer', 'warehouse', 'user')
+            //                 ->join('customers', 'sales.customer_id', '=', 'customers.id')
+            //                 ->whereDate('sales.created_at', '=' , date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+            //                 ->where('sales.user_id', Auth::id())
+            //                 ->orwhere([
+            //                     ['sales.reference_no', 'LIKE', "%{$search}%"],
+            //                     ['sales.user_id', Auth::id()]
+            //                 ])
+            //                 ->orwhere([
+            //                     ['customers.name', 'LIKE', "%{$search}%"],
+            //                     ['sales.user_id', Auth::id()]
+            //                 ])
+            //                 ->offset($start)
+            //                 ->limit($limit)
+            //                 ->orderBy($order,$dir)->get();
 
-            //     $totalFiltered = Sale::join('customers', 'sales.customer_id', '=', 'customers.id')
-            //         ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-            //         ->where('sales.user_id', Auth::id())
-            //         ->orwhere([
-            //             ['sales.reference_no', 'LIKE', "%{$search}%"],
-            //             ['sales.user_id', Auth::id()]
-            //         ])
-            //         ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-            //         ->orwhere([
-            //             ['customers.name', 'LIKE', "%{$search}%"],
-            //             ['sales.user_id', Auth::id()]
-            //         ])
-            //         ->count();
-            // } else {
-                $sales =  Sale::select('sales.*')
-                    ->with('biller', 'customer', 'warehouse', 'user')
-                    ->join('customers', 'sales.customer_id', '=', 'customers.id')
-                    ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-                    ->where('sales.user_id', Auth::id())
-                    ->orwhere('sales.reference_no', 'LIKE', "%{$search}%")
-                    ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-                    ->orwhere('customers.name', 'LIKE', "%{$search}%")
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)->get();
+            //     $totalFiltered = Sale::
+            //                 join('customers', 'sales.customer_id', '=', 'customers.id')
+            //                 ->whereDate('sales.created_at', '=' , date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+            //                 ->where('sales.user_id', Auth::id())
+            //                 ->orwhere([
+            //                     ['sales.reference_no', 'LIKE', "%{$search}%"],
+            //                     ['sales.user_id', Auth::id()]
+            //                 ])
+            //                 ->orwhere([
+            //                     ['customers.name', 'LIKE', "%{$search}%"],
+            //                     ['sales.user_id', Auth::id()]
+            //                 ])
+            //                 ->count();
+            // }
+            // else {
+            $sales =  Sale::select('sales.*')
+                            ->with('biller', 'customer', 'warehouse', 'user')
+                            ->join('customers', 'sales.customer_id', '=', 'customers.id')
+                            ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+                            ->where('sales.user_id', Auth::id())
+                            ->orwhere('sales.reference_no', 'LIKE', "%{$search}%")
+                            ->orwhere('customers.name', 'LIKE', "%{$search}%")
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)->get();
 
-                $totalFiltered = Sale::join('customers', 'sales.customer_id', '=', 'customers.id')
-                    ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
-                    ->where('sales.user_id', Auth::id())
-                    ->orwhere('sales.reference_no', 'LIKE', "%{$search}%")
-                    ->orwhere('sales.salesman_name', 'LIKE', "%{$search}%")
-                    ->orwhere('customers.name', 'LIKE', "%{$search}%")
-                    ->count();
+            $totalFiltered = Sale::
+                            join('customers', 'sales.customer_id', '=', 'customers.id')
+                            ->whereDate('sales.created_at', '=', date('Y-m-d', strtotime(str_replace('/', '-', $search))))
+                            ->where('sales.user_id', Auth::id())
+                            ->orwhere('sales.reference_no', 'LIKE', "%{$search}%")
+                            ->orwhere('customers.name', 'LIKE', "%{$search}%")
+                            ->count();
             // }
         }
-
-
-
-
         $data = array();
         if (!empty($sales)) {
-            foreach ($sales as $key => $sale) {
+            foreach ($sales as $key=>$sale) {
                 $nestedData['id'] = $sale->id;
                 $nestedData['key'] = $key;
                 $nestedData['date'] = date(config('date_format'), strtotime($sale->created_at->toDateString()));
                 $nestedData['reference_no'] = $sale->reference_no;
-                if ($sale->is_product) {
+                if ($sale->biller) {
                     $nestedData['biller'] = $sale->biller->name;
                 } else {
                     $nestedData['biller'] = "N/A";
                 }
                 $nestedData['customer'] = $sale->customer->name;
 
-                if ($sale->salesman) {
-                    $nestedData['salesman'] = $sale->salesman->name;
-                } else {
-                    $nestedData['salesman'] = "/";
-                }
-
                 if ($sale->sale_status == 1) {
-                    $nestedData['sale_status'] = '<div class="badge badge-success">' . trans('file.Completed') . '</div>';
+                    $nestedData['sale_status'] = '<div class="badge badge-success">'.trans('file.Completed').'</div>';
                     $sale_status = trans('file.Completed');
                 } elseif ($sale->sale_status == 2) {
-                    $nestedData['sale_status'] = '<div class="badge badge-danger">' . trans('file.Pending') . '</div>';
+                    $nestedData['sale_status'] = '<div class="badge badge-danger">'.trans('file.Pending').'</div>';
                     $sale_status = trans('file.Pending');
                 } else {
-                    $nestedData['sale_status'] = '<div class="badge badge-warning">' . trans('file.Draft') . '</div>';
+                    $nestedData['sale_status'] = '<div class="badge badge-warning">'.trans('file.Draft').'</div>';
                     $sale_status = trans('file.Draft');
                 }
 
                 if ($sale->payment_status == 1) {
-                    $nestedData['payment_status'] = '<div class="badge badge-danger">' . trans('file.Pending') . '</div>';
+                    $nestedData['payment_status'] = '<div class="badge badge-danger">'.trans('file.Pending').'</div>';
                 } elseif ($sale->payment_status == 2) {
-                    $nestedData['payment_status'] = '<div class="badge badge-danger">' . trans('file.Due') . '</div>';
+                    $nestedData['payment_status'] = '<div class="badge badge-danger">'.trans('file.Due').'</div>';
                 } elseif ($sale->payment_status == 3) {
-                    $nestedData['payment_status'] = '<div class="badge badge-warning">' . trans('file.Partial') . '</div>';
+                    $nestedData['payment_status'] = '<div class="badge badge-warning">'.trans('file.Partial').'</div>';
                 } else {
-                    $nestedData['payment_status'] = '<div class="badge badge-success">' . trans('file.Paid') . '</div>';
-                }
-
-                if ($sale->is_product) {
-                    $invoice_url = "sale.invoice";
-                } else {
-                    $invoice_url = "service_sale.invoice";
+                    $nestedData['payment_status'] = '<div class="badge badge-success">'.trans('file.Paid').'</div>';
                 }
 
                 $nestedData['grand_total'] = number_format($sale->grand_total, 2);
                 $nestedData['paid_amount'] = number_format($sale->paid_amount, 2);
                 $nestedData['due'] = number_format($sale->grand_total - $sale->paid_amount, 2);
                 $nestedData['options'] = '<div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' . trans("file.action") . '
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.trans("file.action").'
                               <span class="caret"></span>
                               <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                <li><a href="' . route(''.$invoice_url.'', ['id' => $sale->id]) . '" class="btn btn-link"><i class="fa fa-copy"></i> ' . trans('file.Generate Invoice') . '</a></li>
+                                <li><a href="'.route('sale.invoice', ['id' => $sale->id]).'" class="btn btn-link"><i class="fa fa-copy"></i> '.trans('file.Generate Invoice').'</a></li>
                                 <li>
-                                    <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i> ' . trans('file.View') . '</button>
+                                    <button type="button" class="btn btn-link view"><i class="fa fa-eye"></i> '.trans('file.View').'</button>
                                 </li>';
                 if (in_array("sales-edit", $request['all_permission'])) {
                     if ($sale->sale_status != 3) {
                         $nestedData['options'] .= '<li>
-                            <a href="' . route('sales.edit', ['id' => $sale->id]) . '" class="btn btn-link"><i class="dripicons-document-edit"></i> ' . trans('file.edit') . '</a>
+                            <a href="'.route('sales.edit', ['id' => $sale->id]).'" class="btn btn-link"><i class="dripicons-document-edit"></i> '.trans('file.edit').'</a>
                             </li>';
                     } else {
                         $nestedData['options'] .= '<li>
-                            <a href="' . url('sales/' . $sale->id . '/create') . '" class="btn btn-link"><i class="dripicons-document-edit"></i> ' . trans('file.edit') . '</a>
+                            <a href="'.url('sales/'.$sale->id.'/create').'" class="btn btn-link"><i class="dripicons-document-edit"></i> '.trans('file.edit').'</a>
                         </li>';
                     }
                 }
                 $nestedData['options'] .=
                     '<li>
-                        <button type="button" class="add-payment btn btn-link" data-id = "' . $sale->id . '" data-toggle="modal" data-target="#add-payment"><i class="fa fa-plus"></i> ' . trans('file.Add Payment') . '</button>
+                        <button type="button" class="add-payment btn btn-link" data-id = "'.$sale->id.'" data-toggle="modal" data-target="#add-payment"><i class="fa fa-plus"></i> '.trans('file.Add Payment').'</button>
                     </li>
                     <li>
-                        <button type="button" class="get-payment btn btn-link" data-id = "' . $sale->id . '"><i class="fa fa-money"></i> ' . trans('file.View Payment') . '</button>
+                        <button type="button" class="get-payment btn btn-link" data-id = "'.$sale->id.'"><i class="fa fa-money"></i> '.trans('file.View Payment').'</button>
                     </li>
                     <li>
-                        <button type="button" class="add-delivery btn btn-link" data-id = "' . $sale->id . '"><i class="fa fa-truck"></i> ' . trans('file.Add Delivery') . '</button>
+                        <button type="button" class="add-delivery btn btn-link" data-id = "'.$sale->id.'"><i class="fa fa-truck"></i> '.trans('file.Add Delivery').'</button>
                     </li>';
                 if (in_array("sales-delete", $request['all_permission'])) {
-                    $nestedData['options'] .= \Form::open(["route" => ["sales.destroy", $sale->id], "method" => "DELETE"]) . '
+                    $nestedData['options'] .= \Form::open(["route" => ["sales.destroy", $sale->id], "method" => "DELETE"]).'
                             <li>
-                              <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> ' . trans("file.delete") . '</button> 
-                            </li>' . \Form::close() . '
+                              <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> '.trans("file.delete").'</button> 
+                            </li>'.\Form::close().'
                         </ul>
                     </div>';
                 }
@@ -272,7 +249,6 @@ class SaleController extends Controller
                     $coupon_code = null;
                 }
 
-
                 $undefined = "N/A";
 
                 if ($sale->is_product) {
@@ -283,15 +259,13 @@ class SaleController extends Controller
                 $data[] = $nestedData;
             }
         }
-
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data"            => $data
         );
-
+            
         echo json_encode($json_data);
     }
 

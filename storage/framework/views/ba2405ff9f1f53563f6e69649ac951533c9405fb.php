@@ -19,7 +19,7 @@
                 <tr>
                     <th class="not-exported"></th>
                     <th><?php echo e(trans('file.Date')); ?></th>
-                    <th><?php echo e(trans('file.salesman')); ?></th>
+                    <th><?php echo e(trans('file.reference')); ?></th>
                     <th><?php echo e(trans('file.Biller')); ?></th>
                     <th><?php echo e(trans('file.customer')); ?></th>
                     <th><?php echo e(trans('file.Sale Status')); ?></th>
@@ -107,7 +107,7 @@
                     <thead>
                         <tr>
                             <th><?php echo e(trans('file.date')); ?></th>
-                            <th><?php echo e(trans('file.salesman')); ?></th>
+                            <th><?php echo e(trans('file.reference')); ?></th>
                             <th><?php echo e(trans('file.Account')); ?></th>
                             <th><?php echo e(trans('file.Amount')); ?></th>
                             <th><?php echo e(trans('file.Paid By')); ?></th>
@@ -700,7 +700,7 @@
         "columns": [
             {"data": "key"},
             {"data": "date"},
-            {"data": "salesman"},
+            {"data": "reference_no"},
             {"data": "biller"},
             {"data": "customer"},
             {"data": "sale_status"},
@@ -851,21 +851,9 @@
 
     function saleDetails(sale){
         $("#sale-details input[name='sale_id']").val(sale[13]);
-        console.log('saleee',sale);
-        if(sale[3] != "N/A"){
+
         var htmltext = '<strong><?php echo e(trans("file.Date")); ?>: </strong>'+sale[0]+'<br><strong><?php echo e(trans("file.reference")); ?>: </strong>'+sale[1]+'<br><strong><?php echo e(trans("file.Warehouse")); ?>: </strong>'+sale[27]+'<br><strong><?php echo e(trans("file.Sale Status")); ?>: </strong>'+sale[2]+'<br><br><div class="row"><div class="col-md-6"><strong><?php echo e(trans("file.From")); ?>:</strong><br>'+sale[3]+'<br>'+sale[4]+'<br>'+sale[5]+'<br>'+sale[6]+'<br>'+sale[7]+'<br>'+sale[8]+'</div><div class="col-md-6"><div class="float-right"><strong><?php echo e(trans("file.To")); ?>:</strong><br>'+sale[9]+'<br>'+sale[10]+'<br>'+sale[11]+'<br>'+sale[12]+'</div></div></div>';
-    }else {
-        var htmltext = '<strong><?php echo e(trans("file.Date")); ?>: </strong>'+sale[0]+'<br><strong><?php echo e(trans("file.reference")); ?>: </strong>'+sale[1]+'<br><strong><?php echo e(trans("file.Sale Status")); ?>: </strong>'+sale[2]+'<br><br><div class="row"><div class="col-md-6"><div><strong><?php echo e(trans("file.To")); ?>:</strong><br>'+sale[9]+'<br>'+sale[10]+'<br>'+sale[11]+'<br>'+sale[12]+'</div></div></div>';
-    } 
-
-    let getDataDetailsUrl ; 
-        if(sale[3] != "N/A"){
-             getDataDetailsUrl = 'sales/product_sale/' 
-        }else {
-             getDataDetailsUrl = 'sales/service_sale/' 
-        }
-
-        $.get(getDataDetailsUrl + sale[13], function(data){
+        $.get('sales/product_sale/' + sale[13], function(data){
             $(".product-sale-list tbody").remove();
             var name_code = data[0];
             var qty = data[1];

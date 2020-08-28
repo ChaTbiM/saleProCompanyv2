@@ -25,6 +25,9 @@ class CreateEmployeesTable extends Migration
             $table->string('country')->nullable();
             $table->boolean('is_active');
             $table->boolean('is_salesman')->nullable();
+            
+            $table->boolean('is_service_provider')->nullable();
+
             $table->text('comment')->nullable();
             $table->timestamps();
         });

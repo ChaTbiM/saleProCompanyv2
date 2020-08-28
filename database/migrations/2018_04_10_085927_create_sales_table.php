@@ -20,7 +20,6 @@ class CreateSalesTable extends Migration
             $table->integer('customer_id');
             $table->integer('warehouse_id')->nullable();
             $table->integer('biller_id')->nullable();
-            $table->boolean('is_product');
             $table->integer('item');
             $table->double('total_qty');
             $table->double('total_discount');
@@ -37,7 +36,11 @@ class CreateSalesTable extends Migration
             $table->double('paid_amount')->nullable();
             $table->text('sale_note')->nullable();
             $table->text('staff_note')->nullable();
+            
             $table->timestamps();
+            $table->boolean('is_product');
+
+            $table->integer('employee_id')->nullable();
         });
     }
 

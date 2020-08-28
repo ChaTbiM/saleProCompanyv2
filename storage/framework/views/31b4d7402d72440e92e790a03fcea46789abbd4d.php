@@ -524,7 +524,7 @@
               <?php endif; ?>
               <?php if(!empty($best_seller_service_active)): ?>
               <li id="best-seller-service-report-menu">
-                <a href="<?php echo e(url('report/best_seller_service')); ?>"><?php echo e(trans('file.Best Service Seller ')); ?></a>
+                <a href="<?php echo e(url('report/best_seller_service')); ?>"><?php echo e(trans('file.Best Service Seller')); ?></a>
               </li>
               <?php endif; ?>
 
