@@ -76,6 +76,12 @@ class EmployeeController extends Controller
             $data['is_salesman'] = 0;
         }
 
+        if (isset($request->is_service_provider) && $data['service_provider'] == "on") {
+            $data['is_service_provider'] = 1;
+        } else {
+            $data['is_service_provider'] = 0;
+        }
+
 
         $image = $request->image;
         if ($image) {
@@ -143,6 +149,12 @@ class EmployeeController extends Controller
             $data['is_salesman'] = 1;
         } else {
             $data['is_salesman'] = 0;
+        }
+
+        if (isset($request->is_service_provider) && $data['is_service_provider'] == "on") {
+            $data['is_service_provider'] = 1;
+        } else {
+            $data['is_service_provider'] = 0;
         }
 
         $image = $request->image;

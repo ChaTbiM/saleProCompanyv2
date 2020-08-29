@@ -62,8 +62,12 @@
                                     <input type="text" name="country" class="form-control">
                                 </div>
                                 <div class="form-group mt-4">
-                                    <label>is salesman ?</label>
+                                    <label>{{ trans('is salesman ?') }}</label>
                                     <input type="checkbox" name="is_salesman" />
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label>{{ trans('is service provider ?') }} </label>
+                                    <input type="checkbox" name="is_service_provider" />
                                 </div>
                             </div>
                             <div class="col-md-6">

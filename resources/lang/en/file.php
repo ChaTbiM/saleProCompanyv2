@@ -568,5 +568,7 @@ return [
     "Service Tax" => "Service Tax",
     "Service Image" => "Service Image",
     "Best Service Seller"=>"Best Service Seller",
-    "service provider" =>"Service Provider"
+    "service provider" =>"Service Provider",
+    "is salesman ?" => "is salesman ? ",
+    "is service provider ?"=>"is service provider ? "
 ];

@@ -571,5 +571,7 @@ return [
     "Service Image" => "صورة للخدمة",
     "Service Report" => "تقرير الخدمات",
     "Best Service Seller"=>"أفضل الخدمات مبيعا",
-    "service provider" => "بائع الخدمات"
+    "service provider" => "بائع الخدمات",
+    "is salesman ?" => " هل هو بائع منتجات ؟",
+    "is service provider ?" => " هل هو بائع خدمات ؟"
     ];
