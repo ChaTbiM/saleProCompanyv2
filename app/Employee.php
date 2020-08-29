@@ -20,4 +20,9 @@ class Employee extends Model
     {
         return $this->hasMany('App\EmployeeFile');
     }
+
+    public function sales()
+    {
+        return $this->hasMany("App\Sale");
+    }
 }

@@ -485,6 +485,9 @@
                   $monthly_purchase_active = getPermissionActive("monthly-purchase");
                   $purchase_report_active = getPermissionActive("purchase-report");
                   $sale_report_active = getPermissionActive("sale-report");
+                  $salesman_report_active = getPermissionActive("salesman-report");
+                  $service_provider_report_active = getPermissionActive("service_provider-report");
+
                   $payment_report_active = getPermissionActive("payment-report");
                   $product_qty_alert_active = getPermissionActive("product-qty-alert");
                   $user_report_active = getPermissionActive("user-report");
@@ -498,9 +501,9 @@
           || $warehouse_report_active || $warehouse_stock_report_active || $product_report_active ||
           $service_report_active
           || $daily_sale_active || $monthly_sale_active || $monthly_service_sale_active
-          || $daily_purchase_active || $monthly_purchase_active || $purchase_report_active || $sale_report_active ||
+          || $daily_purchase_active || $monthly_purchase_active || $purchase_report_active || $sale_report_active || $salesman_report_active || $service_provider_report_active ||
           $payment_report_active || $product_qty_alert_active || $user_report_active || $customer_report_active ||
-          $supplier_report_active || $due_report_active
+          $supplier_report_active || $due_report_active 
           ))
           <li><a href="#report" aria-expanded="false" data-toggle="collapse"> <i
                 class="dripicons-document-remove"></i><span>{{trans('file.Reports')}}</span></a>
@@ -580,6 +583,26 @@
                 <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
                 <input type="hidden" name="warehouse_id" value="0" />
                 <a id="sale-report-link" href="">{{trans('file.Sale Report')}}</a>
+                {!! Form::close() !!}
+              </li>
+              @endif
+              @if(!empty($salesman_report_active))
+              <li id="salesman-report-menu">
+                {!! Form::open(['route' => 'report.salesman', 'method' => 'post', 'id' => 'salesman-report-form']) !!}
+                <input type="hidden" name="start_date" value="1988-04-18" />
+                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                <input type="hidden" name="warehouse_id" value="0" />
+                <a id="salesman-report-link" href="">{{trans('file.Salesman Report')}}</a>
+                {!! Form::close() !!}
+              </li>
+              @endif
+              @if(!empty($service_provider_report_active))
+              <li id="service_provider-report-menu">
+                {!! Form::open(['route' => 'report.service_provider', 'method' => 'post', 'id' => 'service_provider-report-form']) !!}
+                <input type="hidden" name="start_date" value="1988-04-18" />
+                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                <input type="hidden" name="warehouse_id" value="0" />
+                <a id="service_provider-report-link" href="">{{trans('file.Service Provider Report')}}</a>
                 {!! Form::close() !!}
               </li>
               @endif
@@ -1213,6 +1236,16 @@
       $("a#sale-report-link").click(function(e){
         e.preventDefault();
         $("#sale-report-form").submit();
+      });
+
+      $("a#salesman-report-link").click(function(e){
+        e.preventDefault();
+        $("#salesman-report-form").submit();
+      });
+
+      $("a#service_provider-report-link").click(function(e){
+        e.preventDefault();
+        $("#service_provider-report-form").submit();
       });
 
       $("a#payment-report-link").click(function(e){

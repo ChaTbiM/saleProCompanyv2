@@ -337,7 +337,9 @@ class SaleController extends Controller
         }
         // return dd($data);
         if ($data['salesman_id']) {
-            $data['salesman_name'] = Employee::find($data['salesman_id'])->name;
+            $data['employee_id'] = $data['salesman_id'];
+        } else {
+            $data['employee_id'] = null;
         }
 
 
@@ -1404,7 +1406,9 @@ class SaleController extends Controller
 
 
         if ($data['salesman_id']) {
-            $data['salesman_name'] = Employee::find($data['salesman_id'])->name;
+            $data['employee_id'] = $data['salesman_id'];
+        } else {
+            $data['employee_id'] = null;
         }
 
         $data["is_product"] = 0;

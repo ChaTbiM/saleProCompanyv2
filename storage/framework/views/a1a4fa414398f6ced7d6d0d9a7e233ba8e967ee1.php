@@ -95,6 +95,7 @@
                                         data-comment="<?php echo e($employee->comment); ?>"
                                          data-name="<?php echo e($employee->name); ?>"
                                         data-email="<?php echo e($employee->email); ?>" data-is_salesman="<?php echo e($employee->is_salesman); ?>"
+                                        data-is_service_provider="<?php echo e($employee->is_service_provider); ?>"
                                         data-phone_number="<?php echo e($employee->phone_number); ?>"
                                         data-department_id="<?php echo e($employee->department_id); ?>"
                                         data-address="<?php echo e($employee->address); ?>" data-city="<?php echo e($employee->city); ?>"
@@ -179,9 +180,13 @@
                         <label><?php echo e(trans('file.Country')); ?></label>
                         <input type="text" name="country" class="form-control">
                     </div>
-                    <div class="form-group col-md-12 ml-3 mt-6">
+                    <div class="form-group col-md-5 ml-3 mt-6">
                         <input type="checkbox" class=" mr-2" name="is_salesman" />
-                        <label>is salesman ?</label>
+                        <label><?php echo e(trans('is salesman ?')); ?></label>
+                    </div>
+                    <div class="form-group col-md-5 ml-3 mt-6">
+                        <input type="checkbox" class=" mr-2" name="is_service_provider" />
+                        <label><?php echo e(trans('is service provider ?')); ?></label>
                     </div>
                     <div class="col-md-12 form-group">
                         <label for="comment">Comments</label>
@@ -275,6 +280,14 @@
             $("#editModal input[name='is_salesman']").prop('checked',true);
         }else{
             $("#editModal input[name='is_salesman']").prop('checked',false);
+
+        }
+
+        let isServiceProvider = $(this).data('is_service_provider');
+        if(isServiceProvider){
+            $("#editModal input[name='is_service_provider']").prop('checked',true);
+        }else{
+            $("#editModal input[name='is_service_provider']").prop('checked',false);
 
         }
 
