@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th> salesman name </th>
+                    <th> <?php echo e(trans('salesman name')); ?> </th>
                     <th><?php echo e(trans('file.Product Name')); ?></th>
                     <th><?php echo e(trans('file.Sold Amount')); ?></th>
                     <th><?php echo e(trans('file.Sold Qty')); ?></th>

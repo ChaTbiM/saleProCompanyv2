@@ -574,9 +574,10 @@ return [
     "service provider" => "بائع الخدمات",
     "is salesman ?" => " هل هو بائع منتجات ؟",
     "is service provider ?" => " هل هو بائع خدمات ؟",
+    "Salesman Report" => "تقرير بائع المنتجات",
+    "Service Provider Report" => "تقرير بائع الخدمات",
     "salesman name" => "إسم بائع المنتجات",
     "service provider name" => "إسم بائع الخدمات",
     "files"=>"الملفات"
-
 
     ];
