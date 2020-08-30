@@ -570,5 +570,8 @@ return [
     "Best Service Seller"=>"Best Service Seller",
     "service provider" =>"Service Provider",
     "is salesman ?" => "is salesman ? ",
-    "is service provider ?"=>"is service provider ? "
+    "is service provider ?"=>"is service provider ? ",
+    "salesman name" => "Salesman name",
+    "service provider name" => "Service Provider Name",
+    "files"=>"files"
 ];

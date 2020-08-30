@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th> service provider name </th>
+                    <th> <?php echo e(trans('service provider name ')); ?> </th>
                     <th><?php echo e(trans('file.Service Name')); ?></th>
                     <th><?php echo e(trans('file.Sold Amount')); ?></th>
                     <th><?php echo e(trans('file.Sold Qty')); ?></th>

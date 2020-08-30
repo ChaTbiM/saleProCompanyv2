@@ -573,5 +573,10 @@ return [
     "Best Service Seller"=>"أفضل الخدمات مبيعا",
     "service provider" => "بائع الخدمات",
     "is salesman ?" => " هل هو بائع منتجات ؟",
-    "is service provider ?" => " هل هو بائع خدمات ؟"
+    "is service provider ?" => " هل هو بائع خدمات ؟",
+    "salesman name" => "إسم بائع المنتجات",
+    "service provider name" => "إسم بائع الخدمات",
+    "files"=>"الملفات"
+
+
     ];
