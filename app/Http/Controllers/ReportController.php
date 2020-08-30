@@ -969,8 +969,8 @@ class ReportController extends Controller
     public function salesmanReport(Request $request)
     {
         $data = $request->all();
-        $start_date = date('1988-04-18');
-        $end_date = date('Y-m-d');
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
 
         
 
@@ -1047,8 +1047,8 @@ class ReportController extends Controller
     public function serviceProviderReport(Request $request)
     {
         $data = $request->all();
-        $start_date = date('1988-04-18');
-        $end_date = date('Y-m-d');
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
 
         
 

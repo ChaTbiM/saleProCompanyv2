@@ -10,7 +10,7 @@
             <div class="card-header mt-2">
                 <h3 class="text-center"><?php echo e(trans('file.Sale Report')); ?></h3>
             </div>
-            <?php echo Form::open(['route' => 'report.sale', 'method' => 'post']); ?>
+            <?php echo Form::open(['route' => 'report.salesman', 'method' => 'post']); ?>
 
             <div class="row mb-5">
                 <div class="col-8 offset-md-1">
@@ -24,13 +24,7 @@
                             </div>
                         </div>
                         <button class="btn btn-primary ml-4" type="submit"><?php echo e(trans('file.submit')); ?></button>
-
                 </div>
-            </div>
-            <div class="row mb-3">
-                
-                
-                
             </div>
             <?php echo Form::close(); ?>
 
