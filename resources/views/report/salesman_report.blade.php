@@ -59,7 +59,7 @@
                     <td>{{number_format((float)$sold_price[$key], 2, '.', '')}}</td>
                     <td>{{$sold_quantity[$key]}}</td>
                     <td > 
-                            <input type="number" value="0" class="form-control col-8" id="exampleInputEmail1" min="0" max="100" placeholder="%">
+                            <input type="number" value="0" class="form-control col-8" id="percentage" min="0" max="100" placeholder="%">
                     </td>
                     <td> 0.00 </td>
 

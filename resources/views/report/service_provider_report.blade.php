@@ -42,7 +42,10 @@
                     <th>{{trans('file.Service Name')}}</th>
                     <th>{{trans('file.Sold Amount')}}</th>
                     <th>{{trans('file.Sold Qty')}}</th>
-                    {{-- <th>{{trans('file.In Stock')}}</th> --}}
+                    <th>sales percentage</th>
+                    <th>service provider sales</th>
+
+
                 </tr>
             </thead>
             <tbody>
@@ -55,7 +58,10 @@
                     
                     <td>{{number_format((float)$sold_price[$key], 2, '.', '')}}</td>
                     <td>{{$sold_quantity[$key]}}</td>
-                    {{-- <td>{{$service_qty[$key]}}</td> --}}
+                    <td > 
+                        <input type="number" value="0" class="form-control col-8" id="percentage" min="0" max="100" placeholder="%">
+                    </td>
+                    <td> 0.00 </td>
                 </tr>
                 @endforeach
                 @endif
@@ -66,6 +72,8 @@
                 <th></th>
                 <th>0</th>
                 <th>0</th>
+                <th></th>
+                <th>0.00</th>
             </tfoot>
         </table>
     </div>
@@ -113,7 +121,7 @@
         'columnDefs': [
             {
                 "orderable": false,
-                'targets': 0
+                'targets': [0,5]
             },
             {
                 'render': function(data, type, row, meta){
@@ -195,14 +203,48 @@
         if (dt_selector.rows( '.selected' ).any() && is_calling_first) {
             var rows = dt_selector.rows( '.selected' ).indexes();
 
+            let numberOfRows = rows.length;
+            
+            for(let i = 0 ; i < numberOfRows ; i++){
+                let total = Number(dt_selector.cell( i ,3, {page:'current'} ).data());
+                let percentageElement = $(dt_selector.cell( i ,5,{page:'current'} ).node()).children().first();
+                $(percentageElement).on('change',function (){
+                    let percentageValue = Number($(percentageElement).val());
+                    let profit =  (( total * percentageValue ) / 100).toFixed(2);
+                    dt_selector.cell( i ,6, {page:'current'} ).data( profit );
+            $( dt_selector.column( 6 ).footer() ).html(dt_selector.column( 6, {page:'current'} ).data().sum().toFixed(2));
+
+                })
+            }
+
             // $( dt_selector.column( 2 ).footer() ).html(dt_selector.cells( rows, 2, { page: 'current' } ).data().sum().toFixed(2));
             $( dt_selector.column( 3 ).footer() ).html(dt_selector.cells( rows, 3, { page: 'current' } ).data().sum());
             $( dt_selector.column( 4 ).footer() ).html(dt_selector.cells( rows, 4, { page: 'current' } ).data().sum().toFixed(2));
+
+
         }
         else {
+            var rows = dt_selector.rows({page:'current'}).indexes();
+            let numberOfRows = rows.length;
+            
+            for(let i = 0 ; i < numberOfRows ; i++){
+                let total = Number(dt_selector.cell( i ,3, {page:'current'} ).data());
+                let percentageElement = $(dt_selector.cell( i ,5,{page:'current'} ).node()).children().first();
+                $(percentageElement).on('change',function (){
+                    let percentageValue = Number($(percentageElement).val());
+                    let profit =  (( total * percentageValue ) / 100).toFixed(2);
+                    dt_selector.cell( i ,6, {page:'current'} ).data( profit );
+            $( dt_selector.column( 6 ).footer() ).html(dt_selector.column( 6, {page:'current'} ).data().sum().toFixed(2));
+
+                })
+            }
+
+
             // $( dt_selector.column( 2 ).footer() ).html(dt_selector.column( 2, {page:'current'} ).data().sum().toFixed(2));
             $( dt_selector.column( 3 ).footer() ).html(dt_selector.column( 3, {page:'current'} ).data().sum());
             $( dt_selector.column( 4 ).footer() ).html(dt_selector.column( 4, {page:'current'} ).data().sum().toFixed(2));
+
+
         }
     }
 
