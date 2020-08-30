@@ -2078,11 +2078,16 @@ if(keyboard_active==1){
 
     $('#lims_servicecodeSearch').bind('keyboardChange', function (e, keyboard, el) {
         var customer_id = $('#customer_id').val();
+        var service_provider_id = $('#service_provider_id').val();
         temp_data = $('#lims_servicecodeSearch').val();
         if(!customer_id){
             $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
             alert('Please select Customer!');
+        }else if(!service_provider_id){
+            $('#lims_servicecodeSearch').val(temp_data.substring(0, temp_data.length - 1));
+            alert('Please select Service Provider!');
         }
+        
     });
 
 }
