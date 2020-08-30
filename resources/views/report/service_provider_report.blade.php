@@ -10,11 +10,11 @@
             <div class="card-header mt-2">
                 <h3 class="text-center">{{trans('file.Sale Report')}}</h3>
             </div>
-            {!! Form::open(['route' => 'report.sale', 'method' => 'post']) !!}
-            <div class="row mb-3">
-                <div class="col-md-4 offset-md-1 mt-4">
-                    <div class="form-group row">
-                        <label class="d-tc mt-2"><strong>{{trans('file.Choose Your Date')}}</strong> &nbsp;</label>
+            {!! Form::open(['route' => 'report.service_provider', 'method' => 'post']) !!}
+            <div class="row mb-5">
+                <div class="col-8 offset-md-1">
+                    <label class="d-tc"><strong>{{trans('file.Choose Your Date')}}</strong> &nbsp;</label>
+                    <div class="form-inline ">
                         <div class="d-tc">
                             <div class="input-group">
                                 <input type="text" class="daterangepicker-field form-control" value="{{$start_date}} To {{$end_date}}" required />
@@ -22,12 +22,7 @@
                                 <input type="hidden" name="end_date" value="{{$end_date}}" />
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mt-4">
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit">{{trans('file.submit')}}</button>
-                    </div>
+                        <button class="btn btn-primary ml-4" type="submit">{{trans('file.submit')}}</button>
                 </div>
             </div>
             {!! Form::close() !!}

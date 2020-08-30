@@ -12,10 +12,10 @@
             </div>
             <?php echo Form::open(['route' => 'report.sale', 'method' => 'post']); ?>
 
-            <div class="row mb-3">
-                <div class="col-md-4 offset-md-1 mt-4">
-                    <div class="form-group row">
-                        <label class="d-tc mt-2"><strong><?php echo e(trans('file.Choose Your Date')); ?></strong> &nbsp;</label>
+            <div class="row mb-5">
+                <div class="col-8 offset-md-1">
+                    <label class="d-tc"><strong><?php echo e(trans('file.Choose Your Date')); ?></strong> &nbsp;</label>
+                    <div class="form-inline ">
                         <div class="d-tc">
                             <div class="input-group">
                                 <input type="text" class="daterangepicker-field form-control" value="<?php echo e($start_date); ?> To <?php echo e($end_date); ?>" required />
@@ -23,13 +23,14 @@
                                 <input type="hidden" name="end_date" value="<?php echo e($end_date); ?>" />
                             </div>
                         </div>
-                    </div>
+                        <button class="btn btn-primary ml-4" type="submit"><?php echo e(trans('file.submit')); ?></button>
+
                 </div>
-                <div class="col-md-3 mt-4">
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit"><?php echo e(trans('file.submit')); ?></button>
-                    </div>
-                </div>
+            </div>
+            <div class="row mb-3">
+                
+                
+                
             </div>
             <?php echo Form::close(); ?>
 
@@ -40,12 +41,12 @@
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th> <?php echo e(trans('salesman name')); ?> </th>
+                    <th> <?php echo e(trans('file.salesman name')); ?> </th>
                     <th><?php echo e(trans('file.Product Name')); ?></th>
                     <th><?php echo e(trans('file.Sold Amount')); ?></th>
                     <th><?php echo e(trans('file.Sold Qty')); ?></th>
-                    <th>sales percentage</th>
-                    <th>salesman sales</th>
+                    <th><?php echo e(trans('file.sales percentage')); ?> </th>
+                    <th> <?php echo e(trans('file.profit')); ?> </th>
 
 
                     
@@ -61,7 +62,7 @@
                     <td><?php echo e(number_format((float)$sold_price[$key], 2, '.', '')); ?></td>
                     <td><?php echo e($sold_quantity[$key]); ?></td>
                     <td > 
-                            <input type="number" value="0" class="form-control col-8" id="exampleInputEmail1" min="0" max="100" placeholder="%">
+                            <input type="number" value="0" class="form-control col-8" id="percentage" min="0" max="100" placeholder="%">
                     </td>
                     <td> 0.00 </td>
 

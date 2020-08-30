@@ -1068,25 +1068,27 @@ class ReportController extends Controller
         $lims_service_sale_data = null;
         $variant_id_all = [];
         foreach ($lims_service_all as $service) {
-            foreach ($service_providers_sales as $service_provider_sale) {
-                $sales_id = $service_provider_sale['sales'];
+            if (!empty($service_providers_sales)) {
+                foreach ($service_providers_sales as $service_provider_sale) {
+                    $sales_id = $service_provider_sale['sales'];
                
-                $lims_service_sale_data[$service_provider_sale['service_provider_name']][] = ServicesSale::whereIn('sale_id', $sales_id)->where('service_id', $service->id)->whereDate('created_at', '<=', $end_date)->get();
+                    $lims_service_sale_data[$service_provider_sale['service_provider_name']][] = ServicesSale::whereIn('sale_id', $sales_id)->where('service_id', $service->id)->whereDate('created_at', '<=', $end_date)->get();
 
-                // services data
-                if (!last($lims_service_sale_data[$service_provider_sale['service_provider_name']])->isEmpty()) {
-                    $service_name[] = $service->name;
-                    $service_provider_name[] = $service_provider_sale['service_provider_name'];
-                    $service_provider_id[] = $service_provider_sale['service_provider_id'];
-                    $service_id[] = $service->id;
-                    $price = 0;
-                    $qty = 0;
-                    foreach (last($lims_service_sale_data[$service_provider_sale['service_provider_name']]) as $sold_service) {
-                        $price += $sold_service['total'];
-                        $qty += $sold_service['qty'];
-                    };
-                    $sold_quantity[] = $qty;
-                    $sold_price[] = $price;
+                    // services data
+                    if (!last($lims_service_sale_data[$service_provider_sale['service_provider_name']])->isEmpty()) {
+                        $service_name[] = $service->name;
+                        $service_provider_name[] = $service_provider_sale['service_provider_name'];
+                        $service_provider_id[] = $service_provider_sale['service_provider_id'];
+                        $service_id[] = $service->id;
+                        $price = 0;
+                        $qty = 0;
+                        foreach (last($lims_service_sale_data[$service_provider_sale['service_provider_name']]) as $sold_service) {
+                            $price += $sold_service['total'];
+                            $qty += $sold_service['qty'];
+                        };
+                        $sold_quantity[] = $qty;
+                        $sold_price[] = $price;
+                    }
                 }
             }
         }
