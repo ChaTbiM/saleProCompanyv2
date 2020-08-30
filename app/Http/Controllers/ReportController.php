@@ -990,15 +990,12 @@ class ReportController extends Controller
         $lims_product_sale_data = null;
         $variant_id_all = [];
         foreach ($lims_product_all as $product) {
-            // if ($product->id == 2) {
-            //     break;
-            // }
-        
             foreach ($salesmans_sales as $salesman_sale) {
                 $sales_id = $salesman_sale['sales'];
 
                 // product_sales data
                 if ($product->is_variant) {
+                    $variant_id_all = Product_Sale::distinct('variant_id')->where('product_id', $product->id)->whereIn('sale_id', $sales_id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->pluck('variant_id');
                 } else {
                     $lims_product_sale_data[$salesman_sale['salesman_name']][] = Product_Sale::whereIn('sale_id', $sales_id)->where('product_id', $product->id)->whereDate('created_at', '<=', $end_date)->get();
                 }
@@ -1029,45 +1026,55 @@ class ReportController extends Controller
                         $variant_id[] = $variant_data->id;
                         $salesman_name[] = $salesman_sale['salesman_name'];
                         $salesman_id[] = $salesman_sale['salesman_id'];
+                        $price = 0;
+                        $qty = 0;
+                        foreach (last($lims_product_sale_data[$salesman_sale['salesman_name']]) as $sold_product) {
+                            if ($sold_product['variant_id'] == $variant_data->id) {
+                                $price += $sold_product['total'];
+                                $qty += $sold_product['qty'];
+                            }
+                        };
+                        $sold_quantity[] = $qty;
+                        $sold_price[] = $price;
                     }
                 }
             }
         }
 
-        dd($product_name, $product_id, $salesman_name, $sold_price, $sold_quantity);
-        dd($lims_product_sale_data['john']);
+        // dd($lims_product_sale_data['john']);
+        // dd($product_name, $product_id, $salesman_name, $sold_price, $sold_quantity);
 
 
 
         
 
-        foreach ($lims_product_all as $product) {
-            $lims_product_sale_data = null;
-            $variant_id_all = [];
+        // foreach ($lims_product_all as $product) {
+        //     $lims_product_sale_data = null;
+        //     $variant_id_all = [];
 
-            // product_sales data
-            if ($product->is_variant) {
-                $variant_id_all = Product_Sale::distinct('variant_id')->where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->pluck('variant_id');
-            } else {
-                $lims_product_sale_data = Product_Sale::where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->first();
-            }
+        //     // product_sales data
+        //     if ($product->is_variant) {
+        //         $variant_id_all = Product_Sale::distinct('variant_id')->where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->pluck('variant_id');
+        //     } else {
+        //         $lims_product_sale_data = Product_Sale::where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->first();
+        //     }
            
-            // products data
-            if ($lims_product_sale_data) {
-                $product_name[] = $product->name;
-                $product_id[] = $product->id;
-                $variant_id[] = null;
-            } elseif (count($variant_id_all)) {
-                foreach ($variant_id_all as $key => $variantId) {
-                    $variant_data = Variant::find($variantId);
-                    $product_name[] = $product->name . ' [' . $variant_data->name . ']';
-                    $product_id[] = $product->id;
-                    $variant_id[] = $variant_data->id;
-                }
-            }
-        }
+        //     // products data
+        //     if ($lims_product_sale_data) {
+        //         $product_name[] = $product->name;
+        //         $product_id[] = $product->id;
+        //         $variant_id[] = null;
+        //     } elseif (count($variant_id_all)) {
+        //         foreach ($variant_id_all as $key => $variantId) {
+        //             $variant_data = Variant::find($variantId);
+        //             $product_name[] = $product->name . ' [' . $variant_data->name . ']';
+        //             $product_id[] = $product->id;
+        //             $variant_id[] = $variant_data->id;
+        //         }
+        //     }
+        // }
 
-        return view('report.salesman_report', compact('product_id', 'variant_id', 'product_name', 'start_date', 'end_date'));
+        return view('report.salesman_report', compact('product_id', 'variant_id', 'salesman_name', 'sold_quantity', 'sold_price', 'product_name', 'start_date', 'end_date'));
     }
     
 
