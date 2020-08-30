@@ -1041,40 +1041,57 @@ class ReportController extends Controller
             }
         }
 
-        // dd($lims_product_sale_data['john']);
-        // dd($product_name, $product_id, $salesman_name, $sold_price, $sold_quantity);
+        return view('report.salesman_report', compact('product_id', 'variant_id', 'salesman_name', 'sold_quantity', 'sold_price', 'product_name', 'start_date', 'end_date'));
+    }
 
-
+    public function serviceProviderReport(Request $request)
+    {
+        $data = $request->all();
+        $start_date = date('1988-04-18');
+        $end_date = date('Y-m-d');
 
         
 
-        // foreach ($lims_product_all as $product) {
-        //     $lims_product_sale_data = null;
-        //     $variant_id_all = [];
+        $lims_service_all = Service::select('id', 'name')->where('is_active', true)->get();
+        $service_providers = Employee::where('is_service_provider', 1)->get();
+        
 
-        //     // product_sales data
-        //     if ($product->is_variant) {
-        //         $variant_id_all = Product_Sale::distinct('variant_id')->where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->pluck('variant_id');
-        //     } else {
-        //         $lims_product_sale_data = Product_Sale::where('product_id', $product->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->first();
-        //     }
-           
-        //     // products data
-        //     if ($lims_product_sale_data) {
-        //         $product_name[] = $product->name;
-        //         $product_id[] = $product->id;
-        //         $variant_id[] = null;
-        //     } elseif (count($variant_id_all)) {
-        //         foreach ($variant_id_all as $key => $variantId) {
-        //             $variant_data = Variant::find($variantId);
-        //             $product_name[] = $product->name . ' [' . $variant_data->name . ']';
-        //             $product_id[] = $product->id;
-        //             $variant_id[] = $variant_data->id;
-        //         }
-        //     }
-        // }
+        $service_providers_sales = null;
+        foreach ($service_providers as $service_provider) {
+            $data['service_provider_name'] = $service_provider->name;
+            $data['service_provider_id'] = $service_provider->id;
+            $data['sales'] = $service_provider->sales->where('is_product', 0)->where('employee_id', $service_provider->id)->pluck('id')->toArray();
+            $service_providers_sales[] = $data;
+        }
 
-        return view('report.salesman_report', compact('product_id', 'variant_id', 'salesman_name', 'sold_quantity', 'sold_price', 'product_name', 'start_date', 'end_date'));
+
+        $lims_service_sale_data = null;
+        $variant_id_all = [];
+        foreach ($lims_service_all as $service) {
+            foreach ($service_providers_sales as $service_provider_sale) {
+                $sales_id = $service_provider_sale['sales'];
+               
+                $lims_service_sale_data[$service_provider_sale['service_provider_name']][] = ServicesSale::whereIn('sale_id', $sales_id)->where('service_id', $service->id)->whereDate('created_at', '<=', $end_date)->get();
+
+                // services data
+                if (!last($lims_service_sale_data[$service_provider_sale['service_provider_name']])->isEmpty()) {
+                    $service_name[] = $service->name;
+                    $service_provider_name[] = $service_provider_sale['service_provider_name'];
+                    $service_provider_id[] = $service_provider_sale['service_provider_id'];
+                    $service_id[] = $service->id;
+                    $price = 0;
+                    $qty = 0;
+                    foreach (last($lims_service_sale_data[$service_provider_sale['service_provider_name']]) as $sold_service) {
+                        $price += $sold_service['total'];
+                        $qty += $sold_service['qty'];
+                    };
+                    $sold_quantity[] = $qty;
+                    $sold_price[] = $price;
+                }
+            }
+        }
+
+        return view('report.service_provider_report', compact('service_id', 'service_provider_name', 'sold_quantity', 'sold_price', 'service_name', 'start_date', 'end_date'));
     }
     
 

@@ -36,7 +36,15 @@ class ServicesSaleController extends Controller
 
         unset($data['biller_id']);
         unset($data['warehouse_id']);
-        unset($data['salesman_id']);
+
+        if ($data['salesman_id']) {
+            $data['employee_id'] = $data['salesman_id'];
+        } elseif ($data['service_provider_id']) {
+            $data['employee_id'] = $data['service_provider_id'];
+        }
+
+
+        
 
         $data["is_product"] = 0;
         
@@ -303,7 +311,7 @@ class ServicesSaleController extends Controller
             }
         }
         if ($lims_sale_data->sale_status == '1') {
-            return redirect('sales/gen_invoice/' . $lims_sale_data->id)->with('message', $message);
+            return redirect('sales/gen_service_invoice/' . $lims_sale_data->id)->with('message', $message);
         } elseif ($data['pos']) {
             return redirect('pos')->with('message', $message);
         } else {
