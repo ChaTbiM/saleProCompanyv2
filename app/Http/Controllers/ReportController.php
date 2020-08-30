@@ -892,8 +892,14 @@ class ReportController extends Controller
     public function saleReport(Request $request)
     {
         $data = $request->all();
-        $start_date = date('1988-04-18');
-        $end_date = date('Y-m-d');
+        if ($request->method() == "GET") {
+            $start_date = date('1988-04-18');
+
+            $end_date = date('Y-m-d');
+        } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+        }
 
         if ($request->method() == "GET") {
             $warehouse_id = 0;
@@ -969,10 +975,16 @@ class ReportController extends Controller
     public function salesmanReport(Request $request)
     {
         $data = $request->all();
-        $start_date = $request->start_date;
-        $end_date = $request->end_date;
+       
+        if ($request->method() == "GET") {
+            $start_date = date('1988-04-18');
 
-        
+            $end_date = date('Y-m-d');
+        } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+        }
+
 
         $lims_product_all = Product::select('id', 'name', 'qty', 'is_variant')->where('is_active', true)->get();
         $salesmans = Employee::where('is_salesman', 1)->get();
@@ -1047,8 +1059,14 @@ class ReportController extends Controller
     public function serviceProviderReport(Request $request)
     {
         $data = $request->all();
-        $start_date = $request->start_date;
-        $end_date = $request->end_date;
+        if ($request->method() == "GET") {
+            $start_date = date('1988-04-18');
+
+            $end_date = date('Y-m-d');
+        } else {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+        }
 
         
 

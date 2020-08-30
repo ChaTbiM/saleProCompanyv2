@@ -818,12 +818,12 @@
                         <div class="form-check form-check-inline">
                             <input class="form-check-input form_type" id="is_product" type="radio" name="form_type"
                                 id="product_radio" value="product" checked>
-                            <label class="form-check-label " for="inlineRadio1">product</label>
+                            <label class="form-check-label " for="inlineRadio1">{{ trans('file.product') }}</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input form_type" id="is_service" type="radio" name="form_type"
                                 id="service_radio" value="service">
-                            <label class="form-check-label" for="inlineRadio2">service</label>
+                            <label class="form-check-label" for="inlineRadio2">{{ trans('file.service') }}</label>
                         </div>
                     </div>
                     @endif
