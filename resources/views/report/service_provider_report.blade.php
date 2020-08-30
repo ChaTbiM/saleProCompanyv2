@@ -38,7 +38,7 @@
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th> {{ trans('service provider name ') }} </th>
+                    <th> {{ trans('file.service provider name ') }} </th>
                     <th>{{trans('file.Service Name')}}</th>
                     <th>{{trans('file.Sold Amount')}}</th>
                     <th>{{trans('file.Sold Qty')}}</th>

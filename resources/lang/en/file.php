@@ -576,7 +576,7 @@ return [
     "salesman name" => "Salesman name",
     "service provider name" => "Service Provider Name",
     "files"=>"files",
-    "sales percentage" => "sales percentage",
+    "sales percentage" => "Sales Percentage",
     "profit" =>"profit"
 
 ];

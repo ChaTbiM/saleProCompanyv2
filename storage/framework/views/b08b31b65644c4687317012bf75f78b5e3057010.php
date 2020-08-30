@@ -44,8 +44,8 @@
                     <th><?php echo e(trans('file.Service Name')); ?></th>
                     <th><?php echo e(trans('file.Sold Amount')); ?></th>
                     <th><?php echo e(trans('file.Sold Qty')); ?></th>
-                    <th><?php echo e(trans('sales percentage')); ?></th>
-                    <th><?php echo e(trans('profit')); ?></th>
+                    <th><?php echo e(trans('file.sales percentage')); ?></th>
+                    <th><?php echo e(trans('file.profit')); ?></th>
 
 
                 </tr>
