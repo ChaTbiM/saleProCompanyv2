@@ -42,8 +42,8 @@
                     <th>{{trans('file.Service Name')}}</th>
                     <th>{{trans('file.Sold Amount')}}</th>
                     <th>{{trans('file.Sold Qty')}}</th>
-                    <th>sales percentage</th>
-                    <th>service provider sales</th>
+                    <th>{{trans('file.sales percentage')}}</th>
+                    <th>{{trans('file.profit')}}</th>
 
 
                 </tr>

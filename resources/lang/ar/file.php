@@ -578,6 +578,8 @@ return [
     "Service Provider Report" => "تقرير بائع الخدمات",
     "salesman name" => "إسم بائع المنتجات",
     "service provider name" => "إسم بائع الخدمات",
-    "files"=>"الملفات"
+    "files"=>"الملفات",
+    "sales percentage" => "النسبة للمبيعات",
+    "profit" =>"الربح",
 
     ];

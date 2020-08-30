@@ -38,12 +38,12 @@
             <thead>
                 <tr>
                     <th class="not-exported"></th>
-                    <th> {{ trans('salesman name') }} </th>
+                    <th> {{ trans('file.salesman name') }} </th>
                     <th>{{trans('file.Product Name')}}</th>
                     <th>{{trans('file.Sold Amount')}}</th>
                     <th>{{trans('file.Sold Qty')}}</th>
-                    <th>sales percentage</th>
-                    <th>salesman sales</th>
+                    <th>{{ trans('file.sales percentage') }} </th>
+                    <th> {{ trans('file.profit') }} </th>
 
 
                     {{-- <th>{{trans('file.In Stock')}}</th> --}}

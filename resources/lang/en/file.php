@@ -575,5 +575,8 @@ return [
     "Service Provider Report" => "Service Provider Report",
     "salesman name" => "Salesman name",
     "service provider name" => "Service Provider Name",
-    "files"=>"files"
+    "files"=>"files",
+    "sales percentage" => "sales percentage",
+    "profit" =>"profit"
+
 ];
